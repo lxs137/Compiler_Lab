@@ -1,0 +1,4 @@
+int main()
+{
+    float number = 1.5e003;
+}
