@@ -15,7 +15,7 @@
 
 /* High-level Definitions */
 Program :
-      ExtDefList  
+      ExtDefList 
     ;
 ExtDefList :
       ExtDef
@@ -57,7 +57,7 @@ Tag :
 
 /* Declarators */
 VarDec :
-      ID { $$ = new_parent_node(1, $1); }
+      ID { $$ = new_parent_node("VarDec", 1, $1); }
     | VarDec LB INT RB
     ;
 FunDec :
@@ -105,8 +105,10 @@ DecList :
 Dec :
       VarDec
     | VarDec ASSIGNOP Exp { 
-        AST_node* m_node = new_parent_node(3, $1, $2, $3);
-        printf("Bison--%s: %d, %d\n", m_node->str, m_node->loc_line, m_node->loc_column);
+        AST_node* m_node = new_parent_node("Dec", 3, $1, $2, $3);
+        printf("AST--tree:\n");
+        print_child_node(m_node, 0);
+        printf("\n");
     }
     ;
 
@@ -130,7 +132,7 @@ Exp :
     | ID
     | INT
     | FLOAT { 
-        $$ = new_parent_node(1, $1);
+        $$ = new_parent_node("Exp", 1, $1);
     }
     ;
 Args :

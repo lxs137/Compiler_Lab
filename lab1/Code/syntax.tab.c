@@ -478,8 +478,8 @@ static const yytype_uint8 yyrline[] =
       45,    48,    49,    52,    53,    56,    60,    61,    64,    65,
       68,    69,    72,    73,    78,    81,    82,    85,    86,    87,
       88,    89,    90,    95,    96,    99,   102,   103,   106,   107,
-     115,   116,   117,   118,   119,   120,   121,   122,   123,   124,
-     125,   126,   127,   128,   129,   130,   131,   132,   137,   138
+     117,   118,   119,   120,   121,   122,   123,   124,   125,   126,
+     127,   128,   129,   130,   131,   132,   133,   134,   139,   140
 };
 #endif
 
@@ -1428,29 +1428,31 @@ yyreduce:
     {
         case 16:
 #line 60 "./syntax.y" /* yacc.c:1646  */
-    { (yyval.type_node) = new_parent_node(1, (yyvsp[0].type_node)); }
+    { (yyval.type_node) = new_parent_node("VarDec", 1, (yyvsp[0].type_node)); }
 #line 1433 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
 #line 107 "./syntax.y" /* yacc.c:1646  */
     { 
-        AST_node* m_node = new_parent_node(3, (yyvsp[-2].type_node), (yyvsp[-1].type_node), (yyvsp[0].type_node));
-        printf("Bison--%s: %d, %d\n", m_node->str, m_node->loc_line, m_node->loc_column);
+        AST_node* m_node = new_parent_node("Dec", 3, (yyvsp[-2].type_node), (yyvsp[-1].type_node), (yyvsp[0].type_node));
+        printf("AST--tree:\n");
+        print_child_node(m_node, 0);
+        printf("\n");
     }
-#line 1442 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1444 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 132 "./syntax.y" /* yacc.c:1646  */
+#line 134 "./syntax.y" /* yacc.c:1646  */
     { 
-        (yyval.type_node) = new_parent_node(1, (yyvsp[0].type_node));
+        (yyval.type_node) = new_parent_node("Exp", 1, (yyvsp[0].type_node));
     }
-#line 1450 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1452 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1454 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1456 "./syntax.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
