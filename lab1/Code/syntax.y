@@ -8,134 +8,193 @@
     void* type_node;
 }
 
-%token <type_node> NOT INT FLOAT ID SEMI COMMA ASSIGNOP RELOP PLUS MINUS STAR DIV AND OR DOT TYPE LP RP LB RB LC RC STRUCT RETURN IF ELSE WHILE
-%type <type_node> Exp VarDec
+%token <type_node> ID
+
+%token <type_node> ASSIGNOP RELOP AND OR NOT
+%token <type_node> PLUS MINUS STAR DIV
+
+%token <type_node> TYPE STRUCT INT FLOAT
+%token <type_node> IF ELSE WHILE RETURN
+
+%token <type_node> SEMI COMMA DOT
+%token <type_node> LP RP LB RB LC RC
+
+%type <type_node> Program ExtDefList ExtDef ExtDecList
+%type <type_node> Specifier StructSpecifier OptTag Tag
+%type <type_node> VarDec FunDec VarList ParamDec
+%type <type_node> CompSt StmtList IfMatchedStmt IfOpenStmt OtherStmt Stmt
+%type <type_node> DefList Def DecList Dec
+%type <type_node> Exp Factor MultiplicativeExp AdditiveExp RelationalExp LogicalAndExp LogicalOrExp AssignExp Args
 
 %%
-
 /* High-level Definitions */
-Program :
-      ExtDefList 
+Program 
+    : ExtDefList { $$ = new_parent_node("Program", 1, $1); print_child_node($$, 0); }
     ;
-ExtDefList :
-      ExtDef
-    | ExtDefList
-    | /* empty */
+ExtDefList
+    : ExtDef ExtDefList { $$ = new_parent_node("ExtDefList", 2, $1, $2); }
+    | /* empty */ { $$ = new_parent_node("ExtDefList", 0); }
     ;
-ExtDef :
-      Specifier ExtDefList SEMI
-    | Specifier SEMI
-    | Specifier FunDec CompSt
+ExtDef
+    : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 3, $1, $2, $3); }
+    | Specifier SEMI { $$ = new_parent_node("ExtDef", 2, $1, $2); }
+    | Specifier FunDec CompSt { $$ = new_parent_node("ExtDef", 3, $1, $2, $3); }
     ;
-//VarDec_ :
-      /* empty */
-//    | COMMA ExtDecList
-//    ;
- ExtDecList :
-       VarDec
-     | VarDec COMMA ExtDecList
-     ;
-//ExtDecList :
-//      VarDec VarDec_
-//    ;
+ExtDecList
+    : VarDec { $$ = new_parent_node("ExtDecList", 1, $1); }
+    | VarDec COMMA ExtDecList { $$ = new_parent_node("ExtDecList", 3, $1, $2, $3); }
+    ;
 
 /* Specifiers */
-Specifier :
-      TYPE
-    | StructSpecifier
+Specifier
+    : TYPE { $$ = new_parent_node("Specifier", 1, $1); }
+    | StructSpecifier { $$ = new_parent_node("Specifier", 1,$1); }
     ;
-StructSpecifier :
-      STRUCT OptTag LC DefList RC
-    | STRUCT Tag
+StructSpecifier
+    : STRUCT OptTag LC DefList RC { $$ = new_parent_node("StructSpecifier", 4,$1, $2, $3, $4); }
+    | STRUCT Tag { $$ = new_parent_node("StructSpecifier", 2, $1, $2); }
     ;
-OptTag :
-       ID
-    | /* empty */
+OptTag
+    :  ID { $$ = new_parent_node("OptTag", 1, $1); }
+    | /* empty */ { $$ = new_parent_node("OptTag", 0); }
     ;
-Tag :
-    ID
+Tag
+    : ID { $$ = new_parent_node("Tag", 1, $1);}
+    ;
 
 /* Declarators */
-VarDec :
-      ID { $$ = new_parent_node("VarDec", 1, $1); }
-    | VarDec LB INT RB
+VarDec
+    : ID { $$ = new_parent_node("VarDec", 1, $1); }
+    | VarDec LB INT RB { $$ = new_parent_node("varDec", 4, $1, $2, $3, $4); }
     ;
-FunDec :
-      ID LP VarList RP
-    | ID LP RP
+FunDec
+    : ID LP VarList RP { $$ = new_parent_node("FunDec", 4, $1, $2, $3, $4); }
+    | ID LP RP { $$ = new_parent_node("FunDec", 3, $1, $2, $3); }
     ;
-VarList :
-      ParamDec COMMA VarList
-    | ParamDec
+VarList
+    : ParamDec COMMA VarList { $$ = new_parent_node("VarList", 3, $1, $2, $3); }
+    | ParamDec { $$ = new_parent_node("VarList", 1,$1); }
     ;
-ParamDec :
-      Specifier
-    | VarDec
+ParamDec
+    : Specifier VarDec { $$ = new_parent_node("ParamDec", 2, $1, $2); }
     ;
 
 /* Statements */
-CompSt :
-       LC DefList StmtList RC
+CompSt
+    : LC DefList StmtList RC { $$ = new_parent_node("CompSt", 4, $1, $2, $3, $4); }
     ;
-StmtList :
-      Stmt StmtList
-    | /* empty */
+StmtList
+    : Stmt StmtList { $$ = new_parent_node("StmtList", 2, $1, $2); }
+    | /* empty */ { $$ = new_parent_node("StmtList", 0); }
     ;
-Stmt :
-      Exp SEMI
-    | CompSt
-    | RETURN Exp SEMI
-    | IF LP Exp RP Stmt
-    | IF LP Exp RP Stmt ELSE Stmt
-    | WHILE LP Exp RP Stmt
+/* Stmt */
+/*     : Exp SEMI */
+/*     | CompSt */
+/*     | RETURN Exp SEMI */
+/*     | IF LP Exp RP Stmt */
+/*     | IF LP Exp RP Stmt ELSE Stmt */
+/*     | IfStmt */
+/*     | WHILE LP Exp RP Stmt */
+/*     ; */
+OtherStmt
+    : Exp SEMI { $$ = new_parent_node("OtherStmt", 2, $1, $2); }
+    | CompSt { $$ = new_parent_node("OtherStmt", 1, $1); }
+    | RETURN Exp SEMI { $$ = new_parent_node("OtherStmt", 3, $1, $2, $3); }
+    | WHILE LP Exp RP Stmt { $$ = new_parent_node("OtherStmt", 5, $1, $2, $3, $4, $5); }
+    ;
+Stmt
+    : IfMatchedStmt { $$ = new_parent_node("Stmt", 1, $1); }
+    | IfOpenStmt { $$ = new_parent_node("Stmt", 1, $1); }
+    ;
+IfMatchedStmt
+    : IF LP Exp RP IfMatchedStmt ELSE IfMatchedStmt { $$ = new_parent_node("IfMatchedStmt", 7, $1, $2, $3, $4, $5, $6, $7); }
+    | OtherStmt { $$ = new_parent_node("IfMatchedStmt", 1, $1); }
+    ;
+IfOpenStmt
+    : IF LP Exp RP Stmt { $$ = new_parent_node("IfOpenStmt", 5, $1, $2, $3, $4, $5); }
+    | IF LP Exp RP IfMatchedStmt ELSE IfOpenStmt { $$ = new_parent_node("IfOpenStmt", 7, $1, $2, $3, $4, $5, $6, $7); }
     ;
 
 /* Local Definitions */
-DefList :
-      Def DefList
-    | /* empty */
+DefList
+    : Def DefList { $$ = new_parent_node("DefList", 2, $1, $2); }
+    | /* empty */ { $$ = new_parent_node("DefList", 0); }
     ;
-Def :
-      Specifier DecList SEMI
+Def
+    : Specifier DecList SEMI { $$ = new_parent_node("Def", 3, $1, $2, $3); }
     ;
-DecList :
-      Dec
-    | Dec COMMA DecList
+DecList
+    : Dec { $$ = new_parent_node("DecList", 1, $1); }
+    | Dec COMMA DecList { $$ = new_parent_node("DecList", 3, $1, $2, $3); }
     ;
-Dec :
-      VarDec
-    | VarDec ASSIGNOP Exp { 
-        AST_node* m_node = new_parent_node("Dec", 3, $1, $2, $3);
-        printf("AST--tree:\n");
-        print_child_node(m_node, 0);
-        printf("\n");
-    }
+Dec
+    : VarDec { $$ = new_parent_node("Dec", 1, $1); }
+    | VarDec ASSIGNOP Exp { $$ = new_parent_node("Dec", 3, $1, $2, $3); }
     ;
 
 /* Expressions */
-Exp :
-      Exp ASSIGNOP Exp
-    | Exp AND Exp
-    | Exp OR Exp
-    | Exp RELOP Exp
-    | Exp PLUS Exp
-    | Exp MINUS Exp
-    | Exp STAR Exp
-    | Exp DIV Exp
-    | LP Exp RP
-    | MINUS Exp
-    | NOT Exp
-    | ID LP Args RP
-    | ID LP RP
-    | Exp LB Exp RB
-    | Exp DOT ID
-    | ID
-    | INT
-    | FLOAT { 
-        $$ = new_parent_node("Exp", 1, $1);
-    }
+Exp
+    : AssignExp { $$ = new_parent_node("Exp", 1, $1); }
+    /* : Exp ASSIGNOP Exp */
+    /* | Exp AND Exp */
+    /* | Exp OR Exp */
+    /* | Exp RELOP Exp */
+    /* | Exp PLUS Exp */
+    /* | Exp MINUS Exp */
+    /* | Exp STAR Exp */
+    /* | Exp DIV Exp */
+    /* | LP Exp RP */
+    /* | MINUS Exp */
+    /* | NOT Exp */
+    /* | ID LP Args RP */
+    /* | ID LP RP */
+    /* | Exp LB Exp RB */
+    /* | Exp DOT ID */
+    /* | ID */
+    /* | INT */
+    /* | FLOAT */
     ;
-Args :
-      Exp COMMA Args
-    | Exp
+Factor
+/* reduce-reduce */
+    : LP Exp RP { $$ = new_parent_node("Factor", 3, $1, $2, $3); }
+    | MINUS Exp { $$ = new_parent_node("Factor", 2, $1, $2); }
+    | NOT Exp { $$ = new_parent_node("Factor", 2, $1, $2); }
+    | ID LP Args RP { $$ = new_parent_node("Factor", 4, $1, $2, $3, $4); }
+    | ID LP RP { $$ = new_parent_node("Factor", 3, $1, $2, $3); }
+    | Exp LB Exp RB { $$ = new_parent_node("Factor", 4, $1, $2, $3, $4); }
+    | Exp DOT ID { $$ = new_parent_node("Factor", 3, $1, $2, $3); }
+    | ID { $$ = new_parent_node("Factor", 1, $1); }
+    | INT { $$ = new_parent_node("Factor", 1, $1); }
+    | FLOAT { $$ = new_parent_node("Factor", 1, $1); }
+    ;
+MultiplicativeExp
+    : MultiplicativeExp STAR Factor { $$ = new_parent_node("MultiplicativeExp", 3, $1, $2, $3); }
+    | MultiplicativeExp DIV Factor { $$ = new_parent_node("MultiplicativeExp", 3, $1, $2, $3); }
+    | Factor { $$ = new_parent_node("MultiplicativeExp", 1, $1); }
+    ;
+AdditiveExp
+    : AdditiveExp PLUS MultiplicativeExp { $$ = new_parent_node("AdditiveExp", 3, $1, $2, $3); }
+    | AdditiveExp MINUS MultiplicativeExp { $$ = new_parent_node("AdditiveExp", 3, $1, $2, $3); }
+    | MultiplicativeExp { $$ = new_parent_node("AdditiveExp", 1, $1); }
+    ;
+RelationalExp
+    : RelationalExp RELOP AdditiveExp { $$ = new_parent_node("RelationalExp", 3, $1, $2, $3); }
+    | AdditiveExp { $$ = new_parent_node("RelationalExp", 1, $1); }
+    ;
+LogicalAndExp
+    : LogicalAndExp AND RelationalExp { $$ = new_parent_node("LogicalAndExp", 3, $1, $2, $3); }
+    | RelationalExp { $$ = new_parent_node("LogicalAndExp", 1, $1); }
+    ;
+LogicalOrExp
+    : LogicalOrExp OR LogicalAndExp { $$ = new_parent_node("LogicalOrExp", 3, $1, $2, $3); }
+    | LogicalAndExp { $$ = new_parent_node("LogicalOrExp", 1, $1); }
+    ;
+AssignExp
+    : LogicalOrExp ASSIGNOP AssignExp { $$ = new_parent_node("AssignExp", 3, $1, $2, $3); }
+    | LogicalOrExp { $$ = new_parent_node("AssignExp", 1, $1); }
+    ;
+
+Args
+    : Exp COMMA Args { $$ = new_parent_node("Args", 3, $1, $2, $3); }
+    | Exp { $$ = new_parent_node("Args", 1, $1); }
     ;
