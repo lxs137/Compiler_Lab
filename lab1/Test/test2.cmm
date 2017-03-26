@@ -1,0 +1,8 @@
+int main()
+{
+    float number = 1.5e003;
+    int a = 10;
+    a = a + 5;
+    a = a + + 5;
+    int b;
+}

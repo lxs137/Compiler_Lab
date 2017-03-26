@@ -1,5 +1,5 @@
 %{
-#define flex_debug_print
+//#define flex_debug_print
     #include <stdio.h>
     #include <stdlib.h>
     #include "syntax.tab.h"
@@ -34,7 +34,6 @@ ws [ |\t|\n]
 %%
 \n    { 
     yycolumn = 1;
-    printf("next_line\n"); 
 }
 {ws}+    { print_loc_info("find white space"); }
 ";"    {
@@ -213,7 +212,9 @@ while    {
     return ID;
 }
 .    {
-    printf("Error Type A at line %d", yylloc.first_line);
+    printf("Error Type A at line %d: ", yylloc.first_line);
+    printf("Mysterious character \"%s\"", yytext);
+    yyterminate();
 }
 
 %%

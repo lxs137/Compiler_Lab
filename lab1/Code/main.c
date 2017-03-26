@@ -12,15 +12,14 @@ int main(int argc, char** argv)
         return 1;
     }
     yyrestart(f);
-//    yylex();
-//    fclose(f);
     yyparse();
     fclose(f);
     return 0;
 }
-
-void yyerror(char *msg)
+extern int has_error;
+void yyerror(const char *msg)
 {
-    printf("\n ERROR MESSAGE \n");
-    fprintf(stderr, "error: %s\n\n", msg);
+    has_error = 1;
+    printf("Error type B at line %d: ", yylineno);
+    printf("%s\n", msg);
 }
