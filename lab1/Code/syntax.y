@@ -30,7 +30,7 @@
 %type <type_node> Exp Args
 
 %nonassoc LOWER_THAN_SEMI
-%nonassoc SEMI
+/* %nonassoc SEMI */
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
