@@ -70,13 +70,15 @@ AST_node* new_parent_node(char *string, int node_num, ...)
 
 void print_child_node(AST_node* parent, int depth)
 {
+    if(parent->first_child == NULL && strcmp(parent->str, "EMPTY") == 0)
+      return;
     //实现缩进
     int i = 0;
     for(i = 0; i < depth; i++)
-      printf("  ");
+      printf("* ");
     if(parent->first_child == NULL)
     {
-        printf("%s\n", parent->str, parent->loc_line);
+        printf("%s\n", parent->str);
         return;
     }
     else

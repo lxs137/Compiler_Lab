@@ -1,5 +1,5 @@
 %{
-#define flex_debug_print
+//#define flex_debug_print
     #include <stdio.h>
     #include <stdlib.h>
     #include "syntax.tab.h"
@@ -7,10 +7,9 @@
 
     
     // 维护词法单元的位置信息
-    int yylines = 1;
     int yycolumn = 1;
     #define YY_USER_ACTION \
-    yylloc.first_line = yylloc.last_line = yylines; \
+    yylloc.first_line = yylloc.last_line = yylineno; \
     yylloc.first_column = yycolumn; \
     yylloc.last_column = yycolumn + yyleng - 1; \
     yycolumn += yyleng;
@@ -27,15 +26,14 @@
     };
 %}
 
+%option yylineno
 digit [0-9]
 letter [a-zA-Z|_]
 ws [ |\t|\n]
 
 %%
 \n    { 
-    yylines++;
     yycolumn = 1;
-    printf("next_line\n"); 
 }
 {ws}+    { print_loc_info("find white space"); }
 ";"    {
@@ -214,7 +212,9 @@ while    {
     return ID;
 }
 .    {
-    printf("Error Type A at line %d", yylloc.first_line);
+    printf("Error Type A at line %d: ", yylloc.first_line);
+    printf("Mysterious character \"%s\"", yytext);
+    yyterminate();
 }
 
 %%
