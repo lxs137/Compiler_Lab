@@ -92,7 +92,6 @@ Stmt
     | RETURN Exp SEMI { $$ = new_parent_node("Stmt", 3, $1, $2, $3); }
     | IF LP Exp RP Stmt { $$ = new_parent_node("Stmt", 5, $1, $2, $3, $4, $5); }
     | IF LP Exp RP Stmt ELSE Stmt { $$ = new_parent_node("Stmt", 7, $1, $2, $3, $4, $5, $6, $7); }
-    | IfStmt { $$ = new_parent_node("Stmt", 1, $1); }
     | WHILE LP Exp RP Stmt { $$ = new_parent_node("Stmt", 5, $1, $2, $3, $4, $5); }
     ;
 /* OtherStmt */
