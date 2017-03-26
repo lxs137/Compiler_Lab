@@ -25,6 +25,18 @@
 /* %type <type_node> Exp Factor MultiplicativeExp AdditiveExp RelationalExp LogicalAndExp LogicalOrExp AssignExp Args */
 %type <type_node> Exp Args
 
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
+
+%left LP RP LB RB DOT
+%right NOT
+%left STAR DIV
+%left PLUS MINUS
+%left RELOP
+%left AND
+%left OR
+%left ASSIGNOP
+
 %%
 /* High-level Definitions */
 Program 
@@ -90,7 +102,7 @@ Stmt
     : Exp SEMI { $$ = new_parent_node("Stmt", 2, $1, $2); }
     | CompSt { $$ = new_parent_node("Stmt", 1, $1); }
     | RETURN Exp SEMI { $$ = new_parent_node("Stmt", 3, $1, $2, $3); }
-    | IF LP Exp RP Stmt { $$ = new_parent_node("Stmt", 5, $1, $2, $3, $4, $5); }
+    | IF LP Exp RP Stmt %prec LOWER_THAN_ELSE { $$ = new_parent_node("Stmt", 5, $1, $2, $3, $4, $5); }
     | IF LP Exp RP Stmt ELSE Stmt { $$ = new_parent_node("Stmt", 7, $1, $2, $3, $4, $5, $6, $7); }
     | WHILE LP Exp RP Stmt { $$ = new_parent_node("Stmt", 5, $1, $2, $3, $4, $5); }
     ;
