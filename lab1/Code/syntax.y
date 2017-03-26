@@ -1,6 +1,10 @@
 %locations
+//%define api.pure full
+%define parse.error verbose
 %{
-    #include "syntax_tree.h"
+#include "syntax_tree.h"
+    int has_error = 0;
+    void yyerror(const char *msg);
 %}
 
 %union {
@@ -25,31 +29,39 @@
 /* %type <type_node> Exp Factor MultiplicativeExp AdditiveExp RelationalExp LogicalAndExp LogicalOrExp AssignExp Args */
 %type <type_node> Exp Args
 
+%nonassoc LOWER_THAN_ANYTHING
+
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
 
-%left LP RP LB RB DOT
-%right NOT
-%left STAR DIV
-%left PLUS MINUS
-%left RELOP
-%left AND
+%right ASSIGNOP
 %left OR
-%left ASSIGNOP
+%left AND
+%left RELOP
+%left PLUS MINUS
+%left STAR DIV
+%right NOT
+%left LP RP LB RB DOT
 
 %%
 /* High-level Definitions */
 Program 
-    : ExtDefList { $$ = new_parent_node("Program", 1, $1); print_child_node($$, 0); }
+    : ExtDefList { 
+        $$ = new_parent_node("Program", 1, $1);
+        if(!has_error)
+          print_child_node($$, 0);
+    }
     ;
 ExtDefList
     : ExtDef ExtDefList { $$ = new_parent_node("ExtDefList", 2, $1, $2); }
-    | /* empty */ { $$ = new_parent_node("ExtDefList", 0); }
+    | /* empty */ { $$ = new_parent_node("EMPTY", 0); }
     ;
 ExtDef
     : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 3, $1, $2, $3); }
     | Specifier SEMI { $$ = new_parent_node("ExtDef", 2, $1, $2); }
     | Specifier FunDec CompSt { $$ = new_parent_node("ExtDef", 3, $1, $2, $3); }
+    | error SEMI { /*yyerror("Error ExtDef");*/ }
+    | Specifier { yyerror("Missing \";\""); }
     ;
 ExtDecList
     : VarDec { $$ = new_parent_node("ExtDecList", 1, $1); }
@@ -62,12 +74,13 @@ Specifier
     | StructSpecifier { $$ = new_parent_node("Specifier", 1,$1); }
     ;
 StructSpecifier
-    : STRUCT OptTag LC DefList RC { $$ = new_parent_node("StructSpecifier", 4,$1, $2, $3, $4); }
+    : STRUCT OptTag LC DefList RC { $$ = new_parent_node("StructSpecifier", 5, $1, $2, $3, $4, $5); }
     | STRUCT Tag { $$ = new_parent_node("StructSpecifier", 2, $1, $2); }
+    | STRUCT OptTag LC error RC {}
     ;
 OptTag
     :  ID { $$ = new_parent_node("OptTag", 1, $1); }
-    | /* empty */ { $$ = new_parent_node("OptTag", 0); }
+    | /* empty */ { $$ = new_parent_node("EMPTY", 0); }
     ;
 Tag
     : ID { $$ = new_parent_node("Tag", 1, $1);}
@@ -81,10 +94,11 @@ VarDec
 FunDec
     : ID LP VarList RP { $$ = new_parent_node("FunDec", 4, $1, $2, $3, $4); }
     | ID LP RP { $$ = new_parent_node("FunDec", 3, $1, $2, $3); }
+    | ID LP error RP { /*yyerror("Error FunDec");*/ }
     ;
 VarList
     : ParamDec COMMA VarList { $$ = new_parent_node("VarList", 3, $1, $2, $3); }
-    | ParamDec { $$ = new_parent_node("VarList", 1,$1); }
+    | ParamDec { $$ = new_parent_node("VarList", 1, $1); }
     ;
 ParamDec
     : Specifier VarDec { $$ = new_parent_node("ParamDec", 2, $1, $2); }
@@ -96,16 +110,21 @@ CompSt
     ;
 StmtList
     : Stmt StmtList { $$ = new_parent_node("StmtList", 2, $1, $2); }
-    | /* empty */ { $$ = new_parent_node("StmtList", 0); }
+    | /* empty */ { $$ = new_parent_node("EMPTY", 0); }
     ;
 Stmt
     : Exp SEMI { $$ = new_parent_node("Stmt", 2, $1, $2); }
+    | Exp %prec LOWER_THAN_ANYTHING { yyerror("Missing \";\""); }
     | CompSt { $$ = new_parent_node("Stmt", 1, $1); }
     | RETURN Exp SEMI { $$ = new_parent_node("Stmt", 3, $1, $2, $3); }
+    | RETURN Exp %prec LOWER_THAN_ANYTHING { yyerror("Missing \";\""); }
     | IF LP Exp RP Stmt %prec LOWER_THAN_ELSE { $$ = new_parent_node("Stmt", 5, $1, $2, $3, $4, $5); }
     | IF LP Exp RP Stmt ELSE Stmt { $$ = new_parent_node("Stmt", 7, $1, $2, $3, $4, $5, $6, $7); }
     | WHILE LP Exp RP Stmt { $$ = new_parent_node("Stmt", 5, $1, $2, $3, $4, $5); }
-    | error SEMI { yyerrok; }
+    | error SEMI { /*yyerror("Error Stmt1");*/ }
+    | IF LP error RP Stmt %prec LOWER_THAN_ELSE { /*yyerror("Error Stmt2");*/ }
+    | IF LP error RP Stmt ELSE Stmt { /*yyerror("Error Stmt3");*/ }
+    | WHILE LP error RP Stmt { /*yyerror("Error Stmt4");*/ }
     ;
 /* OtherStmt */
 /*     : Exp SEMI { $$ = new_parent_node("OtherStmt", 2, $1, $2); } */
@@ -129,10 +148,12 @@ Stmt
 /* Local Definitions */
 DefList
     : Def DefList { $$ = new_parent_node("DefList", 2, $1, $2); }
-    | /* empty */ { $$ = new_parent_node("DefList", 0); }
+    | /* empty */ { $$ = new_parent_node("EMPTY", 0); }
     ;
 Def
     : Specifier DecList SEMI { $$ = new_parent_node("Def", 3, $1, $2, $3); }
+    | Specifier DecList %prec LOWER_THAN_ANYTHING { yyerror("Missing \";\""); }
+    | error SEMI { /*yyerror("Error Def");*/ }
     ;
 DecList
     : Dec { $$ = new_parent_node("DecList", 1, $1); }
@@ -208,3 +229,4 @@ Args
     : Exp COMMA Args { $$ = new_parent_node("Args", 3, $1, $2, $3); }
     | Exp { $$ = new_parent_node("Args", 1, $1); }
     ;
+
