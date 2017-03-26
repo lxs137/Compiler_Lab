@@ -1,6 +1,7 @@
 %locations
 %{
     #include "syntax_tree.h"
+    extern void yyerror(char *msg);
 %}
 
 %union {
@@ -50,6 +51,7 @@ ExtDef
     : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 3, $1, $2, $3); }
     | Specifier SEMI { $$ = new_parent_node("ExtDef", 2, $1, $2); }
     | Specifier FunDec CompSt { $$ = new_parent_node("ExtDef", 3, $1, $2, $3); }
+    | error SEMI { yyerror("Error ExtDef"); }
     ;
 ExtDecList
     : VarDec { $$ = new_parent_node("ExtDecList", 1, $1); }
@@ -62,7 +64,7 @@ Specifier
     | StructSpecifier { $$ = new_parent_node("Specifier", 1,$1); }
     ;
 StructSpecifier
-    : STRUCT OptTag LC DefList RC { $$ = new_parent_node("StructSpecifier", 4,$1, $2, $3, $4); }
+    : STRUCT OptTag LC DefList RC { $$ = new_parent_node("StructSpecifier", 5, $1, $2, $3, $4, $5); }
     | STRUCT Tag { $$ = new_parent_node("StructSpecifier", 2, $1, $2); }
     ;
 OptTag
@@ -81,10 +83,11 @@ VarDec
 FunDec
     : ID LP VarList RP { $$ = new_parent_node("FunDec", 4, $1, $2, $3, $4); }
     | ID LP RP { $$ = new_parent_node("FunDec", 3, $1, $2, $3); }
+    | ID LP error RP { yyerror("Error FunDec"); }
     ;
 VarList
     : ParamDec COMMA VarList { $$ = new_parent_node("VarList", 3, $1, $2, $3); }
-    | ParamDec { $$ = new_parent_node("VarList", 1,$1); }
+    | ParamDec { $$ = new_parent_node("VarList", 1, $1); }
     ;
 ParamDec
     : Specifier VarDec { $$ = new_parent_node("ParamDec", 2, $1, $2); }
@@ -105,7 +108,10 @@ Stmt
     | IF LP Exp RP Stmt %prec LOWER_THAN_ELSE { $$ = new_parent_node("Stmt", 5, $1, $2, $3, $4, $5); }
     | IF LP Exp RP Stmt ELSE Stmt { $$ = new_parent_node("Stmt", 7, $1, $2, $3, $4, $5, $6, $7); }
     | WHILE LP Exp RP Stmt { $$ = new_parent_node("Stmt", 5, $1, $2, $3, $4, $5); }
-    | error SEMI { yyerrok; }
+    | error SEMI { yyerror("Error Stmt1"); }
+    | IF LP error RP Stmt %prec LOWER_THAN_ELSE { yyerror("Error Stmt2"); }
+    | IF LP error RP Stmt ELSE Stmt { yyerror("Error Stmt3"); }
+    | WHILE LP error RP Stmt { yyerror("Error Stmt4"); }
     ;
 /* OtherStmt */
 /*     : Exp SEMI { $$ = new_parent_node("OtherStmt", 2, $1, $2); } */
@@ -133,6 +139,7 @@ DefList
     ;
 Def
     : Specifier DecList SEMI { $$ = new_parent_node("Def", 3, $1, $2, $3); }
+    | error SEMI { yyerror("Error Def"); }
     ;
 DecList
     : Dec { $$ = new_parent_node("DecList", 1, $1); }

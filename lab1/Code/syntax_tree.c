@@ -73,10 +73,10 @@ void print_child_node(AST_node* parent, int depth)
     //实现缩进
     int i = 0;
     for(i = 0; i < depth; i++)
-      printf("  ");
+      printf("* ");
     if(parent->first_child == NULL)
     {
-        printf("%s\n", parent->str, parent->loc_line);
+        printf("%s\n", parent->str);
         return;
     }
     else

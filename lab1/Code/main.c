@@ -19,7 +19,8 @@ int main(int argc, char** argv)
     return 0;
 }
 
-yyerror(char *msg)
+void yyerror(char *msg)
 {
-    fprintf(stderr, "error: %s\n", msg);
+    printf("\n ERROR MESSAGE \n");
+    fprintf(stderr, "error: %s\n\n", msg);
 }
