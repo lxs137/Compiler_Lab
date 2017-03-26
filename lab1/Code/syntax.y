@@ -29,7 +29,8 @@
 /* %type <type_node> Exp Factor MultiplicativeExp AdditiveExp RelationalExp LogicalAndExp LogicalOrExp AssignExp Args */
 %type <type_node> Exp Args
 
-%nonassoc LOWER_THAN_ANYTHING
+%nonassoc LOWER_THAN_SEMI
+%nonassoc SEMI
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -58,10 +59,12 @@ ExtDefList
     ;
 ExtDef
     : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 3, $1, $2, $3); }
+    | Specifier ExtDefList %prec LOWER_THAN_SEMI { yyerror("Missing \";\""); }
     | Specifier SEMI { $$ = new_parent_node("ExtDef", 2, $1, $2); }
+    /* | Specifier %prec LOWER_THAN_SEMI { yyerror("Missing \";\""); } */
     | Specifier FunDec CompSt { $$ = new_parent_node("ExtDef", 3, $1, $2, $3); }
     | error SEMI { /*yyerror("Error ExtDef");*/ }
-    | Specifier { yyerror("Missing \";\""); }
+    /* | Specifier { yyerror("Missing \";\""); } */
     ;
 ExtDecList
     : VarDec { $$ = new_parent_node("ExtDecList", 1, $1); }
@@ -114,10 +117,10 @@ StmtList
     ;
 Stmt
     : Exp SEMI { $$ = new_parent_node("Stmt", 2, $1, $2); }
-    | Exp %prec LOWER_THAN_ANYTHING { yyerror("Missing \";\""); }
+    | Exp %prec LOWER_THAN_SEMI { yyerror("Missing \";\""); }
     | CompSt { $$ = new_parent_node("Stmt", 1, $1); }
     | RETURN Exp SEMI { $$ = new_parent_node("Stmt", 3, $1, $2, $3); }
-    | RETURN Exp %prec LOWER_THAN_ANYTHING { yyerror("Missing \";\""); }
+    | RETURN Exp %prec LOWER_THAN_SEMI { yyerror("Missing \";\""); }
     | IF LP Exp RP Stmt %prec LOWER_THAN_ELSE { $$ = new_parent_node("Stmt", 5, $1, $2, $3, $4, $5); }
     | IF LP Exp RP Stmt ELSE Stmt { $$ = new_parent_node("Stmt", 7, $1, $2, $3, $4, $5, $6, $7); }
     | WHILE LP Exp RP Stmt { $$ = new_parent_node("Stmt", 5, $1, $2, $3, $4, $5); }
@@ -152,7 +155,7 @@ DefList
     ;
 Def
     : Specifier DecList SEMI { $$ = new_parent_node("Def", 3, $1, $2, $3); }
-    | Specifier DecList %prec LOWER_THAN_ANYTHING { yyerror("Missing \";\""); }
+    | Specifier DecList %prec LOWER_THAN_SEMI { yyerror("Missing \";\""); }
     | error SEMI { /*yyerror("Error Def");*/ }
     ;
 DecList
