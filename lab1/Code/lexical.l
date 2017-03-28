@@ -213,7 +213,7 @@ while    {
 }
 .    {
     printf("Error Type A at line %d: ", yylloc.first_line);
-    printf("Mysterious character \"%s\"", yytext);
+    printf("Mysterious character \"%s\"\n", yytext);
     yyterminate();
 }
 
