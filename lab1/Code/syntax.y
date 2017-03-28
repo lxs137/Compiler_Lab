@@ -1,5 +1,4 @@
 %locations
-//%define api.pure full
 %define parse.error verbose
 %{
 #include "syntax_tree.h"
@@ -29,8 +28,8 @@
 /* %type <type_node> Exp Factor MultiplicativeExp AdditiveExp RelationalExp LogicalAndExp LogicalOrExp AssignExp Args */
 %type <type_node> Exp Args
 
+/*%nonassoc SEMI*/
 %nonassoc LOWER_THAN_SEMI
-/* %nonassoc SEMI */
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -59,9 +58,9 @@ ExtDefList
     ;
 ExtDef
     : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 3, $1, $2, $3); }
-    | Specifier ExtDefList %prec LOWER_THAN_SEMI { yyerror("Missing \";\""); }
+    | Specifier ExtDecList %prec LOWER_THAN_SEMI { yyerror("Missing \";\""); }
     | Specifier SEMI { $$ = new_parent_node("ExtDef", 2, $1, $2); }
-    /* | Specifier %prec LOWER_THAN_SEMI { yyerror("Missing \";\""); } */
+    | Specifier %prec LOWER_THAN_SEMI { yyerror("Missing \";\""); }
     | Specifier FunDec CompSt { $$ = new_parent_node("ExtDef", 3, $1, $2, $3); }
     | error SEMI { /*yyerror("Error ExtDef");*/ }
     /* | Specifier { yyerror("Missing \";\""); } */
