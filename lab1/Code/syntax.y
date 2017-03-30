@@ -1,9 +1,11 @@
 %locations
 %define parse.error verbose
 %{
+//#define BISON_DEBUG
 #include "syntax_tree.h"
     int has_error = 0;
     void yyerror(const char *msg);
+    void yyerror_lineno(const char *msg, int lineno);
 %}
 
 %union {
@@ -27,10 +29,12 @@
 %type <type_node> DefList Def DecList Dec
 /* %type <type_node> Exp Factor MultiplicativeExp AdditiveExp RelationalExp LogicalAndExp LogicalOrExp AssignExp Args */
 %type <type_node> Exp Args
+%type <type_node> FunCompSt
 
-/*%nonassoc SEMI*/
+%nonassoc LOWER_THAN_LC
+%nonassoc LC
+
 %nonassoc LOWER_THAN_SEMI
-
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
 
@@ -61,8 +65,12 @@ ExtDef
     | Specifier ExtDecList %prec LOWER_THAN_SEMI { yyerror("Missing \";\""); }
     | Specifier SEMI { $$ = new_parent_node("ExtDef", 2, $1, $2); }
     | Specifier %prec LOWER_THAN_SEMI { yyerror("Missing \";\""); }
-    | Specifier FunDec CompSt { $$ = new_parent_node("ExtDef", 3, $1, $2, $3); }
-    | error SEMI { /*yyerror("Error ExtDef");*/ }
+    | Specifier FunDec FunCompSt { $$ = new_parent_node("ExtDef", 3, $1, $2, $3); }
+    | error SEMI {
+#ifdef BISON_DEBUG 
+        yyerror("Error ExtDef");
+#endif
+    }
     /* | Specifier { yyerror("Missing \";\""); } */
     ;
 ExtDecList
@@ -77,9 +85,19 @@ Specifier
     ;
 StructSpecifier
     : STRUCT OptTag LC DefList RC { $$ = new_parent_node("StructSpecifier", 5, $1, $2, $3, $4, $5); }
+    | STRUCT OptTag %prec LOWER_THAN_LC DefList RC { yyerror_lineno("Missing \"{\"", @3.first_line); }
     | STRUCT Tag { $$ = new_parent_node("StructSpecifier", 2, $1, $2); }
-    | STRUCT OptTag LC error RC {}
-    ;
+    | STRUCT OptTag LC error RC {
+#ifdef BISON_DEBUG
+        yyerror("StructSpecifier error.");
+#endif
+    }
+/*    | error RC {     
+#ifdef BISON_DEBUG
+        yyerror("StructSpecifier error.");
+#endif
+    }
+*/    ;
 OptTag
     :  ID { $$ = new_parent_node("OptTag", 1, $1); }
     | /* empty */ { $$ = new_parent_node("EMPTY", 0); }
@@ -96,7 +114,11 @@ VarDec
 FunDec
     : ID LP VarList RP { $$ = new_parent_node("FunDec", 4, $1, $2, $3, $4); }
     | ID LP RP { $$ = new_parent_node("FunDec", 3, $1, $2, $3); }
-    | ID LP error RP { /*yyerror("Error FunDec");*/ }
+    | ID LP error RP { 
+#ifdef BISON_DEBUG
+        yyerror("Error FunDec");
+#endif
+    }
     ;
 VarList
     : ParamDec COMMA VarList { $$ = new_parent_node("VarList", 3, $1, $2, $3); }
@@ -106,10 +128,17 @@ ParamDec
     : Specifier VarDec { $$ = new_parent_node("ParamDec", 2, $1, $2); }
     ;
 
+FunCompSt
+    : LC DefList StmtList RC { $$ = new_parent_node("CompSt", 4, $1, $2, $3, $4); }
+    | %prec LOWER_THAN_LC DefList StmtList RC { yyerror_lineno("Missing \"{\"", @1.first_line); }
+    ;
 /* Statements */
 CompSt
     : LC DefList StmtList RC { $$ = new_parent_node("CompSt", 4, $1, $2, $3, $4); }
-    ;
+/*    | LC DefList StmtList %prec LOWER_THAN_RC{ yyerror("Missing \"}\""); }
+    | %prec LOWER_THAN_LC DefList StmtList RC { yyerror_lineno("Missing \"{\"", @1.first_line); }
+*/    ;
+
 StmtList
     : Stmt StmtList { $$ = new_parent_node("StmtList", 2, $1, $2); }
     | /* empty */ { $$ = new_parent_node("EMPTY", 0); }
@@ -123,10 +152,26 @@ Stmt
     | IF LP Exp RP Stmt %prec LOWER_THAN_ELSE { $$ = new_parent_node("Stmt", 5, $1, $2, $3, $4, $5); }
     | IF LP Exp RP Stmt ELSE Stmt { $$ = new_parent_node("Stmt", 7, $1, $2, $3, $4, $5, $6, $7); }
     | WHILE LP Exp RP Stmt { $$ = new_parent_node("Stmt", 5, $1, $2, $3, $4, $5); }
-    | error SEMI { /*yyerror("Error Stmt1");*/ }
-    | IF LP error RP Stmt %prec LOWER_THAN_ELSE { /*yyerror("Error Stmt2");*/ }
-    | IF LP error RP Stmt ELSE Stmt { /*yyerror("Error Stmt3");*/ }
-    | WHILE LP error RP Stmt { /*yyerror("Error Stmt4");*/ }
+    | error SEMI { 
+#ifdef BISON_DEBUG
+        yyerror("Error Stmt1");
+#endif
+    }
+    | IF LP error RP Stmt %prec LOWER_THAN_ELSE { 
+#ifdef BISON_DEBUG
+        yyerror("Error Stmt2");
+#endif
+    }
+    | IF LP error RP Stmt ELSE Stmt { 
+#ifdef BISON_DEBUG
+        yyerror("Error Stmt3");
+#endif
+    }
+    | WHILE LP error RP Stmt { 
+#ifdef BISON_DEBUG
+        yyerror("Error Stmt4");
+#endif
+    }
     ;
 /* OtherStmt */
 /*     : Exp SEMI { $$ = new_parent_node("OtherStmt", 2, $1, $2); } */

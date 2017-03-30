@@ -1,10 +1,18 @@
-struct { int a }
-int main()
+float func(int c)
+
+    c = c - 1;
+    c = c * /1;
+}
+struct Complex
+
+    float real 2;
+    int a = 1;
+    int c = *2;
+};
+int main(int d)
 {
-    float a[10][2];
-    int i
-    i = i + * 2;
-    a = 4;
-    a[5,3] =1.5;
-    if(a[1][2] == 0) i = 1 else i = 0;
+    int a = *1;
+    int b;
+    if(b = 1)
+        b = /2;
 }

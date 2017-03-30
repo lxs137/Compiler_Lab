@@ -23,3 +23,9 @@ void yyerror(const char *msg)
     printf("Error type B at line %d: ", yylineno);
     printf("%s\n", msg);
 }
+void yyerror_lineno(const char *msg, int lineno)
+{
+    has_error = 1;
+    printf("Error type B at line %d: ", lineno);
+    printf("%s\n", msg);
+}
