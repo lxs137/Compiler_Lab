@@ -2,12 +2,12 @@
 %define parse.error verbose
 %{
 //#define BISON_DEBUG
-/* #include "syntax_tree.h" */
-    extern struct syntax_tree_node;
-    typedef struct syntax_tree_node AST_node;
-    extern AST_node *new_token_node(int line, int column, char *string);
-    extern AST_node *new_parent_node(char *string, int node_num, ...);
-    extern void print_child_node(AST_node *parent, int depth);
+    #include "syntax_tree.h"
+    /* extern struct syntax_tree_node; */
+    /* typedef struct syntax_tree_node AST_node; */
+    /* extern AST_node *new_token_node(int line, int column, char *string); */
+    /* extern AST_node *new_parent_node(char *string, int node_num, ...); */
+    /* extern void print_child_node(AST_node *parent, int depth); */
     int has_error = 0;
     void yyerror(const char *msg);
     void yyerror_lineno(const char *msg, int lineno);
