@@ -2,7 +2,12 @@
 %define parse.error verbose
 %{
 //#define BISON_DEBUG
-#include "syntax_tree.h"
+/* #include "syntax_tree.h" */
+    extern struct syntax_tree_node;
+    typedef struct syntax_tree_node AST_node;
+    extern AST_node *new_token_node(int line, int column, char *string);
+    extern AST_node *new_parent_node(char *string, int node_num, ...);
+    extern void print_child_node(AST_node *parent, int depth);
     int has_error = 0;
     void yyerror(const char *msg);
     void yyerror_lineno(const char *msg, int lineno);
@@ -49,8 +54,8 @@
 
 %%
 /* High-level Definitions */
-Program 
-    : ExtDefList { 
+Program
+    : ExtDefList {
         $$ = new_parent_node("Program", 1, $1);
         if(!has_error)
           print_child_node($$, 0);
@@ -67,7 +72,7 @@ ExtDef
     | Specifier %prec LOWER_THAN_SEMI { yyerror("Missing \";\""); }
     | Specifier FunDec FunCompSt { $$ = new_parent_node("ExtDef", 3, $1, $2, $3); }
     | error SEMI {
-#ifdef BISON_DEBUG 
+#ifdef BISON_DEBUG
         yyerror("Error ExtDef");
 #endif
     }
@@ -92,7 +97,7 @@ StructSpecifier
         yyerror("StructSpecifier error.");
 #endif
     }
-/*    | error RC {     
+/*    | error RC {
 #ifdef BISON_DEBUG
         yyerror("StructSpecifier error.");
 #endif
@@ -114,7 +119,7 @@ VarDec
 FunDec
     : ID LP VarList RP { $$ = new_parent_node("FunDec", 4, $1, $2, $3, $4); }
     | ID LP RP { $$ = new_parent_node("FunDec", 3, $1, $2, $3); }
-    | ID LP error RP { 
+    | ID LP error RP {
 #ifdef BISON_DEBUG
         yyerror("Error FunDec");
 #endif
@@ -152,22 +157,22 @@ Stmt
     | IF LP Exp RP Stmt %prec LOWER_THAN_ELSE { $$ = new_parent_node("Stmt", 5, $1, $2, $3, $4, $5); }
     | IF LP Exp RP Stmt ELSE Stmt { $$ = new_parent_node("Stmt", 7, $1, $2, $3, $4, $5, $6, $7); }
     | WHILE LP Exp RP Stmt { $$ = new_parent_node("Stmt", 5, $1, $2, $3, $4, $5); }
-    | error SEMI { 
+    | error SEMI {
 #ifdef BISON_DEBUG
         yyerror("Error Stmt1");
 #endif
     }
-    | IF LP error RP Stmt %prec LOWER_THAN_ELSE { 
+    | IF LP error RP Stmt %prec LOWER_THAN_ELSE {
 #ifdef BISON_DEBUG
         yyerror("Error Stmt2");
 #endif
     }
-    | IF LP error RP Stmt ELSE Stmt { 
+    | IF LP error RP Stmt ELSE Stmt {
 #ifdef BISON_DEBUG
         yyerror("Error Stmt3");
 #endif
     }
-    | WHILE LP error RP Stmt { 
+    | WHILE LP error RP Stmt {
 #ifdef BISON_DEBUG
         yyerror("Error Stmt4");
 #endif
