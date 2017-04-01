@@ -1,5 +1,15 @@
 %locations
 %{
+    #include "syntax_tree.h"
+    void yyerror(const char *msg);
+    void yyerror_lineno(const char *msg, int lineno);
+%}
+
+%union {
+    int type_int;
+    void *type_node;
+}
+
 %token <type_node> ID
 %token <type_node> ASSIGNOP RELOP AND OR NOT
 %token <type_node> PLUS MINUS STAR DIV
@@ -15,10 +25,6 @@
 %type <type_node> DefList Def DecList Dec
 %type <type_node> Exp Args
 
-%nonassoc LOWER_THAN_LC
-%nonassoc LC
-
-%nonassoc LOWER_THAN_SEMI
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
 
