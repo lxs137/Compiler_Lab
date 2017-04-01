@@ -1,6 +1,8 @@
 %locations
+%define parse.error verbose
 %{
     #include "syntax_tree.h"
+    int has_error = 0;
     void yyerror(const char *msg);
     void yyerror_lineno(const char *msg, int lineno);
 %}
@@ -154,4 +156,3 @@ Args
     : Exp COMMA Args { $$ = new_parent_node("Args", 3, $1, $2, $3); }
     | Exp { $$ = new_parent_node("Args", 1, $1); }
     ;
-
