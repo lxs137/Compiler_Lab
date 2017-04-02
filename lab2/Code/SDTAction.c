@@ -151,7 +151,8 @@ void pro16SAction(AST_node *parent)
     typeInfo->sDimension = parentInfo->sDimension;
     parent->first_child->otherInformation = typeInfo;
     printf("ID's base type is %s, dimension is %d\n", typeInfo->sType, typeInfo->sDimension);
-    /* addSymbol(parent->first_child); */
+    addSymbol(parent->first_child->str + 4, parent->first_child);
+    printSymbolTable(globalSymbolTable);
 }
 
 void pro17SAction(AST_node *parent)
@@ -173,9 +174,11 @@ void pro52SAction(AST_node *parent)
 void pro54SAction(AST_node *parent)
 {
     TypeInfo *parentInfo = (TypeInfo*)parent->otherInformation;
-    TypeInfo *childInfo = (TypeInfo*)malloc(sizeof(TypeInfo));
-    childInfo->sType = "Int";
-    childInfo->sDimension = 3;
+    AST_node *child = getSymbol(parent->first_child->str + 4);
+    TypeInfo *childInfo = (TypeInfo*)child->otherInformation;
+    /* TypeInfo *childInfo = (TypeInfo*)malloc(sizeof(TypeInfo)); */
+    /* childInfo->sType = "Int"; */
+    /* childInfo->sDimension = 3; */
     parentInfo->sType = childInfo->sType;
     parentInfo->sDimension = childInfo->sDimension - parentInfo->iDimension;
     if (parentInfo->sDimension < 0)

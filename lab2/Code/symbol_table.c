@@ -13,7 +13,7 @@ static void* dupSymbol(void *p)
     return dup_p;
 }
 
-static void delSymbol(void *p)
+static void deleteSymbol(void *p)
 {
     free(p);
 }
@@ -21,7 +21,7 @@ static void delSymbol(void *p)
 SymbolTable *newSymbolTable()
 {
     jsw_rbtree_t *rbtree;
-    rbtree = jsw_rbnew(compSymbol, dupSymbol, delSymbol);
+    rbtree = jsw_rbnew(compSymbol, dupSymbol, deleteSymbol);
     return rbtree;
 }
 
@@ -83,4 +83,19 @@ void printSymbolTable(SymbolTable *st)
     {
         printf("name: %s, pointer: %p\n", symbol->name, symbol->p);
     }
+}
+
+int addSymbol(const char *name, AST_node *p)
+{
+    return insertSymbol(globalSymbolTable, name, (void *)p);
+}
+
+int delSymbol(const char *name)
+{
+    return eraseSymbol(globalSymbolTable, name);
+}
+
+AST_node *getSymbol(const char *name)
+{
+    return (AST_node *)findSymbol(globalSymbolTable, name);
 }

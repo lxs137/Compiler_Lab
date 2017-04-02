@@ -2,6 +2,7 @@
 #define SDTACTION_H
 
 #include "syntax_tree.h"
+#include "symbol_table.h"
 /* 产生式总数目 */
 #define ProCount 58
 /* 第一个参数是父亲节点，第二个参数是需要准备继承属性的儿子节点 */

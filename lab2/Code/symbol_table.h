@@ -2,6 +2,7 @@
 #define SYMBOL_TABLE_H
 
 #include "jsw_rbtree.h"
+#include "syntax_tree.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -23,5 +24,9 @@ void *findSymbol(SymbolTable *st, const char *name);
 void printSymbolTable(SymbolTable *st);
 
 SymbolTable *globalSymbolTable;
+
+int addSymbol(const char *name, AST_node *p);
+int delSymbol(const char *name);
+AST_node *getSymbol(const char *name);
 
 #endif
