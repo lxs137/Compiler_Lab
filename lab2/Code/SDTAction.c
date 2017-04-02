@@ -7,7 +7,6 @@ void traversalTreePerformAction(AST_node *parent)
 {
     int proNum = parent->proNum;
     sdtIActionTable[proNum](parent, parent, 0);
-    AST_node *child = parent->first_child;
 
     int i = 0;
     for (AST_node *child = parent->first_child; 
@@ -16,7 +15,6 @@ void traversalTreePerformAction(AST_node *parent)
     {
         sdtIActionTable[proNum](parent, child, i);
         traversalTreePerformAction(child);
-        child = child->next_brother;
         i++;
     }
 
@@ -25,14 +23,27 @@ void traversalTreePerformAction(AST_node *parent)
 
 void nullIAction(AST_node *parent, AST_node *child, int childNum)
 {
+    printf("%d\n", parent->proNum);
 }
 
 void nullSAction(AST_node *parent)
 {
 }
 
-SDTIAction sdtIActionTable[ProCount] = {nullIAction};
-SDTSAction sdtSActionTable[ProCount] = {nullSAction};
+SDTIAction sdtIActionTable[ProCount];
+SDTSAction sdtSActionTable[ProCount];
+
+void initTable()
+{
+    for (int i = 0; i < ProCount; i++)
+    {
+        sdtIActionTable[i] = nullIAction;
+    }
+    for (int i = 0; i < ProCount; i++)
+    {
+        sdtSActionTable[i] = nullSAction;
+    }
+}
 
 typedef struct
 {
