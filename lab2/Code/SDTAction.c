@@ -122,11 +122,11 @@ void pro17IAction(AST_node *parent, AST_node *child, int childNum)
 
 void pro16SAction(AST_node *parent)
 {
-    ((TypeInfo*)parent)->sType = ((TypeInfo*)parent)->iType;
-    ((TypeInfo*)parent)->sDimension = ((TypeInfo*)parent)->sDimension;
+    ((TypeInfo*)parent->otherInformation)->sType = ((TypeInfo*)parent->otherInformation)->iType;
+    ((TypeInfo*)parent->otherInformation)->sDimension = ((TypeInfo*)parent->otherInformation)->iDimension;
     TypeInfo* typeInfo = (TypeInfo*)malloc(sizeof(TypeInfo));
-    typeInfo->sType = ((TypeInfo*)parent)->sType;
-    typeInfo->sDimension = ((TypeInfo*)parent)->sDimension;
+    typeInfo->sType = ((TypeInfo*)parent->otherInformation)->sType;
+    typeInfo->sDimension = ((TypeInfo*)parent->otherInformation)->sDimension;
     parent->first_child->otherInformation = typeInfo;
     printf("ID's base type is %s, dimension is %d\n", typeInfo->sType, typeInfo->sDimension);
     /* addSymbol(parent->first_child); */
