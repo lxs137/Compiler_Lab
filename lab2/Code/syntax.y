@@ -53,8 +53,8 @@ ExtDefList
     ;
 ExtDef
     : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 3, 4, $1, $2, $3); }
-    | Specifier SEMI { $$ = new_parent_node("ExtDef", 2, 5, $1, $2); }
-    | Specifier FunDec CompSt { $$ = new_parent_node("ExtDef", 3, 6, $1, $2, $3); }
+    | Specifier SEMI { $$ = new_parent_node("ExtDef", 5, 2, $1, $2); }
+    | Specifier FunDec CompSt { $$ = new_parent_node("ExtDef", 6, 3, $1, $2, $3); }
     ;
 ExtDecList
     : VarDec { $$ = new_parent_node("ExtDecList", 7, 1, $1); }
@@ -109,8 +109,8 @@ Stmt
     | CompSt { $$ = new_parent_node("Stmt", 27, 1, $1); }
     | RETURN Exp SEMI { $$ = new_parent_node("Stmt", 28, 3, $1, $2, $3); }
     | IF LP Exp RP Stmt %prec LOWER_THAN_ELSE { $$ = new_parent_node("Stmt", 29, 5, $1, $2, $3, $4, $5); }
-    | IF LP Exp RP Stmt ELSE Stmt { $$ = new_parent_node("Stmt", 7, 30, $1, $2, $3, $4, $5, $6, $7); }
-    | WHILE LP Exp RP Stmt { $$ = new_parent_node("Stmt", 5, 31, $1, $2, $3, $4, $5); }
+    | IF LP Exp RP Stmt ELSE Stmt { $$ = new_parent_node("Stmt", 30, 7, $1, $2, $3, $4, $5, $6, $7); }
+    | WHILE LP Exp RP Stmt { $$ = new_parent_node("Stmt", 31, 5, $1, $2, $3, $4, $5); }
     ;
 
 /* Local Definitions */
@@ -142,7 +142,7 @@ Exp
     | Exp DIV Exp { $$ = new_parent_node("Exp", 46, 3, $1, $2, $3); }
     | LP Exp RP { $$ = new_parent_node("Exp", 47, 3, $1, $2, $3); }
     | MINUS Exp { $$ = new_parent_node("Exp", 48, 2, $1, $2); }
-    | NOT Exp { $$ = new_parent_node("Exp", 48, 2, $1, $2); }
+    | NOT Exp { $$ = new_parent_node("Exp", 49, 2, $1, $2); }
     | ID LP Args RP { $$ = new_parent_node("Exp", 50, 4, $1, $2, $3, $4); }
     | ID LP RP { $$ = new_parent_node("Exp", 51, 3, $1, $2, $3); }
     | Exp LB Exp RB { $$ = new_parent_node("Exp", 52, 4, $1, $2, $3, $4); }
