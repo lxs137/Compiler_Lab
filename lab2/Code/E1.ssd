@@ -35,6 +35,7 @@ VarDec'.iDimension = VarDec.iDimension + 1
 VarDec.sType = VarDec'.sType
 VarDec.sDimension = VarDec'.sDimension
 
+/* 例子 */
 int a[2][3][4];
 *Def
 **Specifier
@@ -73,3 +74,5 @@ VarDec.sValid = existInSymbolTable(ID) && VarDec.iDimension <= ID.sDimension
 VarDec -> VarDec' LB INT RB
 VarDec'.iDimension = VarDec.iDimension
 VarDec.sValid = VarDec'.sValid
+
+/* 需要填表部分和查表部分共用的产生式以及语义动作分开 */
