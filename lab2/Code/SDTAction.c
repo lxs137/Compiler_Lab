@@ -120,6 +120,26 @@ void pro17IAction(AST_node *parent, AST_node *child, int childNum)
     }
 }
 
+void pro26IAction(AST_node *parent, AST_node *child, int childNum)
+{
+    if (childNum == 1)
+    {
+        TypeInfo *typeInfo = (TypeInfo*)malloc(sizeof(TypeInfo));
+        typeInfo->iDimension = 0;
+        child->otherInformation = typeInfo;
+    }
+}
+
+void pro52IAction(AST_node *parent, AST_node *child, int childNum)
+{
+    if (childNum == 1)
+    {
+        TypeInfo *typeInfo = (TypeInfo*)malloc(sizeof(TypeInfo));
+        typeInfo->iDimension = ((TypeInfo*)parent->otherInformation)->iDimension + 1;
+        child->otherInformation = typeInfo;
+    }
+}
+
 void pro16SAction(AST_node *parent)
 {
     ((TypeInfo*)parent->otherInformation)->sType = ((TypeInfo*)parent->otherInformation)->iType;
@@ -134,8 +154,38 @@ void pro16SAction(AST_node *parent)
 
 void pro17SAction(AST_node *parent)
 {
-    ((TypeInfo*)parent)->sType = ((TypeInfo*)parent->first_child)->iType;
-    ((TypeInfo*)parent)->sDimension = ((TypeInfo*)parent->first_child)->sDimension;
+    ((TypeInfo*)parent->otherInformation)->sType = 
+        ((TypeInfo*)parent->first_child->otherInformation)->iType;
+    ((TypeInfo*)parent->otherInformation)->sDimension = 
+        ((TypeInfo*)parent->first_child->otherInformation)->sDimension;
+}
+
+void pro52SAction(AST_node *parent)
+{
+    ((TypeInfo*)parent->otherInformation)->sType = 
+        ((TypeInfo*)parent->first_child->otherInformation)->sType;
+    ((TypeInfo*)parent->otherInformation)->sDimension = 
+        ((TypeInfo*)parent->first_child->otherInformation)->sDimension;
+}
+
+void pro54SAction(AST_node *parent)
+{
+    ((TypeInfo*)parent->otherInformation)->sType = 
+        /* ((TypeInfo*)parent->first_child->otherInformation)->sType; */
+        "Int";
+    ((TypeInfo*)parent->otherInformation)->sDimension = 
+        /* ((TypeInfo*)parent->first_child->otherInformation)->sDimension - */ 
+        /* ((TypeInfo*)parent->otherInformation)->iDimension; */
+        0;
+    if (((TypeInfo*)parent->otherInformation)->sDimension < 0)
+    {
+        printf("error.\n");
+    }
+}
+
+void pro26SAction(AST_node *parent)
+{
+    printf("Stmt's type is %s, dimension is %d.\n", ((TypeInfo*)parent->first_child->otherInformation)->sType, ((TypeInfo*)parent->first_child->otherInformation)->sDimension);
 }
 
 void initTable()
@@ -145,17 +195,22 @@ void initTable()
         sdtIActionTable[i] = nullIAction;
     }
     sdtIActionTable[17] = pro17IAction;
+    sdtIActionTable[26] = pro26IAction;
     sdtIActionTable[34] = pro34IAction;
     sdtIActionTable[35] = pro35IAction;
     sdtIActionTable[36] = pro36IAction;
     sdtIActionTable[37] = pro37IAction;
     sdtIActionTable[38] = pro38IAction;
+    sdtIActionTable[52] = pro52IAction;
     for (int i = 0; i < ProCount; i++)
     {
         sdtSActionTable[i] = nullSAction;
     }
     sdtSActionTable[16] = pro16SAction;
     sdtSActionTable[17] = pro17SAction;
+    sdtSActionTable[26] = pro26SAction;
     sdtSActionTable[37] = pro37SAction;
     sdtSActionTable[38] = pro38SAction;
+    sdtSActionTable[52] = pro52SAction;
+    sdtSActionTable[54] = pro54SAction;
 }
