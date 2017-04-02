@@ -36,7 +36,9 @@ SDTSAction sdtSActionTable[ProCount];
 typedef struct
 {
     const char *iType;
+    const char *sType;
     int iDimension;
+    int sDimension;
 } TypeInfo;
 
 void pro34IAction(AST_node *parent, AST_node *child, int childNum)
@@ -86,6 +88,11 @@ void pro37IAction(AST_node *parent, AST_node *child, int childNum)
     }
 }
 
+void pro37SAction(AST_node *parent)
+{
+    /* printf("Type valid."); */
+}
+
 void pro38IAction(AST_node *parent, AST_node *child, int childNum)
 {
     if (childNum == 1)
@@ -97,6 +104,11 @@ void pro38IAction(AST_node *parent, AST_node *child, int childNum)
     }
 }
 
+void pro38SAction(AST_node *parent)
+{
+    /* printf("Type valid.") */
+}
+
 void pro17IAction(AST_node *parent, AST_node *child, int childNum)
 {
     if (childNum == 1)
@@ -105,8 +117,25 @@ void pro17IAction(AST_node *parent, AST_node *child, int childNum)
         typeInfo->iType = ((TypeInfo*)parent->otherInformation)->iType;
         typeInfo->iDimension = ((TypeInfo*)parent->otherInformation)->iDimension + 1;
         child->otherInformation = typeInfo;
-        printf("%d\t%s\n", typeInfo->iDimension, typeInfo->iType);
     }
+}
+
+void pro16SAction(AST_node *parent)
+{
+    ((TypeInfo*)parent)->sType = ((TypeInfo*)parent)->iType;
+    ((TypeInfo*)parent)->sDimension = ((TypeInfo*)parent)->sDimension;
+    TypeInfo* typeInfo = (TypeInfo*)malloc(sizeof(TypeInfo));
+    typeInfo->sType = ((TypeInfo*)parent)->sType;
+    typeInfo->sDimension = ((TypeInfo*)parent)->sDimension;
+    parent->first_child->otherInformation = typeInfo;
+    printf("ID's base type is %s, dimension is %d\n", typeInfo->sType, typeInfo->sDimension);
+    /* addSymbol(parent->first_child); */
+}
+
+void pro17SAction(AST_node *parent)
+{
+    ((TypeInfo*)parent)->sType = ((TypeInfo*)parent->first_child)->iType;
+    ((TypeInfo*)parent)->sDimension = ((TypeInfo*)parent->first_child)->sDimension;
 }
 
 void initTable()
@@ -125,4 +154,8 @@ void initTable()
     {
         sdtSActionTable[i] = nullSAction;
     }
+    sdtSActionTable[16] = pro16SAction;
+    sdtSActionTable[17] = pro17SAction;
+    sdtSActionTable[37] = pro37SAction;
+    sdtSActionTable[38] = pro38SAction;
 }
