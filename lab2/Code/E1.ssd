@@ -1,0 +1,66 @@
+/* 检查错误类型1，变量未定义而使用 */
+
+/* 填表部分 */
+
+Def -> Specifier DecList SEMI
+DecList.iType = Specifier.sType
+
+DecList -> Dec
+Dec.iType = Declist.iType
+
+DecList -> Dec COMMA DecList'
+Dec.iType = DecList.iType
+DecList'.iType = DecList.iType
+
+Dec -> VarDec
+VarDec.iType = Dec.iType
+VarDec.iDimension = 0
+Dec.sLegalInType = true
+
+Dec -> VarDec ASSIGNOP Exp
+VarDec.iType = Dec.iType
+VarDec.iDimension = 0
+Dec.sLegalInType = VarDec.sType == Exp.sType && VarDec.sDimension = Exp.sDimension
+
+VarDec -> ID
+VarDec.sType = VarDec.iType
+VarDec.sDimension = VarDec.iDemension
+ID.sType = VarDec.sType
+ID.sDimension = VarDec.sDimension
+addSymbol(ID)
+
+VarDec -> VarDec' LB INT RB
+VarDec'.iType = VarDec.iType
+VarDec'.iDimension = VarDec.iDimension + 1
+VarDec.sType = VarDec'.sType
+VarDec.sDimension = VarDec'.sDimension
+
+int a[2][3][4];
+*Def
+**Specifier
+**DecList
+***Dec
+****VarDec(x[2][3][4])----------
+*****VarDec(x[2][3])--------   |
+******VarDec(x[2])------   |   |
+*******VarDec          |   |   |
+********ID(x)          |   |   |
+******LB               |   |   |
+******INT(2)           |   |   |
+******RB----------------   |   |
+*****LB                    |   |
+*****INT(3)                |   |
+*****RB---------------------   |
+****LB                         |
+****INT(4)                     |
+****RB--------------------------
+**SEMI
+/* 可以按照这棵树手动走一遍求值过程 */
+
+/* 查表部分 */
+
+VarDec -> ID
+VarDec.sVarExists = existInSymbolTable(ID)
+
+VarDec -> VarDec LB INT RB
+VarDec.sVarExists = existInSymbolTable(ID) && ID.sDimension > 1
