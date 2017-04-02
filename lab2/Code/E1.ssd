@@ -59,8 +59,17 @@ int a[2][3][4];
 
 /* 查表部分 */
 
-VarDec -> ID
-VarDec.sVarExists = existInSymbolTable(ID)
+ExtDecList -> VarDec
+VarDec.iDimension = 0
+ExtDecList.sValid = VarDec.sValid
 
-VarDec -> VarDec LB INT RB
-VarDec.sVarExists = existInSymbolTable(ID) && ID.sDimension > 1
+ExtDecList -> VarDec COMMA ExtDecList'
+VarDec.iDemension = 0
+ExtDecList.sValid = VarDec.sValid && ExtDecList'.sValid
+
+VarDec -> ID
+VarDec.sValid = existInSymbolTable(ID) && VarDec.iDimension <= ID.sDimension
+
+VarDec -> VarDec' LB INT RB
+VarDec'.iDimension = VarDec.iDimension
+VarDec.sValid = VarDec'.sValid
