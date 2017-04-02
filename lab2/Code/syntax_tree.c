@@ -101,23 +101,3 @@ void print_child_node(AST_node *parent, int depth)
         }
     }
 }
-
-void traversalTreePerformAction(AST_node *parent)
-{
-    int proNum = parent->proNum;
-    sdtIActionTable[proNum](parent, parent, 0);
-    AST_node *child = parent->first_child;
-
-    int i = 0;
-    for (AST_node *child = parent->first_child; 
-         child != NULL;
-         child = child->next_brother) 
-    {
-        sdtIActionTable[proNum](parent, child, i);
-        traversalTreePerformAction(child);
-        child = child->next_brother;
-        i++;
-    }
-
-    sdtSActionTable[proNum](parent);
-}

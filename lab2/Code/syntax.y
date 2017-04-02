@@ -2,6 +2,7 @@
 %define parse.error verbose
 %{
     #include "syntax_tree.h"
+    #include "SDTAction.h"
     int has_error = 0;
     void yyerror(const char *msg);
     void yyerror_lineno(const char *msg, int lineno);
@@ -44,7 +45,8 @@
 Program
     : ExtDefList {
         $$ = new_parent_node("Program", 1, 1, $1);
-        print_child_node($$, 0);
+        /* print_child_node($$, 0); */
+        traversalTreePerformAction($$);
     }
     ;
 ExtDefList
