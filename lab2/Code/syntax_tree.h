@@ -7,10 +7,11 @@ typedef struct syntax_tree_node
     char *str;
     struct syntax_tree_node *first_child;
     struct syntax_tree_node *next_brother;
+    int proNum;
 } AST_node;
 
 AST_node *new_token_node(int line, int column, char *string);
-AST_node *new_parent_node(char *string, int node_num, ...);
+AST_node *new_parent_node(char *string, int proNum, int node_num, ...);
 void print_child_node(AST_node *parent, int depth);
 
 #endif
