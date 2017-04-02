@@ -113,9 +113,10 @@ void pro17IAction(AST_node *parent, AST_node *child, int childNum)
 {
     if (childNum == 1)
     {
+        TypeInfo *parentInfo = (TypeInfo*)parent->otherInformation;
         TypeInfo *typeInfo = (TypeInfo*)malloc(sizeof(TypeInfo));
-        typeInfo->iType = ((TypeInfo*)parent->otherInformation)->iType;
-        typeInfo->iDimension = ((TypeInfo*)parent->otherInformation)->iDimension + 1;
+        typeInfo->iType = parentInfo->iType;
+        typeInfo->iDimension = parentInfo->iDimension + 1;
         child->otherInformation = typeInfo;
     }
 }
@@ -142,11 +143,12 @@ void pro52IAction(AST_node *parent, AST_node *child, int childNum)
 
 void pro16SAction(AST_node *parent)
 {
-    ((TypeInfo*)parent->otherInformation)->sType = ((TypeInfo*)parent->otherInformation)->iType;
-    ((TypeInfo*)parent->otherInformation)->sDimension = ((TypeInfo*)parent->otherInformation)->iDimension;
+    TypeInfo *parentInfo = (TypeInfo*)parent->otherInformation;
+    parentInfo->sType = parentInfo->iType;
+    parentInfo->sDimension = parentInfo->iDimension;
     TypeInfo* typeInfo = (TypeInfo*)malloc(sizeof(TypeInfo));
-    typeInfo->sType = ((TypeInfo*)parent->otherInformation)->sType;
-    typeInfo->sDimension = ((TypeInfo*)parent->otherInformation)->sDimension;
+    typeInfo->sType = parentInfo->sType;
+    typeInfo->sDimension = parentInfo->sDimension;
     parent->first_child->otherInformation = typeInfo;
     printf("ID's base type is %s, dimension is %d\n", typeInfo->sType, typeInfo->sDimension);
     /* addSymbol(parent->first_child); */
@@ -154,30 +156,29 @@ void pro16SAction(AST_node *parent)
 
 void pro17SAction(AST_node *parent)
 {
-    ((TypeInfo*)parent->otherInformation)->sType = 
-        ((TypeInfo*)parent->first_child->otherInformation)->iType;
-    ((TypeInfo*)parent->otherInformation)->sDimension = 
-        ((TypeInfo*)parent->first_child->otherInformation)->sDimension;
+    TypeInfo *parentInfo = (TypeInfo*)parent->otherInformation;
+    TypeInfo *childInfo = (TypeInfo*)parent->first_child->otherInformation;
+    parentInfo->sType = childInfo->iType;
+    parentInfo->sDimension = childInfo->sDimension;
 }
 
 void pro52SAction(AST_node *parent)
 {
-    ((TypeInfo*)parent->otherInformation)->sType = 
-        ((TypeInfo*)parent->first_child->otherInformation)->sType;
-    ((TypeInfo*)parent->otherInformation)->sDimension = 
-        ((TypeInfo*)parent->first_child->otherInformation)->sDimension;
+    TypeInfo *parentInfo = (TypeInfo*)parent->otherInformation;
+    TypeInfo *childInfo = (TypeInfo*)parent->first_child->otherInformation;
+    parentInfo->sType = childInfo->sType;
+    parentInfo->sDimension = childInfo->sDimension;
 }
 
 void pro54SAction(AST_node *parent)
 {
-    ((TypeInfo*)parent->otherInformation)->sType = 
-        /* ((TypeInfo*)parent->first_child->otherInformation)->sType; */
-        "Int";
-    ((TypeInfo*)parent->otherInformation)->sDimension = 
-        /* ((TypeInfo*)parent->first_child->otherInformation)->sDimension - */ 
-        /* ((TypeInfo*)parent->otherInformation)->iDimension; */
-        0;
-    if (((TypeInfo*)parent->otherInformation)->sDimension < 0)
+    TypeInfo *parentInfo = (TypeInfo*)parent->otherInformation;
+    TypeInfo *childInfo = (TypeInfo*)malloc(sizeof(TypeInfo));
+    childInfo->sType = "Int";
+    childInfo->sDimension = 3;
+    parentInfo->sType = childInfo->sType;
+    parentInfo->sDimension = childInfo->sDimension - parentInfo->iDimension;
+    if (parentInfo->sDimension < 0)
     {
         printf("error.\n");
     }
@@ -185,7 +186,8 @@ void pro54SAction(AST_node *parent)
 
 void pro26SAction(AST_node *parent)
 {
-    printf("Stmt's type is %s, dimension is %d.\n", ((TypeInfo*)parent->first_child->otherInformation)->sType, ((TypeInfo*)parent->first_child->otherInformation)->sDimension);
+    TypeInfo *childInfo = (TypeInfo*)parent->first_child->otherInformation;
+    printf("Stmt's type is %s, dimension is %d.\n", childInfo->sType, childInfo->sDimension);
 }
 
 void initTable()
