@@ -60,20 +60,37 @@ int a[2][3][4];
 
 /* 查表部分 */
 
+ExtDecList -> VarDec
+VarDec.iDimension = 0
+ExtDecList.sValid = VarDec.sValid
+
+ExtDecList -> VarDec COMMA ExtDecList'
+VarDec.iDemension = 0
+ExtDecList.sValid = VarDec.sValid && ExtDecList'.sValid
+
+VarDec -> ID
+VarDec.sValid = existInSymbolTable(ID) && VarDec.iDimension <= ID.sDimension
+
+VarDec -> VarDec' LB INT RB
+VarDec'.iDimension = VarDec.iDimension
+VarDec.sValid = VarDec'.sValid
+
 /* 例子 */
 x[1][2];
-*Stmt
-**Exp--------------
-***Exp----------  |
-****Exp        |  |
-*****ID(x)     |  |
-****LB         |  |
-****Exp        |  |
-*****INT(1)    |  |
-****RB----------  |
-***LB             |
-***Exp            |
-****INT(2)        |
-***RB--------------
-**SEMI
+Stmt
+*Exp
+**Exp
+***Exp------------
+****ID(x)------  |
+***LB         |  |
+***Exp        |  |
+****INT(1)    |  |
+***RB----------  |
+**LB             |
+**Exp            |
+***INT(2)        |
+**RB--------------
+*SEMI
 /* 可以按照这棵树手动走一遍求值过程 */
+
+/* 需要把填表部分和查表部分共用的产生式以及语义动作分开 */
