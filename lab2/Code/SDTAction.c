@@ -33,28 +33,17 @@ void nullSAction(AST_node *parent)
 SDTIAction sdtIActionTable[ProCount];
 SDTSAction sdtSActionTable[ProCount];
 
-void initTable()
-{
-    for (int i = 0; i < ProCount; i++)
-    {
-        sdtIActionTable[i] = nullIAction;
-    }
-    for (int i = 0; i < ProCount; i++)
-    {
-        sdtSActionTable[i] = nullSAction;
-    }
-}
-
 typedef struct
 {
     const char *iType;
-} DecListInfo;
+    int iDimension;
+} TypeInfo;
 
 void pro34IAction(AST_node *parent, AST_node *child, int childNum)
 {
-    if (childNum == 0)
+    if (childNum == 2)
     {
-        DecListInfo *decListInfo = (DecListInfo*)malloc(sizeof(DecListInfo));
+        TypeInfo *decListInfo = (TypeInfo*)malloc(sizeof(TypeInfo));
         decListInfo->iType = parent->first_child->str;
         child->otherInformation = decListInfo;
     }
@@ -62,20 +51,77 @@ void pro34IAction(AST_node *parent, AST_node *child, int childNum)
 
 void pro35IAction(AST_node *parent, AST_node *child, int childNum)
 {
-    if (childNum == 0)
+    if (childNum == 1)
     {
-        DecListInfo *decListInfo = (DecListInfo*)malloc(sizeof(DecListInfo));
-        decListInfo->iType = ((DecListInfo*)parent->otherInformation)->iType;
+        TypeInfo *decListInfo = (TypeInfo*)malloc(sizeof(TypeInfo));
+        decListInfo->iType = ((TypeInfo*)parent->otherInformation)->iType;
         child->otherInformation = decListInfo;
     }
 }
 
 void pro36IAction(AST_node *parent, AST_node *child, int childNum)
 {
-    if (childNum == 0)
+    if (childNum == 1)
     {
-        DecListInfo *decListInfo1 = (DecListInfo*)malloc(sizeof(DecListInfo));
-        decListInfo1->iType = ((DecListInfo*)parent->otherInformation)->iType;
-        child->otherInformation = decListInfo1;
+        TypeInfo *typeInfo = (TypeInfo*)malloc(sizeof(TypeInfo));
+        typeInfo->iType = ((TypeInfo*)parent->otherInformation)->iType;
+        child->otherInformation = typeInfo;
+    }
+    else if (childNum == 3)
+    {
+        TypeInfo *typeInfo = (TypeInfo*)malloc(sizeof(TypeInfo));
+        typeInfo->iType = ((TypeInfo*)parent->otherInformation)->iType;
+        child->otherInformation = typeInfo;
+    }
+}
+
+void pro37IAction(AST_node *parent, AST_node *child, int childNum)
+{
+    if (childNum == 1)
+    {
+        TypeInfo *typeInfo = (TypeInfo*)malloc(sizeof(TypeInfo));
+        typeInfo->iType = ((TypeInfo*)parent->otherInformation)->iType;
+        typeInfo->iDimension = 0;
+        child->otherInformation = typeInfo;
+    }
+}
+
+void pro38IAction(AST_node *parent, AST_node *child, int childNum)
+{
+    if (childNum == 1)
+    {
+        TypeInfo *typeInfo = (TypeInfo*)malloc(sizeof(TypeInfo));
+        typeInfo->iType = ((TypeInfo*)parent->otherInformation)->iType;
+        typeInfo->iDimension = 0;
+        child->otherInformation = typeInfo;
+    }
+}
+
+void pro17IAction(AST_node *parent, AST_node *child, int childNum)
+{
+    if (childNum == 1)
+    {
+        TypeInfo *typeInfo = (TypeInfo*)malloc(sizeof(TypeInfo));
+        typeInfo->iType = ((TypeInfo*)parent->otherInformation)->iType;
+        typeInfo->iDimension = ((TypeInfo*)parent->otherInformation)->iDimension + 1;
+        child->otherInformation = typeInfo;
+    }
+}
+
+void initTable()
+{
+    for (int i = 0; i < ProCount; i++)
+    {
+        sdtIActionTable[i] = nullIAction;
+    }
+    sdtIActionTable[17] = pro17IAction;
+    sdtIActionTable[34] = pro34IAction;
+    sdtIActionTable[35] = pro35IAction;
+    sdtIActionTable[36] = pro36IAction;
+    sdtIActionTable[37] = pro37IAction;
+    sdtIActionTable[38] = pro38IAction;
+    for (int i = 0; i < ProCount; i++)
+    {
+        sdtSActionTable[i] = nullSAction;
     }
 }
