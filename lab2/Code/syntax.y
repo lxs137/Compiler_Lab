@@ -3,6 +3,7 @@
 %{
     #include "syntax_tree.h"
     #include "SDTAction.h"
+    #include "symbol_table.h"
     int has_error = 0;
     void yyerror(const char *msg);
     void yyerror_lineno(const char *msg, int lineno);
@@ -45,9 +46,12 @@
 Program
     : ExtDefList {
         $$ = new_parent_node("Program", 1, 1, $1);
-        print_child_node($$, 0);
-        /* initTable(); */
-        /* traversalTreePerformAction($$); */
+        /* print_child_node($$, 0); */
+        initTable();
+        globalSymbolTable = newSymbolTable();
+        traversalTreePerformAction($$);
+        clean_up_syntax_tree($$);
+        cleanUpSymbolTable();
     }
     ;
 ExtDefList

@@ -59,6 +59,18 @@ int a[2][3][4];
 /* 可以按照这棵树手动走一遍求值过程 */
 
 /* 查表部分 */
+Stmt -> Exp SEMI (26)
+Exp.iDimension = 0
+
+Exp -> Exp' LB Exp RB (52)
+Exp'.iDimension = Exp.iDimension + 1
+Exp.sType = Exp'.sType
+Exp.sDimenison = Exp'.sDimension
+
+Exp -> ID (54)
+Exp.isValid = Id.ifExist && Exp.iDimension <= ID.sDimension
+Exp.sType = ID.sType
+Exp.sDimension = Id.sDimension - Exp.iDimension
 
 /* 例子 */
 x[1][2];

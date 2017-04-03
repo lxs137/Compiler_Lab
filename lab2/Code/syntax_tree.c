@@ -7,6 +7,7 @@ AST_node *new_token_node(int line, int column, char *string)
 {
     AST_node *token = (AST_node *)(malloc(sizeof(AST_node)));
     token->proNum = 0;
+    token->otherInformation = NULL;
     token->loc_line = line;
     token->loc_column = column;
     
@@ -70,6 +71,23 @@ AST_node *new_parent_node(char *string, int proNum, int node_num, ...)
         parent->loc_column = parent->first_child->loc_column;
     }
     return parent;
+}
+
+void clean_up_syntax_tree(AST_node *parent)
+{
+    if (parent == NULL && strcmp(parent->str, "EMPTY") == 0)
+    {
+        return;
+    }
+    for (AST_node *node = parent->first_child; node != NULL; node = node->next_brother)
+    {
+        clean_up_syntax_tree(node);
+    }
+    if (parent->otherInformation != NULL)
+    {
+        free(parent->otherInformation);
+    }
+    free(parent);
 }
 
 void print_child_node(AST_node *parent, int depth)
