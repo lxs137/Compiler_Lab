@@ -7,6 +7,7 @@ AST_node *new_token_node(int line, int column, char *string)
 {
     AST_node *token = (AST_node *)(malloc(sizeof(AST_node)));
     token->proNum = 0;
+    token->otherInformation = NULL;
     token->loc_line = line;
     token->loc_column = column;
     
