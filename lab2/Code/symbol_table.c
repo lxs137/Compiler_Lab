@@ -62,6 +62,7 @@ int eraseSymbol(SymbolTable *st, const char *name)
         free(symbol);
         return -1;
     }
+    free(symbol);
     return 0;
 }
 
