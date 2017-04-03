@@ -93,7 +93,6 @@ void pro37IAction(AST_node *parent, AST_node *child, int childNum)
 
 void pro37SAction(AST_node *parent)
 {
-    /* printf("Type valid."); */
 }
 
 void pro38IAction(AST_node *parent, AST_node *child, int childNum)
@@ -109,7 +108,6 @@ void pro38IAction(AST_node *parent, AST_node *child, int childNum)
 
 void pro38SAction(AST_node *parent)
 {
-    /* printf("Type valid.") */
 }
 
 void pro17IAction(AST_node *parent, AST_node *child, int childNum)
@@ -153,9 +151,7 @@ void pro16SAction(AST_node *parent)
     typeInfo->sType = parentInfo->sType;
     typeInfo->sDimension = parentInfo->sDimension;
     parent->first_child->otherInformation = typeInfo;
-    printf("ID's base type is %s, dimension is %d\n", typeInfo->sType, typeInfo->sDimension);
     addSymbol(parent->first_child->str + 4, parent->first_child);
-    printSymbolTable(globalSymbolTable);
 }
 
 void pro17SAction(AST_node *parent)
@@ -180,9 +176,11 @@ void pro54SAction(AST_node *parent)
     AST_node *child = getSymbol(parent->first_child->str + 4);
     if (child == NULL)
     {
-        printf("can't find id defintion.\n");
+        printf("Error type 1 at Line %d: Undefined variable \"%s\".\n",
+               parent->first_child->loc_line,
+               parent->first_child->str + 4);
         parentInfo->sType = "";
-        parentInfo->sDimension = 0;
+        parentInfo->sDimension = -1;
         return;
     }
     TypeInfo *childInfo = (TypeInfo *)child->otherInformation;
@@ -197,7 +195,6 @@ void pro54SAction(AST_node *parent)
 void pro26SAction(AST_node *parent)
 {
     TypeInfo *childInfo = (TypeInfo *)parent->first_child->otherInformation;
-    printf("Stmt's type is %s, dimension is %d.\n", childInfo->sType, childInfo->sDimension);
 }
 
 void initTable()

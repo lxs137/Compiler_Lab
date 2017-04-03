@@ -2,34 +2,34 @@
 
 /* 填表部分 */
 
-Def -> Specifier DecList SEMI
+Def -> Specifier DecList SEMI (34)
 DecList.iType = Specifier.sType
 
-DecList -> Dec
+DecList -> Dec (35)
 Dec.iType = Declist.iType
 
-DecList -> Dec COMMA DecList'
+DecList -> Dec COMMA DecList' (36)
 Dec.iType = DecList.iType
 DecList'.iType = DecList.iType
 
-Dec -> VarDec
+Dec -> VarDec (37)
 VarDec.iType = Dec.iType
 VarDec.iDimension = 0
 Dec.sLegalInType = true
 
-Dec -> VarDec ASSIGNOP Exp
+Dec -> VarDec ASSIGNOP Exp (38)
 VarDec.iType = Dec.iType
 VarDec.iDimension = 0
 Dec.sLegalInType = VarDec.sType == Exp.sType && VarDec.sDimension = Exp.sDimension
 
-VarDec -> ID
+VarDec -> ID (16)
 VarDec.sType = VarDec.iType
 VarDec.sDimension = VarDec.iDemension
 ID.sType = VarDec.sType
 ID.sDimension = VarDec.sDimension
 addSymbol(ID)
 
-VarDec -> VarDec' LB INT RB
+VarDec -> VarDec' LB INT RB (17)
 VarDec'.iType = VarDec.iType
 VarDec'.iDimension = VarDec.iDimension + 1
 VarDec.sType = VarDec'.sType
@@ -68,7 +68,7 @@ Exp.sType = Exp'.sType
 Exp.sDimenison = Exp'.sDimension
 
 Exp -> ID (54)
-Exp.isValid = Id.ifExist && Exp.iDimension <= ID.sDimension
+Exp.sValid = Id.ifExist && Exp.iDimension <= ID.sDimension
 Exp.sType = ID.sType
 Exp.sDimension = Id.sDimension - Exp.iDimension
 
