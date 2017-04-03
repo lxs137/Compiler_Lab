@@ -75,19 +75,44 @@ AST_node *new_parent_node(char *string, int proNum, int node_num, ...)
 
 void clean_up_syntax_tree(AST_node *parent)
 {
-    /* if (parent == NULL && strcmp(parent->str, "EMPTY") == 0) */
-    /* { */
-    /*     return; */
-    /* } */
-    for (AST_node *node = parent->first_child; node != NULL; node = node->next_brother)
+    if(parent == NULL)
+      return;
+    if(parent->first_child != NULL)
     {
-        clean_up_syntax_tree(node);
+        AST_node *ptr_cur = parent->first_child;
+        AST_node *ptr_next = ptr_cur;
+        while(ptr_cur != NULL)
+        {
+            ptr_next = ptr_cur->next_brother;
+            clean_up_syntax_tree(ptr_cur);
+            ptr_cur = ptr_next;
+        }
     }
-    if (parent->otherInformation != NULL)
+    if(parent->str != NULL)
+    {
+        free(parent->str);
+        parent->str = NULL;
+    }
+    if(parent->otherInformation != NULL)
     {
         free(parent->otherInformation);
+        parent->otherInformation = NULL;
     }
     free(parent);
+
+//    if (parent == NULL && strcmp(parent->str, "EMPTY") == 0)
+//    {
+//        return;
+//    }
+//    for (AST_node *node = parent->first_child; node != NULL; node = node->next_brother)
+//    {
+//        clean_up_syntax_tree(node);
+//    }
+//    if (parent->otherInformation != NULL)
+//    {
+//        free(parent->otherInformation);
+//    }
+//    free(parent);
 }
 
 void print_child_node(AST_node *parent, int depth)
