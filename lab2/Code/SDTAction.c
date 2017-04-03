@@ -33,15 +33,6 @@ void traversalTreePerformAction(AST_node *parent)
     }
 }
 
-/* void nullIAction(AST_node *parent, AST_node *child, int childNum) */
-/* { */
-/*     /1* printf("%d\n", parent->proNum); *1/ */
-/* } */
-
-/* void nullSAction(AST_node *parent) */
-/* { */
-/* } */
-
 SDTIAction sdtIActionTable[ProCount] = { NULL };
 SDTSAction sdtSActionTable[ProCount] = { NULL };
 
@@ -188,9 +179,6 @@ void pro54SAction(AST_node *parent)
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
     AST_node *child = getSymbol(parent->first_child->str + 4);
     TypeInfo *childInfo = (TypeInfo *)child->otherInformation;
-    /* TypeInfo *childInfo = (TypeInfo*)malloc(sizeof(TypeInfo)); */
-    /* childInfo->sType = "Int"; */
-    /* childInfo->sDimension = 3; */
     parentInfo->sType = childInfo->sType;
     parentInfo->sDimension = childInfo->sDimension - parentInfo->iDimension;
     if (parentInfo->sDimension < 0)
@@ -207,10 +195,6 @@ void pro26SAction(AST_node *parent)
 
 void initTable()
 {
-    /* for (int i = 0; i < ProCount; i++) */
-    /* { */
-    /*     sdtIActionTable[i] = nullIAction; */
-    /* } */
     sdtIActionTable[17] = pro17IAction;
     sdtIActionTable[26] = pro26IAction;
     sdtIActionTable[34] = pro34IAction;
@@ -219,10 +203,7 @@ void initTable()
     sdtIActionTable[37] = pro37IAction;
     sdtIActionTable[38] = pro38IAction;
     sdtIActionTable[52] = pro52IAction;
-    /* for (int i = 0; i < ProCount; i++) */
-    /* { */
-    /*     sdtSActionTable[i] = nullSAction; */
-    /* } */
+    
     sdtSActionTable[16] = pro16SAction;
     sdtSActionTable[17] = pro17SAction;
     sdtSActionTable[26] = pro26SAction;
