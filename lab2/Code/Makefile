@@ -34,7 +34,7 @@ syntax-c: $(YFILE)
 # 定义的一些伪目标
 .PHONY: clean test
 test:
-	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --log-file="memLog" ./parser E1_1.cmm
+	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --log-file="memLog" ./parser ../Test/OneError/test1.cmm
 clean:
 	rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output
 	rm -f $(OBJS) $(OBJS:.o=.d)
