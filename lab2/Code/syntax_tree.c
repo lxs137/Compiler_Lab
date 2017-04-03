@@ -75,7 +75,7 @@ AST_node *new_parent_node(char *string, int proNum, int node_num, ...)
 
 void clean_up_syntax_tree(AST_node *parent)
 {
-    if (parent == NULL)
+    if (parent == NULL && strcmp(parent->str, "EMPTY") == 0)
     {
         return;
     }
