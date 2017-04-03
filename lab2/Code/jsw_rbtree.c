@@ -7,38 +7,41 @@
 #include "jsw_rbtree.h"
 
 #ifdef __cplusplus
-#include <cstdlib>
-
-using std::malloc;
-using std::free;
-using std::size_t;
+    #include <cstdlib>
+    
+    using std::malloc;
+    using std::free;
+    using std::size_t;
 #else
-#include <stdlib.h>
+    #include <stdlib.h>
 #endif
 
 #ifndef HEIGHT_LIMIT
-#define HEIGHT_LIMIT 64 /* Tallest allowable tree */
+    #define HEIGHT_LIMIT 64 /* Tallest allowable tree */
 #endif
 
-typedef struct jsw_rbnode {
-  int                red;     /* Color (1=red, 0=black) */
-  void              *data;    /* User-defined content */
-  struct jsw_rbnode *link[2]; /* Left (0) and right (1) links */
+typedef struct jsw_rbnode
+{
+    int                red;     /* Color (1=red, 0=black) */
+    void              *data;    /* User-defined content */
+    struct jsw_rbnode *link[2]; /* Left (0) and right (1) links */
 } jsw_rbnode_t;
 
-struct jsw_rbtree {
-  jsw_rbnode_t *root; /* Top of the tree */
-  cmp_f         cmp;  /* Compare two items */
-  dup_f         dup;  /* Clone an item (user-defined) */
-  rel_f         rel;  /* Destroy an item (user-defined) */
-  size_t        size; /* Number of items (user-defined) */
+struct jsw_rbtree
+{
+    jsw_rbnode_t *root; /* Top of the tree */
+    cmp_f         cmp;  /* Compare two items */
+    dup_f         dup;  /* Clone an item (user-defined) */
+    rel_f         rel;  /* Destroy an item (user-defined) */
+    size_t        size; /* Number of items (user-defined) */
 };
 
-struct jsw_rbtrav {
-  jsw_rbtree_t *tree;               /* Paired tree */
-  jsw_rbnode_t *it;                 /* Current node */
-  jsw_rbnode_t *path[HEIGHT_LIMIT]; /* Traversal path */
-  size_t        top;                /* Top of stack */
+struct jsw_rbtrav
+{
+    jsw_rbtree_t *tree;               /* Paired tree */
+    jsw_rbnode_t *it;                 /* Current node */
+    jsw_rbnode_t *path[HEIGHT_LIMIT]; /* Traversal path */
+    size_t        top;                /* Top of stack */
 };
 
 /**
@@ -51,7 +54,7 @@ struct jsw_rbtrav {
 */
 static int is_red ( jsw_rbnode_t *root )
 {
-  return root != NULL && root->red == 1;
+    return root != NULL && root->red == 1;
 }
 
 /**
@@ -66,15 +69,15 @@ static int is_red ( jsw_rbnode_t *root )
 */
 static jsw_rbnode_t *jsw_single ( jsw_rbnode_t *root, int dir )
 {
-  jsw_rbnode_t *save = root->link[!dir];
-
-  root->link[!dir] = save->link[dir];
-  save->link[dir] = root;
-
-  root->red = 1;
-  save->red = 0;
-
-  return save;
+    jsw_rbnode_t *save = root->link[!dir];
+    
+    root->link[!dir] = save->link[dir];
+    save->link[dir] = root;
+    
+    root->red = 1;
+    save->red = 0;
+    
+    return save;
 }
 
 /**
@@ -89,9 +92,9 @@ static jsw_rbnode_t *jsw_single ( jsw_rbnode_t *root, int dir )
 */
 static jsw_rbnode_t *jsw_double ( jsw_rbnode_t *root, int dir )
 {
-  root->link[!dir] = jsw_single ( root->link[!dir], !dir );
-
-  return jsw_single ( root, dir );
+    root->link[!dir] = jsw_single ( root->link[!dir], !dir );
+    
+    return jsw_single ( root, dir );
 }
 
 /**
@@ -110,16 +113,18 @@ static jsw_rbnode_t *jsw_double ( jsw_rbnode_t *root, int dir )
 */
 static jsw_rbnode_t *new_node ( jsw_rbtree_t *tree, void *data )
 {
-  jsw_rbnode_t *rn = (jsw_rbnode_t *)malloc ( sizeof *rn );
-
-  if ( rn == NULL )
-    return NULL;
-
-  rn->red = 1;
-  rn->data = tree->dup ( data );
-  rn->link[0] = rn->link[1] = NULL;
-
-  return rn;
+    jsw_rbnode_t *rn = (jsw_rbnode_t *)malloc ( sizeof *rn );
+    
+    if ( rn == NULL )
+    {
+        return NULL;
+    }
+    
+    rn->red = 1;
+    rn->data = tree->dup ( data );
+    rn->link[0] = rn->link[1] = NULL;
+    
+    return rn;
 }
 
 /**
@@ -137,18 +142,20 @@ static jsw_rbnode_t *new_node ( jsw_rbtree_t *tree, void *data )
 */
 jsw_rbtree_t *jsw_rbnew ( cmp_f cmp, dup_f dup, rel_f rel )
 {
-  jsw_rbtree_t *rt = (jsw_rbtree_t *)malloc ( sizeof *rt );
-
-  if ( rt == NULL )
-    return NULL;
-
-  rt->root = NULL;
-  rt->cmp = cmp;
-  rt->dup = dup;
-  rt->rel = rel;
-  rt->size = 0;
-
-  return rt;
+    jsw_rbtree_t *rt = (jsw_rbtree_t *)malloc ( sizeof *rt );
+    
+    if ( rt == NULL )
+    {
+        return NULL;
+    }
+    
+    rt->root = NULL;
+    rt->cmp = cmp;
+    rt->dup = dup;
+    rt->rel = rel;
+    rt->size = 0;
+    
+    return rt;
 }
 
 /**
@@ -162,32 +169,35 @@ jsw_rbtree_t *jsw_rbnew ( cmp_f cmp, dup_f dup, rel_f rel )
 */
 void jsw_rbdelete ( jsw_rbtree_t *tree )
 {
-  jsw_rbnode_t *it = tree->root;
-  jsw_rbnode_t *save;
-
-  /*
-    Rotate away the left links so that
-    we can treat this like the destruction
-    of a linked list
-  */
-  while ( it != NULL ) {
-    if ( it->link[0] == NULL ) {
-      /* No left links, just kill the node and move on */
-      save = it->link[1];
-      tree->rel ( it->data );
-      free ( it );
+    jsw_rbnode_t *it = tree->root;
+    jsw_rbnode_t *save;
+    
+    /*
+      Rotate away the left links so that
+      we can treat this like the destruction
+      of a linked list
+    */
+    while ( it != NULL )
+    {
+        if ( it->link[0] == NULL )
+        {
+            /* No left links, just kill the node and move on */
+            save = it->link[1];
+            tree->rel ( it->data );
+            free ( it );
+        }
+        else
+        {
+            /* Rotate away the left link and check again */
+            save = it->link[0];
+            it->link[0] = save->link[1];
+            save->link[1] = it;
+        }
+        
+        it = save;
     }
-    else {
-      /* Rotate away the left link and check again */
-      save = it->link[0];
-      it->link[0] = save->link[1];
-      save->link[1] = it;
-    }
-
-    it = save;
-  }
-
-  free ( tree );
+    
+    free ( tree );
 }
 
 /**
@@ -204,22 +214,25 @@ void jsw_rbdelete ( jsw_rbtree_t *tree )
 */
 void *jsw_rbfind ( jsw_rbtree_t *tree, void *data )
 {
-  jsw_rbnode_t *it = tree->root;
-
-  while ( it != NULL ) {
-    int cmp = tree->cmp ( it->data, data );
-
-    if ( cmp == 0 )
-      break;
-
-    /*
-      If the tree supports duplicates, they should be
-      chained to the right subtree for this to work
-    */
-    it = it->link[cmp < 0];
-  }
-
-  return it == NULL ? NULL : it->data;
+    jsw_rbnode_t *it = tree->root;
+    
+    while ( it != NULL )
+    {
+        int cmp = tree->cmp ( it->data, data );
+        
+        if ( cmp == 0 )
+        {
+            break;
+        }
+        
+        /*
+          If the tree supports duplicates, they should be
+          chained to the right subtree for this to work
+        */
+        it = it->link[cmp < 0];
+    }
+    
+    return it == NULL ? NULL : it->data;
 }
 
 /**
@@ -236,80 +249,98 @@ void *jsw_rbfind ( jsw_rbtree_t *tree, void *data )
 */
 int jsw_rbinsert ( jsw_rbtree_t *tree, void *data )
 {
-  if ( tree->root == NULL ) {
-    /*
-      We have an empty tree; attach the
-      new node directly to the root
-    */
-    tree->root = new_node ( tree, data );
-
     if ( tree->root == NULL )
-      return 0;
-  }
-  else {
-    jsw_rbnode_t head = {0}; /* False tree root */
-    jsw_rbnode_t *g, *t;     /* Grandparent & parent */
-    jsw_rbnode_t *p, *q;     /* Iterator & parent */
-    int dir = 0, last = 0;
-
-    /* Set up our helpers */
-    t = &head;
-    g = p = NULL;
-    q = t->link[1] = tree->root;
-
-    /* Search down the tree for a place to insert */
-    for ( ; ; ) {
-      if ( q == NULL ) {
-        /* Insert a new node at the first null link */
-        p->link[dir] = q = new_node ( tree, data );
-
-        if ( q == NULL )
-          return 0;
-      }
-      else if ( is_red ( q->link[0] ) && is_red ( q->link[1] ) ) {
-        /* Simple red violation: color flip */
-        q->red = 1;
-        q->link[0]->red = 0;
-        q->link[1]->red = 0;
-      }
-
-      if ( is_red ( q ) && is_red ( p ) ) {
-        /* Hard red violation: rotations necessary */
-        int dir2 = t->link[1] == g;
-
-        if ( q == p->link[last] )
-          t->link[dir2] = jsw_single ( g, !last );
-        else
-          t->link[dir2] = jsw_double ( g, !last );
-      }
-
-      /*
-        Stop working if we inserted a node. This
-        check also disallows duplicates in the tree
-      */
-      if ( tree->cmp ( q->data, data ) == 0 )
-        break;
-
-      last = dir;
-      dir = tree->cmp ( q->data, data ) < 0;
-
-      /* Move the helpers down */
-      if ( g != NULL )
-        t = g;
-
-      g = p, p = q;
-      q = q->link[dir];
+    {
+        /*
+          We have an empty tree; attach the
+          new node directly to the root
+        */
+        tree->root = new_node ( tree, data );
+        
+        if ( tree->root == NULL )
+        {
+            return 0;
+        }
     }
-
-    /* Update the root (it may be different) */
-    tree->root = head.link[1];
-  }
-
-  /* Make the root black for simplified logic */
-  tree->root->red = 0;
-  ++tree->size;
-
-  return 1;
+    else
+    {
+        jsw_rbnode_t head = {0}; /* False tree root */
+        jsw_rbnode_t *g, *t;     /* Grandparent & parent */
+        jsw_rbnode_t *p, *q;     /* Iterator & parent */
+        int dir = 0, last = 0;
+        
+        /* Set up our helpers */
+        t = &head;
+        g = p = NULL;
+        q = t->link[1] = tree->root;
+        
+        /* Search down the tree for a place to insert */
+        for ( ; ; )
+        {
+            if ( q == NULL )
+            {
+                /* Insert a new node at the first null link */
+                p->link[dir] = q = new_node ( tree, data );
+                
+                if ( q == NULL )
+                {
+                    return 0;
+                }
+            }
+            else if ( is_red ( q->link[0] ) && is_red ( q->link[1] ) )
+            {
+                /* Simple red violation: color flip */
+                q->red = 1;
+                q->link[0]->red = 0;
+                q->link[1]->red = 0;
+            }
+            
+            if ( is_red ( q ) && is_red ( p ) )
+            {
+                /* Hard red violation: rotations necessary */
+                int dir2 = t->link[1] == g;
+                
+                if ( q == p->link[last] )
+                {
+                    t->link[dir2] = jsw_single ( g, !last );
+                }
+                else
+                {
+                    t->link[dir2] = jsw_double ( g, !last );
+                }
+            }
+            
+            /*
+              Stop working if we inserted a node. This
+              check also disallows duplicates in the tree
+            */
+            if ( tree->cmp ( q->data, data ) == 0 )
+            {
+                break;
+            }
+            
+            last = dir;
+            dir = tree->cmp ( q->data, data ) < 0;
+            
+            /* Move the helpers down */
+            if ( g != NULL )
+            {
+                t = g;
+            }
+            
+            g = p, p = q;
+            q = q->link[dir];
+        }
+        
+        /* Update the root (it may be different) */
+        tree->root = head.link[1];
+    }
+    
+    /* Make the root black for simplified logic */
+    tree->root->red = 0;
+    ++tree->size;
+    
+    return 1;
 }
 
 /**
@@ -330,88 +361,106 @@ int jsw_rbinsert ( jsw_rbtree_t *tree, void *data )
 */
 int jsw_rberase ( jsw_rbtree_t *tree, void *data )
 {
-  if ( tree->root != NULL ) {
-    jsw_rbnode_t head = {0}; /* False tree root */
-    jsw_rbnode_t *q, *p, *g; /* Helpers */
-    jsw_rbnode_t *f = NULL;  /* Found item */
-    int dir = 1;
-
-    /* Set up our helpers */
-    q = &head;
-    g = p = NULL;
-    q->link[1] = tree->root;
-
-    /*
-      Search and push a red node down
-      to fix red violations as we go
-    */
-    while ( q->link[dir] != NULL ) {
-      int last = dir;
-
-      /* Move the helpers down */
-      g = p, p = q;
-      q = q->link[dir];
-      dir = tree->cmp ( q->data, data ) < 0;
-
-      /*
-        Save the node with matching data and keep
-        going; we'll do removal tasks at the end
-      */
-      if ( tree->cmp ( q->data, data ) == 0 )
-        f = q;
-
-      /* Push the red node down with rotations and color flips */
-      if ( !is_red ( q ) && !is_red ( q->link[dir] ) ) {
-        if ( is_red ( q->link[!dir] ) )
-          p = p->link[last] = jsw_single ( q, dir );
-        else if ( !is_red ( q->link[!dir] ) ) {
-          jsw_rbnode_t *s = p->link[!last];
-
-          if ( s != NULL ) {
-            if ( !is_red ( s->link[!last] ) && !is_red ( s->link[last] ) ) {
-              /* Color flip */
-              p->red = 0;
-              s->red = 1;
-              q->red = 1;
-            }
-            else {
-              int dir2 = g->link[1] == p;
-
-              if ( is_red ( s->link[last] ) )
-                g->link[dir2] = jsw_double ( p, last );
-              else if ( is_red ( s->link[!last] ) )
-                g->link[dir2] = jsw_single ( p, last );
-
-              /* Ensure correct coloring */
-              q->red = g->link[dir2]->red = 1;
-              g->link[dir2]->link[0]->red = 0;
-              g->link[dir2]->link[1]->red = 0;
-            }
-          }
-        }
-      }
-    }
-
-    /* Replace and remove the saved node */
-    if ( f != NULL ) {
-      tree->rel ( f->data );
-      f->data = q->data;
-      p->link[p->link[1] == q] =
-        q->link[q->link[0] == NULL];
-      free ( q );
-    }
-
-    /* Update the root (it may be different) */
-    tree->root = head.link[1];
-
-    /* Make the root black for simplified logic */
     if ( tree->root != NULL )
-      tree->root->red = 0;
-
-    --tree->size;
-  }
-
-  return 1;
+    {
+        jsw_rbnode_t head = {0}; /* False tree root */
+        jsw_rbnode_t *q, *p, *g; /* Helpers */
+        jsw_rbnode_t *f = NULL;  /* Found item */
+        int dir = 1;
+        
+        /* Set up our helpers */
+        q = &head;
+        g = p = NULL;
+        q->link[1] = tree->root;
+        
+        /*
+          Search and push a red node down
+          to fix red violations as we go
+        */
+        while ( q->link[dir] != NULL )
+        {
+            int last = dir;
+            
+            /* Move the helpers down */
+            g = p, p = q;
+            q = q->link[dir];
+            dir = tree->cmp ( q->data, data ) < 0;
+            
+            /*
+              Save the node with matching data and keep
+              going; we'll do removal tasks at the end
+            */
+            if ( tree->cmp ( q->data, data ) == 0 )
+            {
+                f = q;
+            }
+            
+            /* Push the red node down with rotations and color flips */
+            if ( !is_red ( q ) && !is_red ( q->link[dir] ) )
+            {
+                if ( is_red ( q->link[!dir] ) )
+                {
+                    p = p->link[last] = jsw_single ( q, dir );
+                }
+                else if ( !is_red ( q->link[!dir] ) )
+                {
+                    jsw_rbnode_t *s = p->link[!last];
+                    
+                    if ( s != NULL )
+                    {
+                        if ( !is_red ( s->link[!last] ) && !is_red ( s->link[last] ) )
+                        {
+                            /* Color flip */
+                            p->red = 0;
+                            s->red = 1;
+                            q->red = 1;
+                        }
+                        else
+                        {
+                            int dir2 = g->link[1] == p;
+                            
+                            if ( is_red ( s->link[last] ) )
+                            {
+                                g->link[dir2] = jsw_double ( p, last );
+                            }
+                            else if ( is_red ( s->link[!last] ) )
+                            {
+                                g->link[dir2] = jsw_single ( p, last );
+                            }
+                            
+                            /* Ensure correct coloring */
+                            q->red = g->link[dir2]->red = 1;
+                            g->link[dir2]->link[0]->red = 0;
+                            g->link[dir2]->link[1]->red = 0;
+                        }
+                    }
+                }
+            }
+        }
+        
+        /* Replace and remove the saved node */
+        if ( f != NULL )
+        {
+            tree->rel ( f->data );
+            f->data = q->data;
+            p->link[p->link[1] == q] =
+                q->link[q->link[0] == NULL];
+            free ( q );
+        }
+        
+        /* Update the root (it may be different) */
+        tree->root = head.link[1];
+        
+        /* Make the root black for simplified logic */
+        if ( tree->root != NULL )
+        {
+            tree->root->red = 0;
+        }
+        
+        --tree->size;
+    }
+    
+    return 1;
 }
 
 /**
@@ -423,7 +472,7 @@ int jsw_rberase ( jsw_rbtree_t *tree, void *data )
 */
 size_t jsw_rbsize ( jsw_rbtree_t *tree )
 {
-  return tree->size;
+    return tree->size;
 }
 
 /**
@@ -439,7 +488,7 @@ size_t jsw_rbsize ( jsw_rbtree_t *tree )
 */
 jsw_rbtrav_t *jsw_rbtnew ( void )
 {
-  return (jsw_rbtrav_t*)malloc ( sizeof ( jsw_rbtrav_t ) );
+    return (jsw_rbtrav_t *)malloc ( sizeof ( jsw_rbtrav_t ) );
 }
 
 /**
@@ -453,7 +502,7 @@ jsw_rbtrav_t *jsw_rbtnew ( void )
 */
 void jsw_rbtdelete ( jsw_rbtrav_t *trav )
 {
-  free ( trav );
+    free ( trav );
 }
 
 /**
@@ -472,19 +521,21 @@ void jsw_rbtdelete ( jsw_rbtrav_t *trav )
 */
 static void *start ( jsw_rbtrav_t *trav, jsw_rbtree_t *tree, int dir )
 {
-  trav->tree = tree;
-  trav->it = tree->root;
-  trav->top = 0;
-
-  /* Save the path for later traversal */
-  if ( trav->it != NULL ) {
-    while ( trav->it->link[dir] != NULL ) {
-      trav->path[trav->top++] = trav->it;
-      trav->it = trav->it->link[dir];
+    trav->tree = tree;
+    trav->it = tree->root;
+    trav->top = 0;
+    
+    /* Save the path for later traversal */
+    if ( trav->it != NULL )
+    {
+        while ( trav->it->link[dir] != NULL )
+        {
+            trav->path[trav->top++] = trav->it;
+            trav->it = trav->it->link[dir];
+        }
     }
-  }
-
-  return trav->it == NULL ? NULL : trav->it->data;
+    
+    return trav->it == NULL ? NULL : trav->it->data;
 }
 
 /**
@@ -502,32 +553,38 @@ static void *start ( jsw_rbtrav_t *trav, jsw_rbtree_t *tree, int dir )
 */
 static void *move ( jsw_rbtrav_t *trav, int dir )
 {
-  if ( trav->it->link[dir] != NULL ) {
-    /* Continue down this branch */
-    trav->path[trav->top++] = trav->it;
-    trav->it = trav->it->link[dir];
-
-    while ( trav->it->link[!dir] != NULL ) {
-      trav->path[trav->top++] = trav->it;
-      trav->it = trav->it->link[!dir];
+    if ( trav->it->link[dir] != NULL )
+    {
+        /* Continue down this branch */
+        trav->path[trav->top++] = trav->it;
+        trav->it = trav->it->link[dir];
+        
+        while ( trav->it->link[!dir] != NULL )
+        {
+            trav->path[trav->top++] = trav->it;
+            trav->it = trav->it->link[!dir];
+        }
     }
-  }
-  else {
-    /* Move to the next branch */
-    jsw_rbnode_t *last;
-
-    do {
-      if ( trav->top == 0 ) {
-        trav->it = NULL;
-        break;
-      }
-
-      last = trav->it;
-      trav->it = trav->path[--trav->top];
-    } while ( last == trav->it->link[dir] );
-  }
-
-  return trav->it == NULL ? NULL : trav->it->data;
+    else
+    {
+        /* Move to the next branch */
+        jsw_rbnode_t *last;
+        
+        do
+        {
+            if ( trav->top == 0 )
+            {
+                trav->it = NULL;
+                break;
+            }
+            
+            last = trav->it;
+            trav->it = trav->path[--trav->top];
+        }
+        while ( last == trav->it->link[dir] );
+    }
+    
+    return trav->it == NULL ? NULL : trav->it->data;
 }
 
 /**
@@ -540,7 +597,7 @@ static void *move ( jsw_rbtrav_t *trav, int dir )
 */
 void *jsw_rbtfirst ( jsw_rbtrav_t *trav, jsw_rbtree_t *tree )
 {
-  return start ( trav, tree, 0 ); /* Min value */
+    return start ( trav, tree, 0 ); /* Min value */
 }
 
 /**
@@ -553,7 +610,7 @@ void *jsw_rbtfirst ( jsw_rbtrav_t *trav, jsw_rbtree_t *tree )
 */
 void *jsw_rbtlast ( jsw_rbtrav_t *trav, jsw_rbtree_t *tree )
 {
-  return start ( trav, tree, 1 ); /* Max value */
+    return start ( trav, tree, 1 ); /* Max value */
 }
 
 /**
@@ -565,7 +622,7 @@ void *jsw_rbtlast ( jsw_rbtrav_t *trav, jsw_rbtree_t *tree )
 */
 void *jsw_rbtnext ( jsw_rbtrav_t *trav )
 {
-  return move ( trav, 1 ); /* Toward larger items */
+    return move ( trav, 1 ); /* Toward larger items */
 }
 
 /**
@@ -577,5 +634,5 @@ void *jsw_rbtnext ( jsw_rbtrav_t *trav )
 */
 void *jsw_rbtprev ( jsw_rbtrav_t *trav )
 {
-  return move ( trav, 0 ); /* Toward smaller items */
+    return move ( trav, 0 ); /* Toward smaller items */
 }

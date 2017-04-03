@@ -9,7 +9,7 @@
 
   This code is in the public domain. Anyone may
   use it or change it in any way that they see
-  fit. The author assumes no responsibility for 
+  fit. The author assumes no responsibility for
   damages incurred through use of the original
   code or any variations thereof.
 
