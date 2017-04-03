@@ -178,6 +178,13 @@ void pro54SAction(AST_node *parent)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
     AST_node *child = getSymbol(parent->first_child->str + 4);
+    if (child == NULL)
+    {
+        printf("can't find id defintion.\n");
+        parentInfo->sType = "";
+        parentInfo->sDimension = 0;
+        return;
+    }
     TypeInfo *childInfo = (TypeInfo *)child->otherInformation;
     parentInfo->sType = childInfo->sType;
     parentInfo->sDimension = childInfo->sDimension - parentInfo->iDimension;

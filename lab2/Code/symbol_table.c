@@ -97,5 +97,13 @@ int delSymbol(const char *name)
 
 AST_node *getSymbol(const char *name)
 {
-    return (AST_node *)((Symbol *)findSymbol(globalSymbolTable, name))->p;
+    void *p = findSymbol(globalSymbolTable, name);
+    if (p == NULL)
+    {
+        return NULL;
+    }
+    else
+    {
+        return ((Symbol *)p)->p;
+    }
 }
