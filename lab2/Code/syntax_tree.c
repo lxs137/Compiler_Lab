@@ -75,10 +75,10 @@ AST_node *new_parent_node(char *string, int proNum, int node_num, ...)
 
 void clean_up_syntax_tree(AST_node *parent)
 {
-    if (parent == NULL && strcmp(parent->str, "EMPTY") == 0)
-    {
-        return;
-    }
+    /* if (parent == NULL && strcmp(parent->str, "EMPTY") == 0) */
+    /* { */
+    /*     return; */
+    /* } */
     for (AST_node *node = parent->first_child; node != NULL; node = node->next_brother)
     {
         clean_up_syntax_tree(node);
