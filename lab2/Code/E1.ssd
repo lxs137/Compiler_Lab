@@ -66,6 +66,7 @@ Exp -> Exp' LB Exp RB (52)
 Exp'.iDimension = Exp.iDimension + 1
 Exp.sType = Exp'.sType
 Exp.sDimenison = Exp'.sDimension
+Exp.sVaild = Exp'.sValid
 
 Exp -> ID (54)
 Exp.sValid = Id.ifExist && Exp.iDimension <= ID.sDimension
@@ -89,3 +90,10 @@ x[1][2];
 ***RB--------------
 **SEMI
 /* 可以按照这棵树手动走一遍求值过程 */
+
+Exp -> Exp' ASSIGNOP Exp'' (39)
+Exp'.iDimension = 0
+Exp''.iDimension = 0
+Exp.sValid = Exp'.sValid && Exp'.sValid && Exp'.sType == Exp''.sType && Exp'.sDimension && Exp''.sDimension
+Exp.sType = Exp'.sType
+Exp.sDimension = Exp'.sDimension

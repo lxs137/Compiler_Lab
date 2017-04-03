@@ -42,7 +42,6 @@ typedef struct
     const char *sType;
     int iDimension;
     int sDimension;
-    int sValid;
 } TypeInfo;
 
 void pro34IAction(AST_node *parent, AST_node *child, int childNum)
@@ -145,7 +144,7 @@ void pro52IAction(AST_node *parent, AST_node *child, int childNum)
 
 void pro39IAction(AST_node *parent, AST_node *child, int childNum)
 {
-    if (childNum == 1 && childNum == 3)
+    if (childNum == 1)
     {
         TypeInfo *typeInfo = (TypeInfo *)malloc(sizeof(TypeInfo));
         typeInfo->iDimension = 0;
@@ -179,7 +178,6 @@ void pro52SAction(AST_node *parent)
     TypeInfo *childInfo = (TypeInfo *)parent->first_child->otherInformation;
     parentInfo->sType = childInfo->sType;
     parentInfo->sDimension = childInfo->sDimension;
-    parentInfo->sValid = childInfo->sValid;
 }
 
 void pro54SAction(AST_node *parent)
@@ -191,9 +189,8 @@ void pro54SAction(AST_node *parent)
         printf("Error type 1 at Line %d: Undefined variable \"%s\".\n",
                parent->first_child->loc_line,
                parent->first_child->str + 4);
-        /* parentInfo->sType = ""; */
-        /* parentInfo->sDimension = -1; */
-        parentInfo->sValid = 0;
+        parentInfo->sType = "";
+        parentInfo->sDimension = -1;
         return;
     }
     TypeInfo *childInfo = (TypeInfo *)child->otherInformation;
@@ -202,37 +199,12 @@ void pro54SAction(AST_node *parent)
     if (parentInfo->sDimension < 0)
     {
         printf("error.\n");
-        parentInfo->sValid = 0;
-        return;
     }
-    parentInfo->sValid = 1;
 }
 
 void pro26SAction(AST_node *parent)
 {
     TypeInfo *childInfo = (TypeInfo *)parent->first_child->otherInformation;
-}
-
-void pro39SAction(AST_node *parent)
-{
-    TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
-    TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
-    TypeInfo *childTwoInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
-    parentInfo->sValid = childOneInfo->sValid && childTwoInfo->sValid;
-    if (parentInfo->sValid)
-    {
-        parentInfo->sValid &= strcmp(childOneInfo->sType, childTwoInfo->sType);
-        parentInfo->sValid &= childOneInfo->sDimension == childTwoInfo->sDimension;
-    }
-    if (parentInfo->sValid)
-    {
-        parentInfo->sType = childOneInfo->sType;
-        parentInfo->sDimension = childOneInfo->sDimension;
-    }
-    else
-    {
-        printf("error.\n");
-    }
 }
 
 void initTable()
