@@ -72,6 +72,23 @@ AST_node *new_parent_node(char *string, int proNum, int node_num, ...)
     return parent;
 }
 
+void clean_up_syntax_tree(AST_node *parent)
+{
+    if (parent == NULL)
+    {
+        return;
+    }
+    for (AST_node *node = parent->first_child; node != NULL; node = node->next_brother)
+    {
+        clean_up_syntax_tree(node);
+    }
+    if (parent->otherInformation != NULL)
+    {
+        free(parent->otherInformation);
+    }
+    free(parent);
+}
+
 void print_child_node(AST_node *parent, int depth)
 {
     if (parent->first_child == NULL && strcmp(parent->str, "EMPTY") == 0)
