@@ -99,20 +99,6 @@ void clean_up_syntax_tree(AST_node *parent)
         parent->otherInformation = NULL;
     }
     free(parent);
-
-//    if (parent == NULL && strcmp(parent->str, "EMPTY") == 0)
-//    {
-//        return;
-//    }
-//    for (AST_node *node = parent->first_child; node != NULL; node = node->next_brother)
-//    {
-//        clean_up_syntax_tree(node);
-//    }
-//    if (parent->otherInformation != NULL)
-//    {
-//        free(parent->otherInformation);
-//    }
-//    free(parent);
 }
 
 void print_child_node(AST_node *parent, int depth)
