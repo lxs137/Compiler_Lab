@@ -51,6 +51,7 @@ Program
         globalSymbolTable = newSymbolTable();
         traversalTreePerformAction($$);
         clean_up_syntax_tree($$);
+        cleanUpSymbolTable();
     }
     ;
 ExtDefList

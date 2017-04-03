@@ -107,3 +107,8 @@ AST_node *getSymbol(const char *name)
         return ((Symbol *)p)->p;
     }
 }
+
+void cleanUpSymbolTable()
+{
+    delSymbolTable(globalSymbolTable);
+}
