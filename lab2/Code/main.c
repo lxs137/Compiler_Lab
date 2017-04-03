@@ -17,6 +17,7 @@ int main(int argc, char **argv)
     yyrestart(f);
     yyparse();
     fclose(f);
+    yylex_destroy();
     return 0;
 }
 extern int has_error;
