@@ -145,7 +145,7 @@ void pro52IAction(AST_node *parent, AST_node *child, int childNum)
 
 void pro39IAction(AST_node *parent, AST_node *child, int childNum)
 {
-    if (childNum == 1 && childNum == 3)
+    if (childNum == 1 || childNum == 3)
     {
         TypeInfo *typeInfo = (TypeInfo *)malloc(sizeof(TypeInfo));
         typeInfo->iDimension = 0;
@@ -244,6 +244,7 @@ void initTable()
     sdtIActionTable[36] = pro36IAction;
     sdtIActionTable[37] = pro37IAction;
     sdtIActionTable[38] = pro38IAction;
+    sdtIActionTable[39] = pro39IAction;
     sdtIActionTable[52] = pro52IAction;
     
     sdtSActionTable[16] = pro16SAction;
@@ -251,6 +252,7 @@ void initTable()
     sdtSActionTable[26] = pro26SAction;
     sdtSActionTable[37] = pro37SAction;
     sdtSActionTable[38] = pro38SAction;
+    sdtSActionTable[39] = pro39SAction;
     sdtSActionTable[52] = pro52SAction;
     sdtSActionTable[54] = pro54SAction;
 }
