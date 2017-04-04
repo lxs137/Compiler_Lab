@@ -79,4 +79,13 @@
             FE_10, FE_9, FE_8, FE_7, FE_6, \
             FE_5, FE_4, FE_3, FE_2, FE_1)(action, __VA_ARGS__)
 
+#define FE_2_1(WHAT, X, Y) WHAT(X, Y)
+#define FE_2_2(WHAT, X, Y, ...) WHAT(X, Y)FE_2_1(WHAT, X, __VA_ARGS__)
+#define FE_2_3(WHAT, X, Y, ...) WHAT(X, Y)FE_2_2(WHAT, X, __VA_ARGS__)
+#define FE_2_4(WHAT, X, Y, ...) WHAT(X, Y)FE_2_3(WHAT, X, __VA_ARGS__)
+#define FE_2_5(WHAT, X, Y, ...) WHAT(X, Y)FE_2_4(WHAT, X, __VA_ARGS__)
+#define GET_MACRO_2(_1, _2, _3, _4, _5, NAME, ...) NAME
+#define FOR_EACH_2(action, x, ...) \
+    GET_MACRO_2(__VA_ARGS__, FE_2_5, FE_2_4, FE_2_3, FE_2_2, FE_2_1)(action, x, __VA_ARGS__)
+
 #endif

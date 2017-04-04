@@ -152,7 +152,8 @@ void pro52IAction(AST_node *parent, AST_node *child, int childNum)
     }
 }
 
-void pro39IAction(AST_node *parent, AST_node *child, int childNum)
+/* void pro39IAction(AST_node *parent, AST_node *child, int childNum) */
+IDS(39, 40, 41)
 {
     if (childNum == 1 || childNum == 3)
     {
@@ -162,13 +163,14 @@ void pro39IAction(AST_node *parent, AST_node *child, int childNum)
     }
 }
 
-SDTIAction pro40IAction = pro39IAction;
-SDTIAction pro41IAction = pro39IAction;
+/* SDTIAction pro40IAction = pro39IAction; */
+/* SDTIAction pro41IAction = pro39IAction; */
 SDTIAction pro42IAction = pro39IAction;
 SDTIAction pro43IAction = pro39IAction;
 SDTIAction pro44IAction = pro39IAction;
 SDTIAction pro45IAction = pro39IAction;
 SDTIAction pro46IAction = pro39IAction;
+/* IDS(39, 40, 41); */
 
 void pro16SAction(AST_node *parent)
 {
@@ -336,6 +338,7 @@ void pro40SAction(AST_node *parent)
 }
 
 SDTSAction pro41SAction = pro40SAction;
+/* IDS(40, 41); */
 
 SDTSAction pro44SAction = pro43SAction;
 SDTSAction pro45SAction = pro43SAction;
