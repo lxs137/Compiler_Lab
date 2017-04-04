@@ -344,24 +344,5 @@ SDTSAction pro46SAction = pro43SAction;
 void initTable()
 {
     IS(17, 26, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 52);
-    
-    
-    /* sdtSActionTable[16] = pro16SAction; */
-    /* sdtSActionTable[17] = pro17SAction; */
-    /* sdtSActionTable[26] = pro26SAction; */
-    /* sdtSActionTable[37] = pro37SAction; */
-    /* sdtSActionTable[38] = pro38SAction; */
-    /* sdtSActionTable[39] = pro39SAction; */
-    /* sdtSActionTable[40] = pro40SAction; */
-    /* sdtSActionTable[41] = pro41SAction; */
-    /* sdtSActionTable[42] = pro42SAction; */
-    /* sdtSActionTable[43] = pro43SAction; */
-    /* sdtSActionTable[44] = pro44SAction; */
-    /* sdtSActionTable[45] = pro45SAction; */
-    /* sdtSActionTable[46] = pro46SAction; */
-    /* sdtSActionTable[52] = pro52SAction; */
-    /* sdtSActionTable[54] = pro54SAction; */
-    /* sdtSActionTable[55] = pro55SAction; */
-    /* sdtSActionTable[56] = pro56SAction; */
     SS(16, 17, 26, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 52, 54, 55, 56);
 }
