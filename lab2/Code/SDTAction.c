@@ -152,7 +152,6 @@ void pro52IAction(AST_node *parent, AST_node *child, int childNum)
     }
 }
 
-/* void pro39IAction(AST_node *parent, AST_node *child, int childNum) */
 IDS(39, 40, 41, 42, 43, 44, 45, 46)
 {
     if (childNum == 1 || childNum == 3)
@@ -162,15 +161,6 @@ IDS(39, 40, 41, 42, 43, 44, 45, 46)
         child->otherInformation = typeInfo;
     }
 }
-
-/* SDTIAction pro40IAction = pro39IAction; */
-/* SDTIAction pro41IAction = pro39IAction; */
-/* SDTIAction pro42IAction = pro39IAction; */
-/* SDTIAction pro43IAction = pro39IAction; */
-/* SDTIAction pro44IAction = pro39IAction; */
-/* SDTIAction pro45IAction = pro39IAction; */
-/* SDTIAction pro46IAction = pro39IAction; */
-/* IDS(39, 40, 41); */
 
 void pro16SAction(AST_node *parent)
 {
