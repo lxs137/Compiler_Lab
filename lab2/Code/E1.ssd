@@ -68,6 +68,10 @@ Exp.sType = Exp'.sType
 Exp.sDimenison = Exp'.sDimension
 Exp.sVaild = Exp'.sValid
 
+/* j; */
+
+/* int x[1][2]; */
+/* x[1][2][3]; */
 Exp -> ID (54)
 Exp.sValid = Id.ifExist && Exp.iDimension <= ID.sDimension
 Exp.sType = ID.sType
@@ -91,9 +95,21 @@ x[1][2];
 **SEMI
 /* 可以按照这棵树手动走一遍求值过程 */
 
+/* int i; */
+/* j = i; */
+
+/* int j; */
+/* j = i; */
 Exp -> Exp' ASSIGNOP Exp'' (39)
 Exp'.iDimension = 0
 Exp''.iDimension = 0
 Exp.sValid = Exp'.sValid && Exp'.sValid && Exp'.sType == Exp''.sType && Exp'.sDimension && Exp''.sDimension
 Exp.sType = Exp'.sType
+Exp.sDimension = Exp'.sDimension
+
+Exp -> Exp' PLUS/MINUS/STAR/DIV Exp'' (43/44/45/46)
+Exp'.iDimension = 0
+Exp''.iDimension = 0 
+Exp.sValid = Exp'.sValid && Exp''.sValid && Exp'.sType == Exp''.sType && Exp'.sDimension == 0 && Exp''.sDimension == 0
+Exp.sType = Exp'.stype
 Exp.sDimension = Exp'.sDimension

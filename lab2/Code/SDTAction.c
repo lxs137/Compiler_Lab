@@ -153,6 +153,11 @@ void pro39IAction(AST_node *parent, AST_node *child, int childNum)
     }
 }
 
+SDTIAction pro43IAction = pro39IAction;
+SDTIAction pro44IAction = pro39IAction;
+SDTIAction pro45IAction = pro39IAction;
+SDTIAction pro46IAction = pro39IAction;
+
 void pro16SAction(AST_node *parent)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
@@ -235,6 +240,33 @@ void pro39SAction(AST_node *parent)
     }
 }
 
+void pro43SAction(AST_node *parent)
+{
+    TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
+    TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
+    TypeInfo *childTwoInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
+    parentInfo->sValid = childOneInfo->sValid && childTwoInfo->sValid;
+    if (parentInfo->sValid)
+    {
+        parentInfo->sValid &= strcmp(childOneInfo->sType, childTwoInfo->sType);
+        parentInfo->sValid &= childOneInfo->sDimension == 0;
+        parentInfo->sValid &= childTwoInfo->sDimension == 0;
+    }
+    if (parentInfo->sValid)
+    {
+        parentInfo->sType = childOneInfo->sType;
+        parentInfo->sDimension = childOneInfo->sDimension;
+    }
+    else
+    {
+        printf("error.\n");
+    }
+}
+
+SDTSAction pro44SAction = pro43SAction;
+SDTSAction pro45SAction = pro43SAction;
+SDTSAction pro46SAction = pro43SAction;
+
 void initTable()
 {
     sdtIActionTable[17] = pro17IAction;
@@ -245,6 +277,10 @@ void initTable()
     sdtIActionTable[37] = pro37IAction;
     sdtIActionTable[38] = pro38IAction;
     sdtIActionTable[39] = pro39IAction;
+    sdtIActionTable[43] = pro43IAction;
+    sdtIActionTable[44] = pro44IAction;
+    sdtIActionTable[45] = pro45IAction;
+    sdtIActionTable[46] = pro46IAction;
     sdtIActionTable[52] = pro52IAction;
     
     sdtSActionTable[16] = pro16SAction;
@@ -253,6 +289,10 @@ void initTable()
     sdtSActionTable[37] = pro37SAction;
     sdtSActionTable[38] = pro38SAction;
     sdtSActionTable[39] = pro39SAction;
+    sdtSActionTable[43] = pro43SAction;
+    sdtSActionTable[44] = pro44SAction;
+    sdtSActionTable[45] = pro45SAction;
+    sdtSActionTable[46] = pro46SAction;
     sdtSActionTable[52] = pro52SAction;
     sdtSActionTable[54] = pro54SAction;
 }
