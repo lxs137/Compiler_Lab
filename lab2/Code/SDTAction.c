@@ -42,6 +42,7 @@ typedef struct
     const char *sType;
     int iDimension;
     int sDimension;
+    int sValid;
 } TypeInfo;
 
 void pro34IAction(AST_node *parent, AST_node *child, int childNum)
@@ -93,7 +94,6 @@ void pro37IAction(AST_node *parent, AST_node *child, int childNum)
 
 void pro37SAction(AST_node *parent)
 {
-    /* printf("Type valid."); */
 }
 
 void pro38IAction(AST_node *parent, AST_node *child, int childNum)
@@ -105,11 +105,19 @@ void pro38IAction(AST_node *parent, AST_node *child, int childNum)
         typeInfo->iDimension = 0;
         child->otherInformation = typeInfo;
     }
+    else if (childNum == 3)
+    {
+        TypeInfo *typeInfo = (TypeInfo *)malloc(sizeof(TypeInfo));
+        typeInfo->iDimension = 0;
+        child->otherInformation = typeInfo;
+    }
 }
 
 void pro38SAction(AST_node *parent)
 {
-    /* printf("Type valid.") */
+    TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
+    TypeInfo *childThreeInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
+    /* strcmp() */
 }
 
 void pro17IAction(AST_node *parent, AST_node *child, int childNum)
@@ -136,13 +144,31 @@ void pro26IAction(AST_node *parent, AST_node *child, int childNum)
 
 void pro52IAction(AST_node *parent, AST_node *child, int childNum)
 {
-    if (childNum == 1)
+    if (childNum == 1 || childNum == 3)
     {
         TypeInfo *typeInfo = (TypeInfo *)malloc(sizeof(TypeInfo));
         typeInfo->iDimension = ((TypeInfo *)parent->otherInformation)->iDimension + 1;
         child->otherInformation = typeInfo;
     }
 }
+
+void pro39IAction(AST_node *parent, AST_node *child, int childNum)
+{
+    if (childNum == 1 || childNum == 3)
+    {
+        TypeInfo *typeInfo = (TypeInfo *)malloc(sizeof(TypeInfo));
+        typeInfo->iDimension = 0;
+        child->otherInformation = typeInfo;
+    }
+}
+
+SDTIAction pro40IAction = pro39IAction;
+SDTIAction pro41IAction = pro39IAction;
+SDTIAction pro42IAction = pro39IAction;
+SDTIAction pro43IAction = pro39IAction;
+SDTIAction pro44IAction = pro39IAction;
+SDTIAction pro45IAction = pro39IAction;
+SDTIAction pro46IAction = pro39IAction;
 
 void pro16SAction(AST_node *parent)
 {
@@ -153,9 +179,7 @@ void pro16SAction(AST_node *parent)
     typeInfo->sType = parentInfo->sType;
     typeInfo->sDimension = parentInfo->sDimension;
     parent->first_child->otherInformation = typeInfo;
-    printf("ID's base type is %s, dimension is %d\n", typeInfo->sType, typeInfo->sDimension);
     addSymbol(parent->first_child->str + 4, parent->first_child);
-    printSymbolTable(globalSymbolTable);
 }
 
 void pro17SAction(AST_node *parent)
@@ -169,9 +193,13 @@ void pro17SAction(AST_node *parent)
 void pro52SAction(AST_node *parent)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
-    TypeInfo *childInfo = (TypeInfo *)parent->first_child->otherInformation;
-    parentInfo->sType = childInfo->sType;
-    parentInfo->sDimension = childInfo->sDimension;
+    TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
+    TypeInfo *childThreeInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
+    parentInfo->sType = childOneInfo->sType;
+    parentInfo->sDimension = childOneInfo->sDimension;
+    parentInfo->sValid = childOneInfo->sValid && childThreeInfo->sValid;
+    parentInfo->sValid &= strcmp(childThreeInfo->sType, "Int");
+    parentInfo->sValid &= childThreeInfo->sDimension == 0;
 }
 
 void pro54SAction(AST_node *parent)
@@ -180,9 +208,12 @@ void pro54SAction(AST_node *parent)
     AST_node *child = getSymbol(parent->first_child->str + 4);
     if (child == NULL)
     {
-        printf("can't find id defintion.\n");
-        parentInfo->sType = "";
-        parentInfo->sDimension = 0;
+        printf("Error type 1 at Line %d: Undefined variable \"%s\".\n",
+               parent->first_child->loc_line,
+               parent->first_child->str + 4);
+        /* parentInfo->sType = ""; */
+        /* parentInfo->sDimension = -1; */
+        parentInfo->sValid = 0;
         return;
     }
     TypeInfo *childInfo = (TypeInfo *)child->otherInformation;
@@ -190,32 +221,147 @@ void pro54SAction(AST_node *parent)
     parentInfo->sDimension = childInfo->sDimension - parentInfo->iDimension;
     if (parentInfo->sDimension < 0)
     {
-        printf("error.\n");
+        /* printf("error.\n"); */
+        parentInfo->sValid = 0;
+        return;
     }
+    parentInfo->sValid = 1;
 }
+
+void pro55SAction(AST_node *parent)
+{
+    TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
+    parentInfo->sValid = 1;
+    parentInfo->sType = parent->first_child->str;
+    parentInfo->sDimension = 0;
+}
+
+SDTSAction pro56SAction = pro55SAction;
 
 void pro26SAction(AST_node *parent)
 {
     TypeInfo *childInfo = (TypeInfo *)parent->first_child->otherInformation;
-    printf("Stmt's type is %s, dimension is %d.\n", childInfo->sType, childInfo->sDimension);
 }
+
+void pro39SAction(AST_node *parent)
+{
+    TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
+    TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
+    TypeInfo *childTwoInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
+    parentInfo->sValid = childOneInfo->sValid && childTwoInfo->sValid;
+    if (parentInfo->sValid)
+    {
+        parentInfo->sValid &= strcmp(childOneInfo->sType, childTwoInfo->sType);
+        parentInfo->sValid &= childOneInfo->sDimension == childTwoInfo->sDimension;
+    }
+    if (parentInfo->sValid)
+    {
+        parentInfo->sType = childOneInfo->sType;
+        parentInfo->sDimension = childOneInfo->sDimension;
+    }
+    else
+    {
+        /* printf("error.\n"); */
+    }
+}
+
+void pro42SAction(AST_node *parent)
+{
+    TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
+    TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
+    TypeInfo *childTwoInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
+    parentInfo->sValid = childOneInfo->sValid && childTwoInfo->sValid;
+    if (parentInfo->sValid)
+    {
+        parentInfo->sValid &= strcmp(childOneInfo->sType, childTwoInfo->sType);
+        parentInfo->sValid &= childOneInfo->sDimension == 0;
+        parentInfo->sValid &= childTwoInfo->sDimension == 0;
+    }
+    if (parentInfo->sValid)
+    {
+        parentInfo->sType = "Int";
+        parentInfo->sDimension = 0;
+    }
+    else
+    {
+        /* printf("error.\n"); */
+    }
+}
+
+void pro43SAction(AST_node *parent)
+{
+    TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
+    TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
+    TypeInfo *childTwoInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
+    parentInfo->sValid = childOneInfo->sValid && childTwoInfo->sValid;
+    if (parentInfo->sValid)
+    {
+        parentInfo->sValid &= strcmp(childOneInfo->sType, childTwoInfo->sType);
+        parentInfo->sValid &= childOneInfo->sDimension == 0;
+        parentInfo->sValid &= childTwoInfo->sDimension == 0;
+    }
+    if (parentInfo->sValid)
+    {
+        parentInfo->sType = childOneInfo->sType;
+        parentInfo->sDimension = childOneInfo->sDimension;
+    }
+    else
+    {
+        /* printf("error.\n"); */
+    }
+}
+
+void pro40SAction(AST_node *parent)
+{
+    TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
+    TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
+    TypeInfo *childTwoInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
+    parentInfo->sValid = childOneInfo->sValid && childTwoInfo->sValid;
+    if (parentInfo->sValid)
+    {
+        parentInfo->sValid &= strcmp(childOneInfo->sType, "Int");
+        parentInfo->sValid &= strcmp(childTwoInfo->sType, "Int");
+        parentInfo->sValid &= childOneInfo->sDimension == 0;
+        parentInfo->sValid &= childTwoInfo->sDimension == 0;
+    }
+    if (parentInfo->sValid)
+    {
+        parentInfo->sType = "Int";
+        parentInfo->sDimension = 0;
+    }
+    else
+    {
+        /* printf("error.\n"); */
+    }
+}
+
+SDTSAction pro41SAction = pro40SAction;
+
+SDTSAction pro44SAction = pro43SAction;
+SDTSAction pro45SAction = pro43SAction;
+SDTSAction pro46SAction = pro43SAction;
 
 void initTable()
 {
-    sdtIActionTable[17] = pro17IAction;
-    sdtIActionTable[26] = pro26IAction;
-    sdtIActionTable[34] = pro34IAction;
-    sdtIActionTable[35] = pro35IAction;
-    sdtIActionTable[36] = pro36IAction;
-    sdtIActionTable[37] = pro37IAction;
-    sdtIActionTable[38] = pro38IAction;
-    sdtIActionTable[52] = pro52IAction;
+    IS(17, 26, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 52);
     
-    sdtSActionTable[16] = pro16SAction;
-    sdtSActionTable[17] = pro17SAction;
-    sdtSActionTable[26] = pro26SAction;
-    sdtSActionTable[37] = pro37SAction;
-    sdtSActionTable[38] = pro38SAction;
-    sdtSActionTable[52] = pro52SAction;
-    sdtSActionTable[54] = pro54SAction;
+    
+    /* sdtSActionTable[16] = pro16SAction; */
+    /* sdtSActionTable[17] = pro17SAction; */
+    /* sdtSActionTable[26] = pro26SAction; */
+    /* sdtSActionTable[37] = pro37SAction; */
+    /* sdtSActionTable[38] = pro38SAction; */
+    /* sdtSActionTable[39] = pro39SAction; */
+    /* sdtSActionTable[40] = pro40SAction; */
+    /* sdtSActionTable[41] = pro41SAction; */
+    /* sdtSActionTable[42] = pro42SAction; */
+    /* sdtSActionTable[43] = pro43SAction; */
+    /* sdtSActionTable[44] = pro44SAction; */
+    /* sdtSActionTable[45] = pro45SAction; */
+    /* sdtSActionTable[46] = pro46SAction; */
+    /* sdtSActionTable[52] = pro52SAction; */
+    /* sdtSActionTable[54] = pro54SAction; */
+    /* sdtSActionTable[55] = pro55SAction; */
+    /* sdtSActionTable[56] = pro56SAction; */
+    SS(16, 17, 26, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 52, 54, 55, 56);
 }
