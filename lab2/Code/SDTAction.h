@@ -6,10 +6,10 @@
 #include "for_each.h"
 
 #define I(proNum) sdtIActionTable[proNum] = pro##proNum##IAction;
-#define IS(NAME, ...) FOR_EACH(I, __VA_ARGS__) NAME
+#define IS(...) FOR_EACH(I, __VA_ARGS__)
 
 #define S(proNum) sdtSActionTable[proNum] = pro##proNum##SAction;
-#define SS(NAME, ...) FOR_EACH(S, __VA_ARGS__) NAME
+#define SS(...) FOR_EACH(S, __VA_ARGS__)
 
 /* 产生式总数目 */
 #define ProCount 58
