@@ -13,11 +13,19 @@
 
 #define ID(proNum) \
     void pro##proNum##IAction(AST_node *parent, AST_node *child, int childNum)
-#define AssociateHelper(p1, p2) SDTIAction pro##p2##IAction = pro##p1##IAction;
+#define AssociateHelperI(p1, p2) SDTIAction pro##p2##IAction = pro##p1##IAction;
 #define IDS(proNum, ...) \
     void pro##proNum##IAction(AST_node *parent, AST_node *child, int childNum); \
-    FOR_EACH_2(AssociateHelper, proNum, __VA_ARGS__) \
+    FOR_EACH_2(AssociateHelperI, proNum, __VA_ARGS__) \
     void pro##proNum##IAction(AST_node *parent, AST_node *child, int childNum)
+
+#define SD(proNum) \
+    void pro##proNum##SAction(AST_node *parent)
+#define AssociateHelperS(p1, p2) SDTIAction pro##p2##SAction = pro##p1##SAction;
+#define SDS(proNum, ...) \
+    void pro##proNum##SAction(AST_node *parent); \
+    FOR_EACH_2(AssociateHelperS, proNum, __VA_ARGS__) \
+    void pro##proNum##SAction(AST_node *parent)
 
 /* 产生式总数目 */
 #define ProCount 58
