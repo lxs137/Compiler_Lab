@@ -45,7 +45,8 @@ typedef struct
     int sValid;
 } TypeInfo;
 
-void pro34IAction(AST_node *parent, AST_node *child, int childNum)
+/* void pro34IAction(AST_node *parent, AST_node *child, int childNum) */
+ID(34)
 {
     if (childNum == 2)
     {
@@ -55,7 +56,8 @@ void pro34IAction(AST_node *parent, AST_node *child, int childNum)
     }
 }
 
-void pro35IAction(AST_node *parent, AST_node *child, int childNum)
+/* void pro35IAction(AST_node *parent, AST_node *child, int childNum) */
+ID(35)
 {
     if (childNum == 1)
     {
@@ -65,7 +67,8 @@ void pro35IAction(AST_node *parent, AST_node *child, int childNum)
     }
 }
 
-void pro36IAction(AST_node *parent, AST_node *child, int childNum)
+/* void pro36IAction(AST_node *parent, AST_node *child, int childNum) */
+ID(36)
 {
     if (childNum == 1)
     {
@@ -81,7 +84,8 @@ void pro36IAction(AST_node *parent, AST_node *child, int childNum)
     }
 }
 
-void pro37IAction(AST_node *parent, AST_node *child, int childNum)
+/* void pro37IAction(AST_node *parent, AST_node *child, int childNum) */
+ID(37)
 {
     if (childNum == 1)
     {
@@ -92,11 +96,13 @@ void pro37IAction(AST_node *parent, AST_node *child, int childNum)
     }
 }
 
-void pro37SAction(AST_node *parent)
+/* void pro37SAction(AST_node *parent) */
+SD(37)
 {
 }
 
-void pro38IAction(AST_node *parent, AST_node *child, int childNum)
+/* void pro38IAction(AST_node *parent, AST_node *child, int childNum) */
+ID(38)
 {
     if (childNum == 1)
     {
@@ -113,14 +119,16 @@ void pro38IAction(AST_node *parent, AST_node *child, int childNum)
     }
 }
 
-void pro38SAction(AST_node *parent)
+/* void pro38SAction(AST_node *parent) */
+SD(38)
 {
     TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
     TypeInfo *childThreeInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
     /* strcmp() */
 }
 
-void pro17IAction(AST_node *parent, AST_node *child, int childNum)
+/* void pro17IAction(AST_node *parent, AST_node *child, int childNum) */
+ID(17)
 {
     if (childNum == 1)
     {
@@ -132,7 +140,8 @@ void pro17IAction(AST_node *parent, AST_node *child, int childNum)
     }
 }
 
-void pro26IAction(AST_node *parent, AST_node *child, int childNum)
+/* void pro26IAction(AST_node *parent, AST_node *child, int childNum) */
+ID(26)
 {
     if (childNum == 1)
     {
@@ -142,7 +151,8 @@ void pro26IAction(AST_node *parent, AST_node *child, int childNum)
     }
 }
 
-void pro52IAction(AST_node *parent, AST_node *child, int childNum)
+/* void pro52IAction(AST_node *parent, AST_node *child, int childNum) */
+ID(52)
 {
     if (childNum == 1 || childNum == 3)
     {
@@ -162,7 +172,8 @@ IDS(39, 40, 41, 42, 43, 44, 45, 46)
     }
 }
 
-void pro16SAction(AST_node *parent)
+/* void pro16SAction(AST_node *parent) */
+SD(16)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
     parentInfo->sType = parentInfo->iType;
@@ -174,7 +185,8 @@ void pro16SAction(AST_node *parent)
     addSymbol(parent->first_child->str + 4, parent->first_child);
 }
 
-void pro17SAction(AST_node *parent)
+/* void pro17SAction(AST_node *parent) */
+SD(17)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
     TypeInfo *childInfo = (TypeInfo *)parent->first_child->otherInformation;
@@ -182,7 +194,8 @@ void pro17SAction(AST_node *parent)
     parentInfo->sDimension = childInfo->sDimension;
 }
 
-void pro52SAction(AST_node *parent)
+/* void pro52SAction(AST_node *parent) */
+SD(52)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
     TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
@@ -194,7 +207,8 @@ void pro52SAction(AST_node *parent)
     parentInfo->sValid &= childThreeInfo->sDimension == 0;
 }
 
-void pro54SAction(AST_node *parent)
+/* void pro54SAction(AST_node *parent) */
+SD(54)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
     AST_node *child = getSymbol(parent->first_child->str + 4);
@@ -220,7 +234,8 @@ void pro54SAction(AST_node *parent)
     parentInfo->sValid = 1;
 }
 
-void pro55SAction(AST_node *parent)
+/* void pro55SAction(AST_node *parent) */
+SDS(55, 56)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
     parentInfo->sValid = 1;
@@ -228,14 +243,16 @@ void pro55SAction(AST_node *parent)
     parentInfo->sDimension = 0;
 }
 
-SDTSAction pro56SAction = pro55SAction;
+/* SDTSAction pro56SAction = pro55SAction; */
 
-void pro26SAction(AST_node *parent)
+/* void pro26SAction(AST_node *parent) */
+SD(26)
 {
     TypeInfo *childInfo = (TypeInfo *)parent->first_child->otherInformation;
 }
 
-void pro39SAction(AST_node *parent)
+/* void pro39SAction(AST_node *parent) */
+SD(39)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
     TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
@@ -257,7 +274,8 @@ void pro39SAction(AST_node *parent)
     }
 }
 
-void pro42SAction(AST_node *parent)
+/* void pro42SAction(AST_node *parent) */
+SD(42)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
     TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
@@ -280,7 +298,8 @@ void pro42SAction(AST_node *parent)
     }
 }
 
-void pro43SAction(AST_node *parent)
+/* void pro43SAction(AST_node *parent) */
+SD(43)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
     TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
@@ -303,7 +322,8 @@ void pro43SAction(AST_node *parent)
     }
 }
 
-void pro40SAction(AST_node *parent)
+/* void pro40SAction(AST_node *parent) */
+SDS(40, 41, 44, 45, 46)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
     TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
@@ -327,12 +347,12 @@ void pro40SAction(AST_node *parent)
     }
 }
 
-SDTSAction pro41SAction = pro40SAction;
+/* SDTSAction pro41SAction = pro40SAction; */
 /* IDS(40, 41); */
 
-SDTSAction pro44SAction = pro43SAction;
-SDTSAction pro45SAction = pro43SAction;
-SDTSAction pro46SAction = pro43SAction;
+/* SDTSAction pro44SAction = pro43SAction; */
+/* SDTSAction pro45SAction = pro43SAction; */
+/* SDTSAction pro46SAction = pro43SAction; */
 
 void initTable()
 {

@@ -21,7 +21,7 @@
 
 #define SD(proNum) \
     void pro##proNum##SAction(AST_node *parent)
-#define AssociateHelperS(p1, p2) SDTIAction pro##p2##SAction = pro##p1##SAction;
+#define AssociateHelperS(p1, p2) SDTSAction pro##p2##SAction = pro##p1##SAction;
 #define SDS(proNum, ...) \
     void pro##proNum##SAction(AST_node *parent); \
     FOR_EACH_2(AssociateHelperS, proNum, __VA_ARGS__) \
