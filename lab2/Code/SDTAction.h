@@ -89,8 +89,10 @@
             FE_5, FE_4, FE_3, FE_2, FE_1)(action, __VA_ARGS__)
 
 #define I(proNum) sdtIActionTable[proNum] = pro##proNum##IAction;
-/* #define I_2(proNum) */
 #define IS(NAME, ...) FOR_EACH(I, __VA_ARGS__) NAME
+
+#define S(proNum) sdtSActionTable[proNum] = pro##proNum##SAction;
+#define SS(NAME, ...) FOR_EACH(S, __VA_ARGS__) NAME
 
 #include "syntax_tree.h"
 #include "symbol_table.h"
