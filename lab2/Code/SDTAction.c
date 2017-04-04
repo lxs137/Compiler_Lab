@@ -45,14 +45,14 @@ typedef struct
     int sValid;
 } TypeInfo;
 
-/* void pro34IAction(AST_node *parent, AST_node *child, int childNum) */
 ID(34)
 {
     if (childNum == 2)
     {
-        TypeInfo *decListInfo = (TypeInfo *)malloc(sizeof(TypeInfo));
-        decListInfo->iType = parent->first_child->str;
-        child->otherInformation = decListInfo;
+        TypeInfo *typeInfo = (TypeInfo *)malloc(sizeof(TypeInfo));
+        typeInfo->iType = ((TypeInfo *)parent->first_child->otherInformation)->sType;
+        child->otherInformation = typeInfo;
+        printf("%s\n", typeInfo->iType);
     }
 }
 
@@ -170,6 +170,14 @@ IDS(39, 40, 41, 42, 43, 44, 45, 46)
         typeInfo->iDimension = 0;
         child->otherInformation = typeInfo;
     }
+}
+
+SD(9)
+{
+    TypeInfo *parentInfo = (TypeInfo *)malloc(sizeof(TypeInfo));
+    parentInfo->sType = parent->first_child->str + 6;
+    parent->otherInformation = parentInfo;
+    /* printf("%s\n", parentInfo->sType); */
 }
 
 /* void pro16SAction(AST_node *parent) */
@@ -357,5 +365,5 @@ SDS(40, 41, 44, 45, 46)
 void initTable()
 {
     IS(17, 26, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 52);
-    SS(16, 17, 26, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 52, 54, 55, 56);
+    SS(9, 16, 17, 26, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 52, 54, 55, 56);
 }

@@ -5,6 +5,9 @@
 Def -> Specifier DecList SEMI (34)
 DecList.iType = Specifier.sType
 
+Specifier -> TYPE (9)
+Specifier.sType = TYPE.str
+
 DecList -> Dec (35)
 Dec.iType = Declist.iType
 
