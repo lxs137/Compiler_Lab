@@ -84,8 +84,16 @@
 #define FE_2_3(WHAT, X, Y, ...) WHAT(X, Y)FE_2_2(WHAT, X, __VA_ARGS__)
 #define FE_2_4(WHAT, X, Y, ...) WHAT(X, Y)FE_2_3(WHAT, X, __VA_ARGS__)
 #define FE_2_5(WHAT, X, Y, ...) WHAT(X, Y)FE_2_4(WHAT, X, __VA_ARGS__)
-#define GET_MACRO_2(_1, _2, _3, _4, _5, NAME, ...) NAME
+#define FE_2_6(WHAT, X, Y, ...) WHAT(X, Y)FE_2_5(WHAT, X, __VA_ARGS__)
+#define FE_2_7(WHAT, X, Y, ...) WHAT(X, Y)FE_2_6(WHAT, X, __VA_ARGS__)
+#define FE_2_8(WHAT, X, Y, ...) WHAT(X, Y)FE_2_7(WHAT, X, __VA_ARGS__)
+#define FE_2_9(WHAT, X, Y, ...) WHAT(X, Y)FE_2_8(WHAT, X, __VA_ARGS__)
+#define FE_2_10(WHAT, X, Y, ...) WHAT(X, Y)FE_2_9(WHAT, X, __VA_ARGS__)
+#define GET_MACRO_2(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, NAME, ...) NAME
 #define FOR_EACH_2(action, x, ...) \
-    GET_MACRO_2(__VA_ARGS__, FE_2_5, FE_2_4, FE_2_3, FE_2_2, FE_2_1)(action, x, __VA_ARGS__)
+    GET_MACRO_2(__VA_ARGS__, \
+            FE_2_10, FE_2_9, FE_2_8, FE_2_7, FE_2_6, \
+            FE_2_5, FE_2_4, FE_2_3, FE_2_2, FE_2_1) \
+            (action, x, __VA_ARGS__)
 
 #endif
