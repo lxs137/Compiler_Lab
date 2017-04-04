@@ -344,7 +344,7 @@ SDTSAction pro46SAction = pro43SAction;
 void initTable()
 {
     /* sdtIActionTable[17] = pro17IAction; */
-    I(17);
+    /* I(17); */
     sdtIActionTable[26] = pro26IAction;
     sdtIActionTable[34] = pro34IAction;
     sdtIActionTable[35] = pro35IAction;
@@ -353,7 +353,7 @@ void initTable()
     sdtIActionTable[38] = pro38IAction;
     sdtIActionTable[39] = pro39IAction;
     /* sdtIActionTable[40] = pro40IAction; */
-    I(40);
+    /* I(40); */
     sdtIActionTable[41] = pro41IAction;
     sdtIActionTable[42] = pro42IAction;
     sdtIActionTable[43] = pro43IAction;
@@ -361,6 +361,7 @@ void initTable()
     sdtIActionTable[45] = pro45IAction;
     sdtIActionTable[46] = pro46IAction;
     sdtIActionTable[52] = pro52IAction;
+    IS(17, 40);
     
     
     sdtSActionTable[16] = pro16SAction;
