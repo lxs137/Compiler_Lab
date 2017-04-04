@@ -62,11 +62,12 @@ int a[2][3][4];
 Stmt -> Exp SEMI (26)
 Exp.iDimension = 0
 
-Exp -> Exp' LB Exp RB (52)
+Exp -> Exp' LB Exp'' RB (52)
 Exp'.iDimension = Exp.iDimension + 1
+Exp''.iDimension = 0
 Exp.sType = Exp'.sType
 Exp.sDimenison = Exp'.sDimension
-Exp.sVaild = Exp'.sValid
+Exp.sVaild = Exp'.sValid && Exp''.sValid && Exp''.sType == "Int" && Exp''.sDimension = 0
 
 /* j; */
 
@@ -76,6 +77,12 @@ Exp -> ID (54)
 Exp.sValid = Id.ifExist && Exp.iDimension <= ID.sDimension
 Exp.sType = ID.sType
 Exp.sDimension = Id.sDimension - Exp.iDimension
+
+/* 1 */
+Exp -> INT/FLOAT (55/56)
+Exp.sValid = 1
+Exp.sType = Int/Float.sType
+Exp.sDimension = 0
 
 /* 例子 */
 x[1][2];
@@ -112,10 +119,25 @@ Exp.sDimension = Exp'.sDimension
 /* i - 1; */
 /* i * 1; */
 /* i / 1; */
-/* i > 1; */
-Exp -> Exp' RELOP/PLUS/MINUS/STAR/DIV Exp'' (42/43/44/45/46)
+Exp -> Exp' PLUS/MINUS/STAR/DIV Exp'' (43/44/45/46)
 Exp'.iDimension = 0
 Exp''.iDimension = 0 
 Exp.sValid = Exp'.sValid && Exp''.sValid && Exp'.sType == Exp''.sType && Exp'.sDimension == 0 && Exp''.sDimension == 0
 Exp.sType = Exp'.stype
 Exp.sDimension = Exp'.sDimension
+
+/* i > 1; */
+Exp -> Exp' RELOP Exp'' (42)
+Exp'.iDimension = 0
+Exp''.iDimension = 0 
+Exp.sValid = Exp'.sValid && Exp''.sValid && Exp'.sType == Exp''.sType && Exp'.sDimension == 0 && Exp''.sDimension == 0
+Exp.sType = Int
+Exp.sDimension = 0
+
+/* i & 1 */
+Exp -> Exp' AND/OR Exp'' (40/41)
+Exp'.iDimension = 0
+Exp''.iDimension = 0 
+Exp.sValid = Exp'.sValid && Exp''.sValid && Exp'.sType == Int && Exp''.sType == Int && Exp'.sDimension == 0 && Exp''.sDimension == 0
+Exp.sType = Int
+Exp.sDimension = 0
