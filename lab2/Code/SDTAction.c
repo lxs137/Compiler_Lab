@@ -52,11 +52,10 @@ ID(34)
         TypeInfo *typeInfo = (TypeInfo *)malloc(sizeof(TypeInfo));
         typeInfo->iType = ((TypeInfo *)parent->first_child->otherInformation)->sType;
         child->otherInformation = typeInfo;
-        printf("%s\n", typeInfo->iType);
+        /* printf("%s\n", typeInfo->iType); */
     }
 }
 
-/* void pro35IAction(AST_node *parent, AST_node *child, int childNum) */
 ID(35)
 {
     if (childNum == 1)
@@ -67,7 +66,6 @@ ID(35)
     }
 }
 
-/* void pro36IAction(AST_node *parent, AST_node *child, int childNum) */
 ID(36)
 {
     if (childNum == 1)
@@ -84,7 +82,6 @@ ID(36)
     }
 }
 
-/* void pro37IAction(AST_node *parent, AST_node *child, int childNum) */
 ID(37)
 {
     if (childNum == 1)
@@ -96,12 +93,10 @@ ID(37)
     }
 }
 
-/* void pro37SAction(AST_node *parent) */
 SD(37)
 {
 }
 
-/* void pro38IAction(AST_node *parent, AST_node *child, int childNum) */
 ID(38)
 {
     if (childNum == 1)
@@ -119,7 +114,6 @@ ID(38)
     }
 }
 
-/* void pro38SAction(AST_node *parent) */
 SD(38)
 {
     TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
@@ -127,7 +121,6 @@ SD(38)
     /* strcmp() */
 }
 
-/* void pro17IAction(AST_node *parent, AST_node *child, int childNum) */
 ID(17)
 {
     if (childNum == 1)
@@ -140,7 +133,6 @@ ID(17)
     }
 }
 
-/* void pro26IAction(AST_node *parent, AST_node *child, int childNum) */
 ID(26)
 {
     if (childNum == 1)
@@ -151,7 +143,6 @@ ID(26)
     }
 }
 
-/* void pro52IAction(AST_node *parent, AST_node *child, int childNum) */
 ID(52)
 {
     if (childNum == 1 || childNum == 3)
@@ -180,7 +171,6 @@ SD(9)
     /* printf("%s\n", parentInfo->sType); */
 }
 
-/* void pro16SAction(AST_node *parent) */
 SD(16)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
@@ -191,9 +181,9 @@ SD(16)
     typeInfo->sDimension = parentInfo->sDimension;
     parent->first_child->otherInformation = typeInfo;
     addSymbol(parent->first_child->str + 4, parent->first_child);
+    /* printf("%s's type is %s, dimension is %d.\n", parent->first_child->str + 4, typeInfo->sType, typeInfo->sDimension); */
 }
 
-/* void pro17SAction(AST_node *parent) */
 SD(17)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
@@ -202,7 +192,6 @@ SD(17)
     parentInfo->sDimension = childInfo->sDimension;
 }
 
-/* void pro52SAction(AST_node *parent) */
 SD(52)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
@@ -215,7 +204,6 @@ SD(52)
     parentInfo->sValid &= childThreeInfo->sDimension == 0;
 }
 
-/* void pro54SAction(AST_node *parent) */
 SD(54)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
@@ -225,8 +213,6 @@ SD(54)
         printf("Error type 1 at Line %d: Undefined variable \"%s\".\n",
                parent->first_child->loc_line,
                parent->first_child->str + 4);
-        /* parentInfo->sType = ""; */
-        /* parentInfo->sDimension = -1; */
         parentInfo->sValid = 0;
         return;
     }
@@ -235,14 +221,12 @@ SD(54)
     parentInfo->sDimension = childInfo->sDimension - parentInfo->iDimension;
     if (parentInfo->sDimension < 0)
     {
-        /* printf("error.\n"); */
         parentInfo->sValid = 0;
         return;
     }
     parentInfo->sValid = 1;
 }
 
-/* void pro55SAction(AST_node *parent) */
 SDS(55, 56)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
@@ -251,15 +235,11 @@ SDS(55, 56)
     parentInfo->sDimension = 0;
 }
 
-/* SDTSAction pro56SAction = pro55SAction; */
-
-/* void pro26SAction(AST_node *parent) */
 SD(26)
 {
     TypeInfo *childInfo = (TypeInfo *)parent->first_child->otherInformation;
 }
 
-/* void pro39SAction(AST_node *parent) */
 SD(39)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
@@ -282,7 +262,6 @@ SD(39)
     }
 }
 
-/* void pro42SAction(AST_node *parent) */
 SD(42)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
@@ -306,7 +285,6 @@ SD(42)
     }
 }
 
-/* void pro43SAction(AST_node *parent) */
 SD(43)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
@@ -330,7 +308,6 @@ SD(43)
     }
 }
 
-/* void pro40SAction(AST_node *parent) */
 SDS(40, 41, 44, 45, 46)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
@@ -354,13 +331,6 @@ SDS(40, 41, 44, 45, 46)
         /* printf("error.\n"); */
     }
 }
-
-/* SDTSAction pro41SAction = pro40SAction; */
-/* IDS(40, 41); */
-
-/* SDTSAction pro44SAction = pro43SAction; */
-/* SDTSAction pro45SAction = pro43SAction; */
-/* SDTSAction pro46SAction = pro43SAction; */
 
 void initTable()
 {
