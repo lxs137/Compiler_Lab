@@ -107,7 +107,13 @@ Exp.sValid = Exp'.sValid && Exp'.sValid && Exp'.sType == Exp''.sType && Exp'.sDi
 Exp.sType = Exp'.sType
 Exp.sDimension = Exp'.sDimension
 
-Exp -> Exp' PLUS/MINUS/STAR/DIV Exp'' (43/44/45/46)
+/* int j; */
+/* i + 1; */
+/* i - 1; */
+/* i * 1; */
+/* i / 1; */
+/* i > 1; */
+Exp -> Exp' RELOP/PLUS/MINUS/STAR/DIV Exp'' (42/43/44/45/46)
 Exp'.iDimension = 0
 Exp''.iDimension = 0 
 Exp.sValid = Exp'.sValid && Exp''.sValid && Exp'.sType == Exp''.sType && Exp'.sDimension == 0 && Exp''.sDimension == 0

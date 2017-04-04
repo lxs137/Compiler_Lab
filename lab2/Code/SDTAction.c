@@ -153,6 +153,7 @@ void pro39IAction(AST_node *parent, AST_node *child, int childNum)
     }
 }
 
+SDTIAction pro42IAction = pro39IAction;
 SDTIAction pro43IAction = pro39IAction;
 SDTIAction pro44IAction = pro39IAction;
 SDTIAction pro45IAction = pro39IAction;
@@ -206,7 +207,7 @@ void pro54SAction(AST_node *parent)
     parentInfo->sDimension = childInfo->sDimension - parentInfo->iDimension;
     if (parentInfo->sDimension < 0)
     {
-        printf("error.\n");
+        /* printf("error.\n"); */
         parentInfo->sValid = 0;
         return;
     }
@@ -236,11 +237,11 @@ void pro39SAction(AST_node *parent)
     }
     else
     {
-        printf("error.\n");
+        /* printf("error.\n"); */
     }
 }
 
-void pro43SAction(AST_node *parent)
+void pro42SAction(AST_node *parent)
 {
     TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
     TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
@@ -259,13 +260,14 @@ void pro43SAction(AST_node *parent)
     }
     else
     {
-        printf("error.\n");
+        /* printf("error.\n"); */
     }
 }
 
-SDTSAction pro44SAction = pro43SAction;
-SDTSAction pro45SAction = pro43SAction;
-SDTSAction pro46SAction = pro43SAction;
+SDTSAction pro43SAction = pro42SAction;
+SDTSAction pro44SAction = pro42SAction;
+SDTSAction pro45SAction = pro42SAction;
+SDTSAction pro46SAction = pro42SAction;
 
 void initTable()
 {
@@ -277,6 +279,7 @@ void initTable()
     sdtIActionTable[37] = pro37IAction;
     sdtIActionTable[38] = pro38IAction;
     sdtIActionTable[39] = pro39IAction;
+    sdtIActionTable[42] = pro42IAction;
     sdtIActionTable[43] = pro43IAction;
     sdtIActionTable[44] = pro44IAction;
     sdtIActionTable[45] = pro45IAction;
@@ -289,6 +292,7 @@ void initTable()
     sdtSActionTable[37] = pro37SAction;
     sdtSActionTable[38] = pro38SAction;
     sdtSActionTable[39] = pro39SAction;
+    sdtSActionTable[42] = pro42SAction;
     sdtSActionTable[43] = pro43SAction;
     sdtSActionTable[44] = pro44SAction;
     sdtSActionTable[45] = pro45SAction;
