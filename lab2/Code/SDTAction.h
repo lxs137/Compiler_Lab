@@ -1,6 +1,8 @@
 #ifndef SDTACTION_H
 #define SDTACTION_H
 
+#define I(proNum) sdtIActionTable[proNum] = pro##proNum##IAction;
+
 #include "syntax_tree.h"
 #include "symbol_table.h"
 /* 产生式总数目 */
