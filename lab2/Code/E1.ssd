@@ -20,6 +20,7 @@ Dec.sLegalInType = true
 Dec -> VarDec ASSIGNOP Exp (38)
 VarDec.iType = Dec.iType
 VarDec.iDimension = 0
+Exp.iDimension = 0;
 Dec.sLegalInType = VarDec.sType == Exp.sType && VarDec.sDimension = Exp.sDimension
 
 VarDec -> ID (16)

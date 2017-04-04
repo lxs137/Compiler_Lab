@@ -105,10 +105,19 @@ void pro38IAction(AST_node *parent, AST_node *child, int childNum)
         typeInfo->iDimension = 0;
         child->otherInformation = typeInfo;
     }
+    else if (childNum == 3)
+    {
+        TypeInfo *typeInfo = (TypeInfo *)malloc(sizeof(TypeInfo));
+        typeInfo->iDimension = 0;
+        child->otherInformation = typeInfo;
+    }
 }
 
 void pro38SAction(AST_node *parent)
 {
+    TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
+    TypeInfo *childThreeInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
+    /* strcmp() */
 }
 
 void pro17IAction(AST_node *parent, AST_node *child, int childNum)
