@@ -27,19 +27,19 @@
     FOR_EACH_2(AssociateHelperS, proNum, __VA_ARGS__) \
     void pro##proNum##SAction(AST_node *parent)
 
-#define NewTypeInfo TypeInfo *typeInfo = (TypeInfo *)malloc(sizeof(TypeInfo));
-#define ParentInfo TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
-#define ChildInfo \
-    TypeInfo *childInfo = (TypeInfo *) \
+#define D_type_info TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+#define D_parent_info TypeInfo *parent_info = (TypeInfo *)parent->otherInformation;
+#define D_child_info \
+    TypeInfo *child_info = (TypeInfo *) \
     child->otherInformation;
-#define ChildOneInfo \
-    TypeInfo *childOneInfo = (TypeInfo *) \
+#define D_child_1_info \
+    TypeInfo *child_1_info = (TypeInfo *) \
     parent->first_child->otherInformation;
-#define ChildTwoInfo \
-    TypeInfo *childTwoInfo = (TypeInfo *) \
+#define D_child_2_info \
+    TypeInfo *child_2_info = (TypeInfo *) \
     parent->first_child->next_brother->otherInformation;
-#define ChildThreeInfo \
-    TypeInfo *childThreeInfo = (TypeInfo *) \
+#define D_child_3_info \
+    TypeInfo *child_3_info = (TypeInfo *) \
     parent->first_child->next_brother->next_brother->otherInformation;
 
 /* 产生式总数目 */
