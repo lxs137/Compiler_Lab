@@ -27,6 +27,21 @@
     FOR_EACH_2(AssociateHelperS, proNum, __VA_ARGS__) \
     void pro##proNum##SAction(AST_node *parent)
 
+#define NewTypeInfo TypeInfo *typeInfo = (TypeInfo *)malloc(sizeof(TypeInfo));
+#define ParentInfo TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
+#define ChildInfo \
+    TypeInfo *childInfo = (TypeInfo *) \
+    parent->first_child->otherInformation;
+#define ChildOneInfo \
+    TypeInfo *childOneInfo = (TypeInfo *) \
+    parent->first_child->otherInformation;
+#define ChildTwoInfo \
+    TypeInfo *childTwoInfo = (TypeInfo *) \
+    parent->first_child->next_brother->otherInformation;
+#define ChildThreeInfo \
+    TypeInfo *childThreeInfo = (TypeInfo *) \
+    parent->first_child->next_brother->next_brother->otherInformation;
+
 /* 产生式总数目 */
 #define ProCount 58
 /* 第一个参数是父亲节点，第二个参数是需要准备继承属性的儿子节点 */

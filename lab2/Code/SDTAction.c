@@ -192,8 +192,10 @@ SD(37)
 
 SD(38)
 {
-    TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
-    TypeInfo *childThreeInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
+    ChildOneInfo;
+    ChildThreeInfo;
+    /* TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation; */
+    /* TypeInfo *childThreeInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation; */
     /* strcmp() */
 }
 
