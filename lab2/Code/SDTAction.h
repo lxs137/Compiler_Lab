@@ -31,7 +31,7 @@
 #define ParentInfo TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
 #define ChildInfo \
     TypeInfo *childInfo = (TypeInfo *) \
-    parent->first_child->otherInformation;
+    child->otherInformation;
 #define ChildOneInfo \
     TypeInfo *childOneInfo = (TypeInfo *) \
     parent->first_child->otherInformation;

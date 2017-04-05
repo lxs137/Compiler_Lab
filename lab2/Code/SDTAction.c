@@ -194,21 +194,19 @@ SD(38)
 {
     ChildOneInfo;
     ChildThreeInfo;
-    /* TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation; */
-    /* TypeInfo *childThreeInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation; */
     /* strcmp() */
 }
 
 SD(39)
 {
-    TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
-    TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
-    TypeInfo *childTwoInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
-    parentInfo->sValid = childOneInfo->sValid && childTwoInfo->sValid;
+    ParentInfo;
+    ChildOneInfo;
+    ChildThreeInfo;
+    parentInfo->sValid = childOneInfo->sValid && childThreeInfo->sValid;
     if (parentInfo->sValid)
     {
-        parentInfo->sValid &= strcmp(childOneInfo->sType, childTwoInfo->sType);
-        parentInfo->sValid &= childOneInfo->sDimension == childTwoInfo->sDimension;
+        parentInfo->sValid &= strcmp(childOneInfo->sType, childThreeInfo->sType);
+        parentInfo->sValid &= childOneInfo->sDimension == childThreeInfo->sDimension;
     }
     if (parentInfo->sValid)
     {
@@ -223,16 +221,19 @@ SD(39)
 
 SDS(40, 41, 44, 45, 46)
 {
-    TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
-    TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
-    TypeInfo *childTwoInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
-    parentInfo->sValid = childOneInfo->sValid && childTwoInfo->sValid;
+    /* TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation; */
+    /* TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation; */
+    /* TypeInfo *childTwoInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation; */
+    ParentInfo;
+    ChildOneInfo;
+    ChildThreeInfo;
+    parentInfo->sValid = childOneInfo->sValid && childThreeInfo->sValid;
     if (parentInfo->sValid)
     {
         parentInfo->sValid &= strcmp(childOneInfo->sType, "Int");
-        parentInfo->sValid &= strcmp(childTwoInfo->sType, "Int");
+        parentInfo->sValid &= strcmp(childThreeInfo->sType, "Int");
         parentInfo->sValid &= childOneInfo->sDimension == 0;
-        parentInfo->sValid &= childTwoInfo->sDimension == 0;
+        parentInfo->sValid &= childThreeInfo->sDimension == 0;
     }
     if (parentInfo->sValid)
     {
@@ -247,15 +248,18 @@ SDS(40, 41, 44, 45, 46)
 
 SD(42)
 {
-    TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
-    TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
-    TypeInfo *childTwoInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
-    parentInfo->sValid = childOneInfo->sValid && childTwoInfo->sValid;
+    /* TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation; */
+    /* TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation; */
+    /* TypeInfo *childTwoInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation; */
+    ParentInfo;
+    ChildOneInfo;
+    ChildThreeInfo;
+    parentInfo->sValid = childOneInfo->sValid && childThreeInfo->sValid;
     if (parentInfo->sValid)
     {
-        parentInfo->sValid &= strcmp(childOneInfo->sType, childTwoInfo->sType);
+        parentInfo->sValid &= strcmp(childOneInfo->sType, childThreeInfo->sType);
         parentInfo->sValid &= childOneInfo->sDimension == 0;
-        parentInfo->sValid &= childTwoInfo->sDimension == 0;
+        parentInfo->sValid &= childThreeInfo->sDimension == 0;
     }
     if (parentInfo->sValid)
     {
@@ -270,15 +274,18 @@ SD(42)
 
 SD(43)
 {
-    TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
-    TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
-    TypeInfo *childTwoInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
-    parentInfo->sValid = childOneInfo->sValid && childTwoInfo->sValid;
+    /* TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation; */
+    /* TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation; */
+    /* TypeInfo *childThreeInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation; */
+    ParentInfo;
+    ChildOneInfo;
+    ChildThreeInfo;
+    parentInfo->sValid = childOneInfo->sValid && childThreeInfo->sValid;
     if (parentInfo->sValid)
     {
-        parentInfo->sValid &= strcmp(childOneInfo->sType, childTwoInfo->sType);
+        parentInfo->sValid &= strcmp(childOneInfo->sType, childThreeInfo->sType);
         parentInfo->sValid &= childOneInfo->sDimension == 0;
-        parentInfo->sValid &= childTwoInfo->sDimension == 0;
+        parentInfo->sValid &= childThreeInfo->sDimension == 0;
     }
     if (parentInfo->sValid)
     {
@@ -293,9 +300,12 @@ SD(43)
 
 SD(52)
 {
-    TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
-    TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation;
-    TypeInfo *childThreeInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation;
+    /* TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation; */
+    /* TypeInfo *childOneInfo = (TypeInfo *)parent->first_child->otherInformation; */
+    /* TypeInfo *childThreeInfo = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation; */
+    ParentInfo;
+    ChildOneInfo;
+    ChildThreeInfo;
     parentInfo->sType = childOneInfo->sType;
     parentInfo->sDimension = childOneInfo->sDimension;
     parentInfo->sValid = childOneInfo->sValid && childThreeInfo->sValid;
@@ -305,7 +315,8 @@ SD(52)
 
 SD(54)
 {
-    TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
+    /* TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation; */
+    ParentInfo;
     AST_node *child = getSymbol(parent->first_child->str + 4);
     if (child == NULL)
     {
@@ -315,7 +326,8 @@ SD(54)
         parentInfo->sValid = 0;
         return;
     }
-    TypeInfo *childInfo = (TypeInfo *)child->otherInformation;
+    /* TypeInfo *childInfo = (TypeInfo *)child->otherInformation; */
+    ChildInfo;
     parentInfo->sType = childInfo->sType;
     parentInfo->sDimension = childInfo->sDimension - parentInfo->iDimension;
     if (parentInfo->sDimension < 0)
@@ -328,7 +340,8 @@ SD(54)
 
 SDS(55, 56)
 {
-    TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation;
+    /* TypeInfo *parentInfo = (TypeInfo *)parent->otherInformation; */
+    ParentInfo;
     parentInfo->sValid = 1;
     parentInfo->sType = parent->first_child->str;
     parentInfo->sDimension = 0;
