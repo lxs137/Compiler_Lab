@@ -49,11 +49,11 @@ ID(17)
 {
     if (childNum == 1)
     {
-        TypeInfo *parent_info = (TypeInfo *)parent->otherInformation;
+        TypeInfo *parent_info = (TypeInfo *)parent->other_info;
         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
         type_info->iType = parent_info->iType;
         type_info->iDimension = parent_info->iDimension + 1;
-        child->otherInformation = type_info;
+        child->other_info = type_info;
     }
 }
 
@@ -63,7 +63,7 @@ ID(26)
     {
         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
         type_info->iDimension = 0;
-        child->otherInformation = type_info;
+        child->other_info = type_info;
     }
 }
 
@@ -72,8 +72,8 @@ ID(34)
     if (childNum == 2)
     {
         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iType = ((TypeInfo *)parent->first_child->otherInformation)->sType;
-        child->otherInformation = type_info;
+        type_info->iType = ((TypeInfo *)parent->first_child->other_info)->sType;
+        child->other_info = type_info;
         /* printf("%s\n", type_info->iType); */
     }
 }
@@ -83,8 +83,8 @@ ID(35)
     if (childNum == 1)
     {
         TypeInfo *decListInfo = (TypeInfo *)malloc(sizeof(TypeInfo));
-        decListInfo->iType = ((TypeInfo *)parent->otherInformation)->iType;
-        child->otherInformation = decListInfo;
+        decListInfo->iType = ((TypeInfo *)parent->other_info)->iType;
+        child->other_info = decListInfo;
     }
 }
 
@@ -93,14 +93,14 @@ ID(36)
     if (childNum == 1)
     {
         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iType = ((TypeInfo *)parent->otherInformation)->iType;
-        child->otherInformation = type_info;
+        type_info->iType = ((TypeInfo *)parent->other_info)->iType;
+        child->other_info = type_info;
     }
     else if (childNum == 3)
     {
         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iType = ((TypeInfo *)parent->otherInformation)->iType;
-        child->otherInformation = type_info;
+        type_info->iType = ((TypeInfo *)parent->other_info)->iType;
+        child->other_info = type_info;
     }
 }
 
@@ -109,9 +109,9 @@ ID(37)
     if (childNum == 1)
     {
         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iType = ((TypeInfo *)parent->otherInformation)->iType;
+        type_info->iType = ((TypeInfo *)parent->other_info)->iType;
         type_info->iDimension = 0;
-        child->otherInformation = type_info;
+        child->other_info = type_info;
     }
 }
 
@@ -120,15 +120,15 @@ ID(38)
     if (childNum == 1)
     {
         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iType = ((TypeInfo *)parent->otherInformation)->iType;
+        type_info->iType = ((TypeInfo *)parent->other_info)->iType;
         type_info->iDimension = 0;
-        child->otherInformation = type_info;
+        child->other_info = type_info;
     }
     else if (childNum == 3)
     {
         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
         type_info->iDimension = 0;
-        child->otherInformation = type_info;
+        child->other_info = type_info;
     }
 }
 
@@ -138,7 +138,7 @@ IDS(39, 40, 41, 42, 43, 44, 45, 46)
     {
         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
         type_info->iDimension = 0;
-        child->otherInformation = type_info;
+        child->other_info = type_info;
     }
 }
 
@@ -147,8 +147,8 @@ ID(52)
     if (childNum == 1 || childNum == 3)
     {
         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iDimension = ((TypeInfo *)parent->otherInformation)->iDimension + 1;
-        child->otherInformation = type_info;
+        type_info->iDimension = ((TypeInfo *)parent->other_info)->iDimension + 1;
+        child->other_info = type_info;
     }
 }
 
@@ -156,34 +156,34 @@ SD(9)
 {
     TypeInfo *parent_info = (TypeInfo *)malloc(sizeof(TypeInfo));
     parent_info->sType = parent->first_child->str + 6;
-    parent->otherInformation = parent_info;
+    parent->other_info = parent_info;
     /* printf("%s\n", parent_info->sType); */
 }
 
 SD(16)
 {
-    TypeInfo *parent_info = (TypeInfo *)parent->otherInformation;
+    TypeInfo *parent_info = (TypeInfo *)parent->other_info;
     parent_info->sType = parent_info->iType;
     parent_info->sDimension = parent_info->iDimension;
     TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
     type_info->sType = parent_info->sType;
     type_info->sDimension = parent_info->sDimension;
-    parent->first_child->otherInformation = type_info;
+    parent->first_child->other_info = type_info;
     addSymbol(parent->first_child->str + 4, parent->first_child);
     /* printf("%s's type is %s, dimension is %d.\n", parent->first_child->str + 4, type_info->sType, type_info->sDimension); */
 }
 
 SD(17)
 {
-    TypeInfo *parent_info = (TypeInfo *)parent->otherInformation;
-    TypeInfo *child_info = (TypeInfo *)parent->first_child->otherInformation;
+    TypeInfo *parent_info = (TypeInfo *)parent->other_info;
+    TypeInfo *child_info = (TypeInfo *)parent->first_child->other_info;
     parent_info->sType = child_info->iType;
     parent_info->sDimension = child_info->sDimension;
 }
 
 SD(26)
 {
-    TypeInfo *child_info = (TypeInfo *)parent->first_child->otherInformation;
+    TypeInfo *child_info = (TypeInfo *)parent->first_child->other_info;
 }
 
 SD(37)
@@ -221,9 +221,9 @@ SD(39)
 
 SDS(40, 41, 44, 45, 46)
 {
-    /* TypeInfo *parent_info = (TypeInfo *)parent->otherInformation; */
-    /* TypeInfo *child_1_info = (TypeInfo *)parent->first_child->otherInformation; */
-    /* TypeInfo *child_2_info = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation; */
+    /* TypeInfo *parent_info = (TypeInfo *)parent->other_info; */
+    /* TypeInfo *child_1_info = (TypeInfo *)parent->first_child->other_info; */
+    /* TypeInfo *child_2_info = (TypeInfo *)parent->first_child->next_brother->next_brother->other_info; */
     D_parent_info;
     D_child_1_info;
     D_child_3_info;
@@ -248,9 +248,9 @@ SDS(40, 41, 44, 45, 46)
 
 SD(42)
 {
-    /* TypeInfo *parent_info = (TypeInfo *)parent->otherInformation; */
-    /* TypeInfo *child_1_info = (TypeInfo *)parent->first_child->otherInformation; */
-    /* TypeInfo *child_2_info = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation; */
+    /* TypeInfo *parent_info = (TypeInfo *)parent->other_info; */
+    /* TypeInfo *child_1_info = (TypeInfo *)parent->first_child->other_info; */
+    /* TypeInfo *child_2_info = (TypeInfo *)parent->first_child->next_brother->next_brother->other_info; */
     D_parent_info;
     D_child_1_info;
     D_child_3_info;
@@ -274,9 +274,9 @@ SD(42)
 
 SD(43)
 {
-    /* TypeInfo *parent_info = (TypeInfo *)parent->otherInformation; */
-    /* TypeInfo *child_1_info = (TypeInfo *)parent->first_child->otherInformation; */
-    /* TypeInfo *child_3_info = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation; */
+    /* TypeInfo *parent_info = (TypeInfo *)parent->other_info; */
+    /* TypeInfo *child_1_info = (TypeInfo *)parent->first_child->other_info; */
+    /* TypeInfo *child_3_info = (TypeInfo *)parent->first_child->next_brother->next_brother->other_info; */
     D_parent_info;
     D_child_1_info;
     D_child_3_info;
@@ -300,9 +300,9 @@ SD(43)
 
 SD(52)
 {
-    /* TypeInfo *parent_info = (TypeInfo *)parent->otherInformation; */
-    /* TypeInfo *child_1_info = (TypeInfo *)parent->first_child->otherInformation; */
-    /* TypeInfo *child_3_info = (TypeInfo *)parent->first_child->next_brother->next_brother->otherInformation; */
+    /* TypeInfo *parent_info = (TypeInfo *)parent->other_info; */
+    /* TypeInfo *child_1_info = (TypeInfo *)parent->first_child->other_info; */
+    /* TypeInfo *child_3_info = (TypeInfo *)parent->first_child->next_brother->next_brother->other_info; */
     D_parent_info;
     D_child_1_info;
     D_child_3_info;
@@ -315,7 +315,7 @@ SD(52)
 
 SD(54)
 {
-    /* TypeInfo *parent_info = (TypeInfo *)parent->otherInformation; */
+    /* TypeInfo *parent_info = (TypeInfo *)parent->other_info; */
     D_parent_info;
     AST_node *child = getSymbol(parent->first_child->str + 4);
     if (child == NULL)
@@ -326,7 +326,7 @@ SD(54)
         parent_info->sValid = 0;
         return;
     }
-    /* TypeInfo *child_info = (TypeInfo *)child->otherInformation; */
+    /* TypeInfo *child_info = (TypeInfo *)child->other_info; */
     D_child_info;
     parent_info->sType = child_info->sType;
     parent_info->sDimension = child_info->sDimension - parent_info->iDimension;
@@ -340,7 +340,7 @@ SD(54)
 
 SDS(55, 56)
 {
-    /* TypeInfo *parent_info = (TypeInfo *)parent->otherInformation; */
+    /* TypeInfo *parent_info = (TypeInfo *)parent->other_info; */
     D_parent_info;
     parent_info->sValid = 1;
     parent_info->sType = parent->first_child->str;

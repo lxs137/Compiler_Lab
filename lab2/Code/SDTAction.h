@@ -28,19 +28,19 @@
     void pro##proNum##SAction(AST_node *parent)
 
 #define D_type_info TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-#define D_parent_info TypeInfo *parent_info = (TypeInfo *)parent->otherInformation;
+#define D_parent_info TypeInfo *parent_info = (TypeInfo *)parent->other_info;
 #define D_child_info \
     TypeInfo *child_info = (TypeInfo *) \
-    child->otherInformation;
+    child->other_info;
 #define D_child_1_info \
     TypeInfo *child_1_info = (TypeInfo *) \
-    parent->first_child->otherInformation;
+    parent->first_child->other_info;
 #define D_child_2_info \
     TypeInfo *child_2_info = (TypeInfo *) \
-    parent->first_child->next_brother->otherInformation;
+    parent->first_child->next_brother->other_info;
 #define D_child_3_info \
     TypeInfo *child_3_info = (TypeInfo *) \
-    parent->first_child->next_brother->next_brother->otherInformation;
+    parent->first_child->next_brother->next_brother->other_info;
 
 /* 产生式总数目 */
 #define ProCount 58
