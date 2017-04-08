@@ -168,7 +168,7 @@ ID(52)
 SD(9)
 {
     TypeInfo *parent_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-    parent_info->sType = parent->first_child->str + 6;
+    parent_info->sType = parent->first_child->str;
     /* D_type_info; */
     /* type_info->sType = parent->first_child->str + 6; */
     /* D_parent_info; */
