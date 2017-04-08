@@ -164,11 +164,16 @@ int addNewFunc(const char *name, FuncInfo *function)
     else 
     {
         Symbol *func_symbol = (Symbol*)symbol;
+        FuncInfo *func_in_table = (FuncInfo*)func_symbol->u.detail;
         if(func_symbol->kind != 2 
-            || (((FuncInfo*)(func_symbol->u.detail))->status == 1 
-            && function->status == 1))
+            || (func_in_table->status == 1 && function->status == 1))
             return 0;
-        return checkFuncParam(func_symbol->u.detail, function);
+        int check_result = checkFuncParam(func_symbol->u.detail, function);
+        // 修改函数定义声明状态
+        if(check_result == 1 
+            && function->status == 1 && func_in_table->status == 0)
+            func_in_table->status = 1;
+        return check_result;
     }
 }
 

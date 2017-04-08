@@ -1,5 +1,5 @@
 float func(int c, float a);
-float func2(int d)
+float func(int d, float e)
 {
     d = 2;
 }
@@ -11,7 +11,7 @@ int main()
     x[1][2][3];
     x[1][2][3][4];
 }
-int func(int b, float a)
+float func(int b, float a)
 {
     int a = 1;
 }
