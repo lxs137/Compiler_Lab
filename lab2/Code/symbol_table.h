@@ -20,13 +20,14 @@ typedef struct
     // 只在kind=0或者1时有效，表示维度
     int dimension;
 
-    typedef union {
+    union
+    {
         // next用于连接同属于一个struct的域，或者连接同一个函数的形参列表
         void *next;
 
         // 当kind=1时，detail指向StructInfo; 当kind=2时，detail指向FuncInfo
         void *detail; 
-    }u;
+    } u;
 
     void *p;
 } Symbol;
@@ -34,6 +35,7 @@ typedef struct
 typedef struct
 {
     int status; // 0表示为函数声明，1表示为函数定义
+    const char *return_type;
     int param_num;
     Symbol *param_list;
 } FuncInfo;
@@ -49,7 +51,8 @@ typedef struct jsw_rbtree SymbolTable;
 SymbolTable *newSymbolTable();
 void delSymbolTable(SymbolTable *st);
 
-int insertSymbol(SymbolTable *st, const char *name, void *p);
+int insertSymbol(SymbolTable *st, const char *name, int kind,
+ const char *type, int dimension, void* next_detail, void *p);
 int eraseSymbol(SymbolTable *st, const char *name);
 void *findSymbol(SymbolTable *st, const char *name);
 void printSymbolTable(SymbolTable *st);
@@ -68,6 +71,6 @@ void addFuncParam(FuncInfo *function, Symbol *param);
 // 返回-1表示失败，函数多次声明相互冲突、声明和定义相互冲突
 int addNewFunc(const char *name, FuncInfo *function);
 int insertFuncIntoTable(SymbolTable *st, Symbol *function);
-int checkFuncParam(Symbol *func_in_table, Symbol *func_need_check);
+int checkFuncParam(FuncInfo *func_in, FuncInfo *func_uncheck);
 
 #endif

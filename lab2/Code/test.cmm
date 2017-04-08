@@ -1,6 +1,8 @@
+int func(int d, float c);
 int main()
 {
-    int j = 0;
-    i + 1;
-    i > 1;
+}
+int func(int b)
+{
+    int a = 1;
 }

@@ -1,0 +1,56 @@
+// 检查错误类型2，函数调用时未定义
+// 检查错误类型4，函数出现重复定义
+// 检查错误类型9，函数调用时实参与形参的数目或类型不匹配
+// 检查错误类型18，函数进行了声明，但没有被定义
+// 检查错误类型19，函数的多次声明互相冲突，或者声明与定义之间互相冲突
+
+// 函数声明/定义部分
+
+ExtDef -> Specifier FunDec CompSt (6)
+FunDec.otherInfomation = new FuncInfo()
+
+ExtDef -> Specifier FunDec SEMI (59)
+FunDec.otherInfomation = new FuncInfo()
+
+FunDec -> ID LP VarList RP (18)
+VarList.otherInfomation = FunDec.otherInfomation
+addNewFunc(ID.name, VarList.otherInfomation)
+
+FunDec -> ID LP RP (19)
+addNewFunc(ID.name, VarList.otherInfomation)
+
+VarList -> ParamDec COMMA VarList' (20)
+VarList'.otherInfomation = VarList.otherInfomation
+param = new Symbol()
+param.dimension = ParamDec.sDimension
+addFuncParam(VarList.otherInfomation, param)
+VarList'.otherInfomation = NULL
+
+VarList -> ParamDec (21)
+param = new Symbol()
+param.dimension = ParamDec.sDimension
+addFuncParam(VarList.otherInfomation, new Symbol())
+
+ParamDec -> Specifier VarDec (22)
+VarDec.iType = Specifier.sType
+VarDec.iDimension = 0
+ParamDec.sType = VarDec.sType
+ParamDec.sDimension = VarDec.sDimension
+
+Specifier -> TYPE (9)
+Specifier.sType = TYPE
+
+
+// 函数调用
+
+Exp -> ID LP Args RP (50)
+checkSymbolKind
+
+Exp -> ID LP RP (51)
+
+Args -> Exp COMMA Args' (57)
+Args.sValid = Exp.sValid
+
+Args -> Exp (58)
+Args.sValid = Exp.sValid
+

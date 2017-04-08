@@ -64,9 +64,9 @@
         _41, _42, _43, _44, _45, \
         _46, _47, _48, _49, _50, \
         _51, _52, _53, _54, _55, \
-        _56, _57, _58, NAME, ...) NAME
+        _56, _57, _58, _59, NAME, ...) NAME
 #define FOR_EACH(action, ...) \
-    GET_MACRO(__VA_ARGS__, FE_58, FE_57, FE_56, \
+    GET_MACRO(__VA_ARGS__, FE_59, FE_58, FE_57, FE_56, \
             FE_55, FE_54, FE_53, FE_52, FE_51, \
             FE_50, FE_49, FE_48, FE_47, FE_46, \
             FE_45, FE_44, FE_43, FE_42, FE_41, \
