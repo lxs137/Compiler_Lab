@@ -1,8 +1,8 @@
-int func(int d, float c);
+float func(int c, float a);
 int main()
 {
 }
-int func(int b)
+float func(int b, float a)
 {
     int a = 1;
 }

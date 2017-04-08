@@ -98,7 +98,7 @@ void printSymbolTable(SymbolTable *st)
 int addSymbol(const char *name, AST_node *p)
 {
     TypeInfo *info = (TypeInfo*)p->otherInformation;
-    return insertSymbol(globalSymbolTable, name, 1,
+    return insertSymbol(globalSymbolTable, name, 0,
      info->sType, info->sDimension, NULL, (void *)p);
 }
 
@@ -168,8 +168,6 @@ int addNewFunc(const char *name, FuncInfo *function)
             || (((FuncInfo*)(func_symbol->u.detail))->status == 1 
             && function->status == 1))
             return 0;
-        if(((FuncInfo*)(func_symbol->u.detail))->param_num != function->param_num)
-            return -1;
         return checkFuncParam(func_symbol->u.detail, function);
     }
 }
@@ -184,14 +182,14 @@ int insertFuncIntoTable(SymbolTable *st, Symbol *function)
     {
         insertSymbol(globalSymbolTable, param->name, param->kind, 
             param->type, param->dimension, param->u.next, param->p);
-        cur_param = findSymbol(globalSymbolTable, param->name);
+        cur_param = (Symbol*)findSymbol(globalSymbolTable, param->name);
         ((FuncInfo*)(function->u.detail))->param_list = cur_param;
         while(param->u.next != NULL)
         {
             param = param->u.next;
             insertSymbol(globalSymbolTable, param->name, param->kind, 
                 param->type, param->dimension, param->u.next, param->p);
-            cur_param->u.next = findSymbol(globalSymbolTable, param->name);
+            cur_param->u.next = (Symbol*)findSymbol(globalSymbolTable, param->name);
             cur_param = cur_param->u.next;
         }
         param = first_param;   
@@ -214,7 +212,21 @@ int insertFuncIntoTable(SymbolTable *st, Symbol *function)
     return 0;
 }
 
-int checkFuncParam(FuncInfo *func_in, FuncInfo *func_uncheck)
+int checkFuncParam(FuncInfo *func_exist, FuncInfo *func_uncheck)
 {
-    return 0;
+    if(func_exist->param_num != func_uncheck->param_num
+        || strcmp(func_exist->return_type, func_uncheck->return_type) != 0)
+        return -1;
+    Symbol *exi_param = func_exist->param_list;
+    Symbol *unc_param = func_uncheck->param_list;
+    while(exi_param != NULL)
+    {
+        if(exi_param->kind != unc_param->kind 
+            || strcmp(exi_param->type, unc_param->type) != 0
+            || exi_param->dimension != unc_param->dimension)
+            return -1;
+        exi_param = exi_param->u.next;
+        unc_param = unc_param->u.next;
+    }
+    return 1;
 }

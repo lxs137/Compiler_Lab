@@ -8,7 +8,8 @@ ID(6)
     if(childNum == 2)
     {
         FuncInfo *funDec = (FuncInfo*)malloc(sizeof(FuncInfo));
-        funDec->return_type = parent->first_child->str;
+        TypeInfo *specifier = (TypeInfo*)(parent->first_child->otherInformation);
+        funDec->return_type = specifier->sType;
         funDec->status = 1;
         funDec->param_num = 0;
         funDec->param_list = NULL;
@@ -21,7 +22,8 @@ ID(59)
     if(childNum == 2)
     {
         FuncInfo *funDec = (FuncInfo*)malloc(sizeof(FuncInfo));
-        funDec->return_type = parent->first_child->str;
+        TypeInfo *specifier = (TypeInfo*)(parent->first_child->otherInformation);
+        funDec->return_type = specifier->sType;
         funDec->status = 0;
         funDec->param_num = 0;
         funDec->param_list = NULL;

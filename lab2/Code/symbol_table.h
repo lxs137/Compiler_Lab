@@ -71,6 +71,6 @@ void addFuncParam(FuncInfo *function, Symbol *param);
 // 返回-1表示失败，函数多次声明相互冲突、声明和定义相互冲突
 int addNewFunc(const char *name, FuncInfo *function);
 int insertFuncIntoTable(SymbolTable *st, Symbol *function);
-int checkFuncParam(FuncInfo *func_in, FuncInfo *func_uncheck);
+int checkFuncParam(FuncInfo *func_exist, FuncInfo *func_uncheck);
 
 #endif
