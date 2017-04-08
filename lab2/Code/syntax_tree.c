@@ -7,7 +7,7 @@ AST_node *new_token_node(int line, int column, char *string)
 {
     AST_node *token = (AST_node *)(malloc(sizeof(AST_node)));
     token->proNum = 0;
-    token->otherInformation = NULL;
+    token->other_info = NULL;
     token->loc_line = line;
     token->loc_column = column;
     
@@ -93,10 +93,10 @@ void clean_up_syntax_tree(AST_node *parent)
         free(parent->str);
         parent->str = NULL;
     }
-    if(parent->otherInformation != NULL)
+    if(parent->other_info != NULL)
     {
-        free(parent->otherInformation);
-        parent->otherInformation = NULL;
+        free(parent->other_info);
+        parent->other_info = NULL;
     }
     free(parent);
 }

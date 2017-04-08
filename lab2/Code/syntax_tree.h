@@ -9,7 +9,7 @@ typedef struct syntax_tree_node
     struct syntax_tree_node *first_child;
     struct syntax_tree_node *next_brother;
     int proNum;
-    void *otherInformation;
+    void *other_info;
 } AST_node;
 
 AST_node *new_token_node(int line, int column, char *string);
