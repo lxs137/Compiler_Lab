@@ -2,6 +2,7 @@
 #include "SDTAction.h"
 #include <stdarg.h>
 #include <malloc.h>
+// #define SDT_DEBUG_PRINT
 
 void traversalTreePerformAction(AST_node *parent)
 {
@@ -12,12 +13,18 @@ void traversalTreePerformAction(AST_node *parent)
     {
         f(parent, parent, 0);
     }
-    
+// #ifdef SDT_DEBUG_PRINT
+//     print_child_node(parent, 0);
+// #endif
     int i = 1;
     for (AST_node *child = parent->first_child;
             child != NULL;
             child = child->next_brother)
     {
+#ifdef SDT_DEBUG_PRINT
+    printf("Line %d: %s childNum(%d) (%d) I Action start.\n",
+     parent->loc_line, parent->str, i, proNum);
+#endif
         if (f != NULL)
         {
             f(parent, child, i);
@@ -25,25 +32,31 @@ void traversalTreePerformAction(AST_node *parent)
         traversalTreePerformAction(child);
         i++;
     }
+#ifdef SDT_DEBUG_PRINT
+    printf("Line %d: %s (%d) I Action end.\n", parent->loc_line, parent->str, proNum);
+#endif
     
     SDTSAction g = sdtSActionTable[proNum];
     if (g != NULL)
     {
         g(parent);
     }
+#ifdef SDT_DEBUG_PRINT
+    printf("Line %d: %s (%d) S Action end.\n", parent->loc_line, parent->str, proNum);
+#endif
 }
 
-SDTIAction sdtIActionTable[ProCount] = { NULL };
-SDTSAction sdtSActionTable[ProCount] = { NULL };
+SDTIAction sdtIActionTable[ProCount + 1] = { NULL };
+SDTSAction sdtSActionTable[ProCount + 1] = { NULL };
 
-typedef struct
-{
-    const char *iType;
-    const char *sType;
-    int iDimension;
-    int sDimension;
-    int sValid;
-} TypeInfo;
+// typedef struct
+// {
+//     const char *iType;
+//     const char *sType;
+//     int iDimension;
+//     int sDimension;
+//     int sValid;
+// } TypeInfo;
 
 ID(17)
 {
@@ -155,7 +168,7 @@ ID(52)
 SD(9)
 {
     TypeInfo *parent_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-    parent_info->sType = parent->first_child->str + 6;
+    parent_info->sType = parent->first_child->str;
     /* D_type_info; */
     /* type_info->sType = parent->first_child->str + 6; */
     /* D_parent_info; */
@@ -342,4 +355,6 @@ void initTable()
 {
     IS(17, 26, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 52);
     SS(9, 16, 17, 26, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 52, 54, 55, 56);
+    IS(6, 18, 20, 22, 59);
+    SS(18, 19, 20, 21, 22);
 }

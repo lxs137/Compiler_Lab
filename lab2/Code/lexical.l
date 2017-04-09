@@ -123,12 +123,12 @@ ws [ |\t|\n]
 }
 int    {
     print_loc_info("TYPE-int");
-    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "TYPE: int");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "int");
     return TYPE;
 }
 float    {
     print_loc_info("TYPE-float");
-    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "TYPE: float");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "float");
     return TYPE;
 }
 "("    {

@@ -46,9 +46,10 @@
 Program
     : ExtDefList {
         $$ = new_parent_node("Program", 1, 1, $1);
-        /* print_child_node($$, 0); */
+//        print_child_node($$, 0);
         initTable();
         globalSymbolTable = newSymbolTable();
+        globalFuncSymbolTable = newFuncSymbolTable();
         traversalTreePerformAction($$);
         clean_up_syntax_tree($$);
         cleanUpSymbolTable();
@@ -62,6 +63,7 @@ ExtDef
     : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 3, 4, $1, $2, $3); }
     | Specifier SEMI { $$ = new_parent_node("ExtDef", 5, 2, $1, $2); }
     | Specifier FunDec CompSt { $$ = new_parent_node("ExtDef", 6, 3, $1, $2, $3); }
+    | Specifier FunDec SEMI { $$ = new_parent_node("ExtDef", 59, 3, $1, $2, $3); }
     ;
 ExtDecList
     : VarDec { $$ = new_parent_node("ExtDecList", 7, 1, $1); }
