@@ -85,11 +85,11 @@ void printSymbolTable(SymbolTable *st)
     {
         printf("name: %s, pointer: %p\n", symbol->name, symbol->p);
     }
-
+    
     free(rbtrav);
 }
 
-int addSymbol(const char *name, AST_node *p)
+int addSymbol(const char *name, void *p)
 {
     return insertSymbol(globalSymbolTable, name, (void *)p);
 }
