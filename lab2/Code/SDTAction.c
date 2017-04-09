@@ -326,8 +326,12 @@ SD(52)
     parent_info->sType = child_1_info->sType;
     parent_info->sDimension = child_1_info->sDimension;
     parent_info->sValid = child_1_info->sValid && child_3_info->sValid;
-    parent_info->sValid &= strcmp(child_3_info->sType, "Int");
+    parent_info->sValid &= !strcmp(child_3_info->sType, "int");
     parent_info->sValid &= child_3_info->sDimension == 0;
+    if (parent_info->sValid == 0)
+    {
+        printf("Error type 12 at Line %d: \"%s\" is not an integer.\n", parent->first_child->next_brother->next_brother->loc_line, parent->first_child->next_brother->next_brother->str);
+    }
 }
 
 SD(54)
@@ -348,6 +352,7 @@ SD(54)
     if (parent_info->sDimension < 0)
     {
         parent_info->sValid = 0;
+        printf("Error type 10 at Line: \"%s\" is not an array.", parent->first_child->str + 4);
         return;
     }
     parent_info->sValid = 1;
