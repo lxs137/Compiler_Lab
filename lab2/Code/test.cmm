@@ -1,6 +1,17 @@
+float func(int c, float a);
+float func(int d, float e)
+{
+    d = 2;
+}
 int main()
 {
-    int j = 0;
-    i + 1;
-    i > 1;
+    int x[2][3][4];
+    x[1];
+    x[1][2];
+    x[1][2][3];
+    x[1][2][3][4];
+}
+float func(int b, float a)
+{
+    int a = 1;
 }
