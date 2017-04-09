@@ -59,7 +59,7 @@ void printSymbolTable(SymbolTable *st);
 
 SymbolTable *globalSymbolTable;
 
-int addSymbol(const char *name, void *p);
+int addSymbol(const char *name, AST_node *p);
 int delSymbol(const char *name);
 AST_node *getSymbol(const char *name);
 void cleanUpSymbolTable();

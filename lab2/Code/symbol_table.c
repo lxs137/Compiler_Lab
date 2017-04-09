@@ -113,7 +113,7 @@ void printSymbolTable(SymbolTable *st)
     free(rbtrav);
 }
 
-int addSymbol(const char *name, void *p)
+int addSymbol(const char *name, AST_node *p)
 {
     TypeInfo *info = (TypeInfo*)p->other_info;
     return insertSymbol(globalSymbolTable, name, 0,
