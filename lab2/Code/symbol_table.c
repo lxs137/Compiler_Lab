@@ -115,7 +115,7 @@ void printSymbolTable(SymbolTable *st)
 
 int addSymbol(const char *name, AST_node *p)
 {
-    TypeInfo *info = (TypeInfo*)p->other_info;
+    TypeInfo *info = (TypeInfo*)(p->other_info);
     return insertSymbol(globalSymbolTable, name, 0,
      info->sType, info->sDimension, NULL, (void *)p);
 }

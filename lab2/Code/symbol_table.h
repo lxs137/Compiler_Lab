@@ -79,7 +79,7 @@ void freeTempParamList(Symbol *param_list);
 int addNewFunc(const char *name, FuncInfo *function);
 int insertFuncIntoTable(Symbol *function);
 int checkFuncParam(FuncInfo *func_exist, FuncInfo *func_uncheck);
-// 在符号表中查找相应函数信息
+// 在函数符号表中查找相应函数信息
 Symbol *getFuncSymbol(const char *func_name);
 
 #endif
