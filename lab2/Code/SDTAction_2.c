@@ -124,7 +124,9 @@ SD(51)
     if(func_in_table == NULL)
         printf("Error type 2 at Line %d: Function %s has not been defined.\n",
          parent->loc_line, func_name);
-    if(func_in_table->kind != 2)
+    // 在变量符号表中查找该ID
+    // TODO change find symbol function
+    if(getSymbol(func_name) != NULL)
         printf("Error type 11 at Line %d: Variable %s is not a function.\n",
          parent->loc_line, func_name);
 }
