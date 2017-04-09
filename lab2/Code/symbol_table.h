@@ -64,13 +64,22 @@ int delSymbol(const char *name);
 AST_node *getSymbol(const char *name);
 void cleanUpSymbolTable();
 
-void addFuncParam(FuncInfo *function, Symbol *param);
+
+SymbolTable *globalFuncSymbolTable;
+
+SymbolTable *newFuncSymbolTable();
+void addFuncParam(FuncInfo *function, const char *param_name,
+ const char*param_type, int param_dimension);
+// 清理临时参数列表
+void freeTempParamList(Symbol *param_list);
 // 将语法树节点中存的函数定义信息存入符号表
 // 若返回1表示成功
 // 返回0表示失败,函数重复定义; 
 // 返回-1表示失败，函数多次声明相互冲突、声明和定义相互冲突
 int addNewFunc(const char *name, FuncInfo *function);
-int insertFuncIntoTable(SymbolTable *st, Symbol *function);
+int insertFuncIntoTable(Symbol *function);
 int checkFuncParam(FuncInfo *func_exist, FuncInfo *func_uncheck);
+// 在符号表中查找相应函数信息
+Symbol *getFuncSymbol(const char *func_name);
 
 #endif
