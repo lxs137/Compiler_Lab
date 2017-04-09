@@ -188,7 +188,14 @@ SD(16)
     /* D_child_1_info; */
     /* child_1_info = type_info; */
     parent->first_child->other_info = type_info;
-    addSymbol(parent->first_child->str + 4, parent->first_child);
+    if (getSymbol(parent->first_child->str + 4) != NULL)
+    {
+        printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", parent->first_child->loc_line, parent->first_child->str + 4);
+    }
+    else
+    {
+        addSymbol(parent->first_child->str + 4, parent->first_child);
+    }
     /* printf("%s's type is %s, dimension is %d.\n", parent->first_child->str + 4, type_info->sType, type_info->sDimension); */
 }
 
@@ -213,7 +220,10 @@ SD(38)
 {
     D_child_1_info;
     D_child_3_info;
-    /* strcmp() */
+    if (child_1_info->sDimension != child_3_info->sDimension || strcmp(child_1_info->sType, child_3_info->sType))
+    {
+        printf("Error type 5 at Line %d: Type mismatched for assignment.\n", parent->first_child->loc_line);
+    }
 }
 
 SD(39)
@@ -224,7 +234,7 @@ SD(39)
     parent_info->sValid = child_1_info->sValid && child_3_info->sValid;
     if (parent_info->sValid)
     {
-        parent_info->sValid &= strcmp(child_1_info->sType, child_3_info->sType);
+        parent_info->sValid &= !strcmp(child_1_info->sType, child_3_info->sType);
         parent_info->sValid &= child_1_info->sDimension == child_3_info->sDimension;
     }
     if (parent_info->sValid)
@@ -234,7 +244,7 @@ SD(39)
     }
     else
     {
-        /* printf("error.\n"); */
+        printf("Error type 5 at Line %d: Type mismatched for assignment.\n", parent->first_child->loc_line);
     }
 }
 
@@ -347,7 +357,14 @@ SDS(55, 56)
 {
     D_parent_info;
     parent_info->sValid = 1;
-    parent_info->sType = parent->first_child->str;
+    if (parent->first_child->str[0] == 'I')
+    {
+        parent_info->sType = "int";
+    }
+    else
+    {
+        parent_info->sType = "float";
+    }
     parent_info->sDimension = 0;
 }
 

@@ -109,7 +109,7 @@ void printSymbolTable(SymbolTable *st)
     {
         printf("name: %s, pointer: %p\n", symbol->name, symbol->p);
     }
-
+    
     free(rbtrav);
 }
 
