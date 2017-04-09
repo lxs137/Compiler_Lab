@@ -74,17 +74,11 @@ SDS(20, 21)
         parent->other_info = NULL;
         return;
     }
-    Symbol *param = (Symbol*)malloc(sizeof(Symbol));
     AST_node *varDec = parent->first_child->first_child->next_brother;
     while(varDec->first_child != NULL)
         varDec = varDec->first_child;
-    param->name = varDec->str + 4;
-    param->kind = 0;
-    param->type = paramDec->sType;
-    param->dimension = paramDec->sDimension;
-    param->u.next = NULL;
     // TODO add Struct Type
-    addFuncParam(varList, param);
+    addFuncParam(varList, varDec->str + 4, paramDec->sType, paramDec->sDimension);
     parent->other_info = NULL;
 }
 
@@ -101,6 +95,8 @@ SDS(18, 19)
     else if(result == -1)
         printf("Error type 19 at Line %d: Function \"%s\" has been defined with confliction.\n", 
             parent->loc_line, func_name);
+    freeTempParamList(varList->param_list);
+    free(varList);
 }
 
 SD(22)
@@ -119,4 +115,16 @@ SD(22)
         printf("Error type 17 at Line %d: Struct has not been defined.\n", parent->loc_line);
         parent->other_info = NULL;
     }
+}
+
+SD(51)
+{
+    const char* func_name = parent->first_child->str + 4;
+    Symbol *func_in_table = getFuncSymbol(func_name);
+    if(func_in_table == NULL)
+        printf("Error type 2 at Line %d: Function %s has not been defined.\n",
+         parent->loc_line, func_name);
+    if(func_in_table->kind != 2)
+        printf("Error type 11 at Line %d: Variable %s is not a function.\n",
+         parent->loc_line, func_name);
 }

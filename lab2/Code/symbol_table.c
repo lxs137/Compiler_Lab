@@ -14,8 +14,26 @@ static void *dupSymbol(void *p)
     return dup_p;
 }
 
+static void *dupFuncSymbol(void *p)
+{
+    void *dup_p;
+    void *dup_func_info;
+    dup_func_info = calloc(1, sizeof(FuncInfo));
+    memmove(dup_func_info, ((Symbol*)p)->u.detail, sizeof(FuncInfo));
+    dup_p = calloc(1, sizeof(Symbol));
+    memmove(dup_p, p, sizeof(Symbol));
+    ((Symbol*)dup_p)->u.detail = dup_func_info;
+    return dup_p;
+}
+
 static void deleteSymbol(void *p)
 {
+    free(p);
+}
+
+static void deleteFuncSymbol(void *p)
+{
+    free(((Symbol*)p)->u.detail);
     free(p);
 }
 
@@ -123,12 +141,26 @@ AST_node *getSymbol(const char *name)
 void cleanUpSymbolTable()
 {
     delSymbolTable(globalSymbolTable);
+    delSymbolTable(globalFuncSymbolTable);
 }
 
-void addFuncParam(FuncInfo *function, Symbol *param)
+
+SymbolTable *newFuncSymbolTable()
 {
-    if(param == NULL)
-        return;
+    jsw_rbtree_t *rbtree;
+    rbtree = jsw_rbnew(compSymbol, dupFuncSymbol, deleteFuncSymbol);
+    return rbtree;
+}
+
+void addFuncParam(FuncInfo *function, const char *param_name,
+ const char*param_type, int param_dimension)
+{
+    Symbol *param = (Symbol*)malloc(sizeof(Symbol));
+    param->name = param_name;
+    param->kind = 0;
+    param->type = param_type;
+    param->dimension = param_dimension;
+    param->u.next = NULL;
     function->param_num += 1;
     if(function->param_list == NULL)
     {
@@ -148,7 +180,7 @@ void addFuncParam(FuncInfo *function, Symbol *param)
 // 返回-1表示失败，函数多次声明相互冲突、声明和定义相互冲突
 int addNewFunc(const char *name, FuncInfo *function)
 {
-    void *symbol = findSymbol(globalSymbolTable, name);
+    void *symbol = findSymbol(globalFuncSymbolTable, name);
     // 符号表中不存在该函数名
     if(symbol == NULL)
     {
@@ -157,7 +189,7 @@ int addNewFunc(const char *name, FuncInfo *function)
         func_symbol->kind = 2;
         func_symbol->type = function->return_type;
         func_symbol->u.detail = function;
-        int insert_result = insertFuncIntoTable(globalSymbolTable, func_symbol);
+        int insert_result = insertFuncIntoTable(func_symbol);
         free(func_symbol);
         return ((insert_result == 0) ? 1:0);
     }
@@ -168,7 +200,9 @@ int addNewFunc(const char *name, FuncInfo *function)
         if(func_symbol->kind != 2 
             || (func_in_table->status == 1 && function->status == 1))
             return 0;
-        int check_result = checkFuncParam(func_symbol->u.detail, function);
+        if(strcmp(func_in_table->return_type, function->return_type) != 0)
+            return -1;
+        int check_result = checkFuncParam(func_in_table, function);
         // 修改函数定义声明状态
         if(check_result == 1 
             && function->status == 1 && func_in_table->status == 0)
@@ -177,7 +211,7 @@ int addNewFunc(const char *name, FuncInfo *function)
     }
 }
 
-int insertFuncIntoTable(SymbolTable *st, Symbol *function)
+int insertFuncIntoTable(Symbol *function)
 {
     int result;
     // 将function的param插入符号表
@@ -197,17 +231,12 @@ int insertFuncIntoTable(SymbolTable *st, Symbol *function)
             cur_param->u.next = (Symbol*)findSymbol(globalSymbolTable, param->name);
             cur_param = cur_param->u.next;
         }
-        param = first_param;   
-        while(param != NULL)
-        {
-            cur_param = param;
-            param = param->u.next;
-            free(cur_param);
-        }
     }
 
     // 将函数信息插入符号表
-    result = jsw_rbinsert(st, (void *)function);
+    result = jsw_rbinsert(globalFuncSymbolTable, (void *)function);
+    // 使function中的参数指针仍然指向临时参数列表
+    ((FuncInfo*)(function->u.detail))->param_list = first_param;
     if (result == 0)
     {
         printf("failed to insert the function symbol with name %s\n",
@@ -217,10 +246,20 @@ int insertFuncIntoTable(SymbolTable *st, Symbol *function)
     return 0;
 }
 
+void freeTempParamList(Symbol *param_list)
+{
+    Symbol *cur_param = param_list;
+    while(param_list != NULL)
+    {
+        cur_param = param_list;
+        param_list = param_list->u.next;
+        free(cur_param);
+    } 
+}
+
 int checkFuncParam(FuncInfo *func_exist, FuncInfo *func_uncheck)
 {
-    if(func_exist->param_num != func_uncheck->param_num
-        || strcmp(func_exist->return_type, func_uncheck->return_type) != 0)
+    if(func_exist->param_num != func_uncheck->param_num)
         return -1;
     Symbol *exi_param = func_exist->param_list;
     Symbol *unc_param = func_uncheck->param_list;
@@ -234,4 +273,12 @@ int checkFuncParam(FuncInfo *func_exist, FuncInfo *func_uncheck)
         unc_param = unc_param->u.next;
     }
     return 1;
+}
+
+Symbol *getFuncSymbol(const char *func_name)
+{
+    void *symbol = findSymbol(globalFuncSymbolTable, func_name);
+    if(symbol == NULL)
+        return NULL;
+    return (Symbol*)symbol;
 }

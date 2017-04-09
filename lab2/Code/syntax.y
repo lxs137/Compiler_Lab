@@ -49,6 +49,7 @@ Program
 //        print_child_node($$, 0);
         initTable();
         globalSymbolTable = newSymbolTable();
+        globalFuncSymbolTable = newFuncSymbolTable();
         traversalTreePerformAction($$);
         clean_up_syntax_tree($$);
         cleanUpSymbolTable();
