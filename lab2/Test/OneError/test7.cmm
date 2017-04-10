@@ -1,5 +1,5 @@
 int main()
 {
     float j;
-    10 + j;
+    1 > (j > 1);
 }
