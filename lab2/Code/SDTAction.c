@@ -155,6 +155,16 @@ IDS(39, 40, 41, 42, 43, 44, 45, 46)
     }
 }
 
+IDS(47, 49)
+{
+    if (childNum == 2)
+    {
+        D_type_info;
+        type_info->iDimension = 0;
+        child->other_info = type_info;
+    }
+}
+
 ID(52)
 {
     if (childNum == 1)
@@ -285,24 +295,25 @@ SD(39)
 SDS(40, 41)
 {
     D_parent_info;
+    parent_info->sValid = 1;
+    parent_info->sType = "int";
+    parent_info->sDimension = 0;
+
     D_child_1_info;
     D_child_3_info;
-    parent_info->sValid = child_1_info->sValid && child_3_info->sValid;
-    if (parent_info->sValid)
+    int v = child_1_info->sValid && child_3_info->sValid;
+    if (v)
     {
-        parent_info->sValid &= strcmp(child_1_info->sType, "Int");
-        parent_info->sValid &= strcmp(child_3_info->sType, "Int");
-        parent_info->sValid &= child_1_info->sDimension == 0;
-        parent_info->sValid &= child_3_info->sDimension == 0;
+        v &= strcmp(child_1_info->sType, "int");
+        v &= strcmp(child_3_info->sType, "int");
+        v &= child_1_info->sDimension == 0;
+        v &= child_3_info->sDimension == 0;
     }
-    if (parent_info->sValid)
+    if (!v)
     {
-        parent_info->sType = "Int";
-        parent_info->sDimension = 0;
-    }
-    else
-    {
-        /* printf("error.\n"); */
+        D_child_1;
+        printf("Error type 7 at Line %d: Type mismatched for operands.\n",
+                child_1->loc_line);
     }
 }
 
@@ -311,21 +322,23 @@ SD(42)
     D_parent_info;
     D_child_1_info;
     D_child_3_info;
-    parent_info->sValid = child_1_info->sValid && child_3_info->sValid;
-    if (parent_info->sValid)
+    int v1 = child_1_info->sValid && 
+    /* int v1 = */
+             (!strcmp(child_1_info->sType, "int") || !strcmp(child_1_info->sType, "float")) && 
+             child_1_info->sDimension == 0;
+    int v3 = child_3_info->sValid && 
+    /* int v3 = */
+             (!strcmp(child_3_info->sType, "int") || !strcmp(child_3_info->sType, "float")) && 
+             child_3_info->sDimension == 0;
+    int v = v1 && v3 && !strcmp(child_1_info->sType, child_3_info->sType);
+    parent_info->sValid = 1;
+    parent_info->sType = "int";
+    parent_info->sDimension = 0;
+    if (!v)
     {
-        parent_info->sValid &= strcmp(child_1_info->sType, child_3_info->sType);
-        parent_info->sValid &= child_1_info->sDimension == 0;
-        parent_info->sValid &= child_3_info->sDimension == 0;
-    }
-    if (parent_info->sValid)
-    {
-        parent_info->sType = "Int";
-        parent_info->sDimension = 0;
-    }
-    else
-    {
-        /* printf("error.\n"); */
+        D_child_1;
+        printf("Error type 7 at Line %d: Type mismatched for operands.\n",
+                child_1->loc_line);
     }
 }
 
@@ -377,6 +390,33 @@ SDS(43, 44, 45, 46)
 
         D_child_1;
         printf("Error type 7 at Line %d: Type mismatched for operands.\n", child_1->loc_line);
+    }
+}
+
+SD(47)
+{
+    D_parent_info;
+    D_child_2_info;
+    parent_info->sValid = child_2_info->sValid;
+    if (parent_info->sValid)
+    {
+        parent_info->sType = child_2_info->sType;
+        parent_info->sDimension = child_2_info->sDimension;
+    }
+}
+
+SD(49)
+{
+    D_parent_info;
+    parent_info->sValid = 1;
+    parent_info->sType = "int";
+    parent_info->sDimension = 0;
+
+    D_child_2_info;
+    if (strcmp(child_2_info->sType, "int") || !(child_2_info->sDimension == 0))
+    {
+        D_child_2;
+        printf("Error type 7 at Line %d: Type mismatched for operands.\n", child_2->loc_line);
     }
 }
 
@@ -443,8 +483,8 @@ SDS(55, 56)
 
 void initTable()
 {
-    IS(17, 26, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 52);
-    SS(9, 16, 17, 26, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 52, 54, 55, 56);
+    IS(17, 26, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 49, 52);
+    SS(9, 16, 17, 26, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 49, 52, 54, 55, 56);
     IS(6, 18, 20, 22, 59);
     SS(18, 19, 20, 21, 22);
 }

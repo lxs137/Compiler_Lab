@@ -165,6 +165,7 @@ Exp.sDimension = Exp'.sDimension
 /* 如果运算符一侧的表达式不合法，整个表达式的类型采用另一侧表达式的类型，且整个表达式合法 */
 /* 如果运算符两侧的表达式都不合法，整个表达式不合法，没有类型 */
 /* 如果运算符两侧的表达式都合法但类型冲突，整个表达式的类型采用左侧表达式的类型，且整个表达式合法 */
+/* 使用到加减乘除的产生式只有43-46号产生式，所以用本产生式就可以检查完该类错误 */
 /* 测试如下： */
 /* int j; */
 /* i + 1; i + 1.0 */
@@ -176,7 +177,12 @@ Exp.sValid = Exp'.sValid && Exp''.sValid && Exp'.sType == Exp''.sType && Exp'.sD
 Exp.sType = Exp'.stype
 Exp.sDimension = Exp'.sDimension
 
-/* i > 1; */
+/* 检查错误类型7.2，关系运算符操作数类型不匹配 */
+/* 规则和产生式43的规则几乎是一模一样的，除了表达式的类型是int以外 */
+/* 由于表达式的类型已经确定，所以不再需要分类讨论 */
+/* int i; i > 1; i > 1.0; */
+/* int i[1]; i > 1; */
+/* int i[1]; int j[1]; i > j; */
 Exp -> Exp' RELOP Exp'' (42)
 Exp'.iDimension = 0
 Exp''.iDimension = 0 
@@ -184,10 +190,27 @@ Exp.sValid = Exp'.sValid && Exp''.sValid && Exp'.sType == Exp''.sType && Exp'.sD
 Exp.sType = Int
 Exp.sDimension = 0
 
+不检查任何错误，只做内存分配等琐碎工作
+Exp -> LP Exp' RP (47)
+Exp'.iDimension = 0
+Exp.sType = Exp'.sType
+Exp.sDimension = Exp'.sDimension
+
+/* 检查错误类型7.3，单目逻辑运算符操作数类型不匹配 */
+/* 不论是否报错，表达式都是合法的，类型都是确定的，以防止错误漫溢 */
+/* int j[1]; !(!j) */
+Exp -> NOT Exp' (49)
+Exp'.iDimension = 0
+Exp.sValid = 1
+Exp.sDimension = 0
+Exp.sType = "int"
+
+/* 检查错误类型7.4，双目逻辑运算符操作数类型不匹配 */
+/* 不论是否报错，表达式都是合法的，类型都是确定的，以防止错误漫溢 */
 /* i & 1 */
 Exp -> Exp' AND/OR Exp'' (40/41)
 Exp'.iDimension = 0
 Exp''.iDimension = 0 
-Exp.sValid = Exp'.sValid && Exp''.sValid && Exp'.sType == Int && Exp''.sType == Int && Exp'.sDimension == 0 && Exp''.sDimension == 0
-Exp.sType = Int
+Exp.sValid = 1
 Exp.sDimension = 0
+Exp.sType = "int"
