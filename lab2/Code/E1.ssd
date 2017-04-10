@@ -1,6 +1,10 @@
 /* 检查错误类型1，变量未定义而使用 */
 /* 检查错误类型3，变量出现重复定义 */
 /* 检查错误类型5，赋值号两边的表达式类型不匹配 */
+/* 检查错误类型7.1，加减乘除操作数类型不匹配 */
+/* 检查错误类型7.2，关系运算符操作数类型不匹配 */
+/* 检查错误类型7.3，单目逻辑运算符操作数类型不匹配 */
+/* 检查错误类型7.4，双目逻辑运算符操作数类型不匹配 */
 /* 检查错误类型10，对非数组类型变量使用数组访问操作符 */
 /* 检查错误类型12，数组访问操作符中出现非整数 */
 
@@ -22,18 +26,31 @@ VarDec.iType = Dec.iType
 VarDec.iDimension = 0
 Dec.sLegalInType = true
 
+/* 检查错误类型5，赋值号两边的表达式类型不匹配 */
+/* 如果Exp不合法，也报相同类型错误 */
+/* 使用到ASSIGNOP的产生式有38号产生式和39号产生式，所以除了本产生式以外，还要用到39号产生式来检查该类错误 */
+/* 测试如下： */
+/* int i = 3.9; */
+/* int j[1]; int i = j; */
+/* int j[1]; int i[1] = j; */
+/* int j[1]; int i[1][2] = j; */
 Dec -> VarDec ASSIGNOP Exp (38)
 VarDec.iType = Dec.iType
 VarDec.iDimension = 0
 Exp.iDimension = 0;
 Dec.sLegalInType = VarDec.sType == Exp.sType && VarDec.sDimension = Exp.sDimension
 
+/* 检查错误类型3，变量出现重复定义 */
+/* 变量定义只可能通过这个产生式，所以用这个产生式就可以检测完该类错误 */
+/* 所以有checkIDNotExist，具体动作是查询符号表看变量是否已经存在 */
+/* 如果变量已经存在，则符号表／语法树还保留原符号的信息，后续分析使用原符号 */
+/* 测试如下：int i; int i; int j; float j; */
 VarDec -> ID (16)
+checkIDNotExist(ID) else return
 VarDec.sType = VarDec.iType
 VarDec.sDimension = VarDec.iDemension
 ID.sType = VarDec.sType
 ID.sDimension = VarDec.sDimension
-checkIDNotExist(ID)
 addSymbol(ID)
 
 VarDec -> VarDec' LB INT RB (17)
@@ -69,17 +86,28 @@ int a[2][3][4];
 Stmt -> Exp SEMI (26)
 Exp.iDimension = 0
 
+/* 检查错误类型12，数组访问操作符中出现非整数 */
+/* 方括号中出现表达式的产生式只有这一个，所以只要查这个产生式就能检测所有该类型错误 */
+/* 检查Exp''是否是整数类型 */
+/* 如果Exp''不是整数类型，报错后把Exp''看成整数类型，即错误不向上传递 */
+/* 如果Exp''出现了其他错误，也是一样的，报错后不向上传递错误 */
+/* 所以Exp.sValid = Exp'.sValid 而不是Exp'.sValid && Exp''.sValid*/
+/* 测试如下：i[int]／i[float]／i[数组]／i[非法表达式] */
 Exp -> Exp' LB Exp'' RB (52)
 Exp'.iDimension = Exp.iDimension + 1
 Exp''.iDimension = 0
+if (!(Exp''.sType == "int" && Exp''.sDimension = 0)) error ...
 Exp.sType = Exp'.sType
 Exp.sDimenison = Exp'.sDimension
-Exp.sVaild = Exp'.sValid && Exp''.sValid && Exp''.sType == "Int" && Exp''.sDimension = 0
+Exp.sVaild = Exp'.sValid
 
-/* j; */
-
-/* int x[1][2]; */
-/* x[1][2][3]; */
+/* 检查错误类型1，变量未定义而使用 */
+/* 变量的使用只能通过这个产生式，所以用这个产生式就能检测完该类错误 */
+/* 所以有Id.ifExist，具体动作是到符号表里查是否已有该变量 */
+/* 测试如下：j; */
+/* 为类型检查做准备，配合52号产生式能够产生类型int／float／array of int／array of float */
+/* 检查错误类型10，对非数组类型变量使用数组访问操作符 */
+/* 测试如下：int x[1][2]; x[1]; x[1][2]; x[1][2][3]; int y; y[0]; */
 Exp -> ID (54)
 Exp.sValid = Id.ifExist && Exp.iDimension <= ID.sDimension
 Exp.sType = ID.sType
@@ -112,23 +140,38 @@ x[1][2];
 /* int i; */
 /* j = i; */
 
-/* int j; */
-/* j = i; */
+/* 检查错误类型5，赋值号两边的表达式类型不匹配 */
+/* 如果赋值符号一侧的表达式不合法，也报该错误 */
+/* 如果赋值符号一侧的表达式不合法，整个赋值表达式的类型采用另一侧表达式的类型，且整个赋值表达式合法 */
+/* 如果赋值符号两侧的表达式都不合法，整个赋值表达式不合法，没有类型 */
+/* 如果赋值符号两侧的表达式都合法但类型冲突，整个赋值表达式的类型采用左侧表达式的类型，且整个赋值表达式合法 */
+/* 使用到ASSIGNOP的产生式有38号产生式和39号产生式，所以除了本产生式以外，还要用到38号产生式来检查该类错误 */
+/* 测试如下： */
+/* int i, j; j = i; */
+/* int i; float j; j = i; i = j; i = (i = j); */
+/* int i; int j[1]; i = j; j = i; j = (j = i); */
+/* int i; i = j; j = i; i = (i = j); i = (j = i); */
 Exp -> Exp' ASSIGNOP Exp'' (39)
 Exp'.iDimension = 0
 Exp''.iDimension = 0
+/* 下面语义规则不是非常准确，有谎言，具体请看代码 */
 Exp.sValid = Exp'.sValid && Exp'.sValid && Exp'.sType == Exp''.sType && Exp'.sDimension && Exp''.sDimension
 Exp.sType = Exp'.sType
 Exp.sDimension = Exp'.sDimension
 
+/* 检查错误类型7.1，加减乘除操作数类型不匹配 */
+/* 以下合法指的是表达式类型为int／float其中之一 */
+/* 如果运算符一侧的表达式不合法，也报该错误 */
+/* 如果运算符一侧的表达式不合法，整个表达式的类型采用另一侧表达式的类型，且整个表达式合法 */
+/* 如果运算符两侧的表达式都不合法，整个表达式不合法，没有类型 */
+/* 如果运算符两侧的表达式都合法但类型冲突，整个表达式的类型采用左侧表达式的类型，且整个表达式合法 */
+/* 测试如下： */
 /* int j; */
-/* i + 1; */
-/* i - 1; */
-/* i * 1; */
-/* i / 1; */
+/* i + 1; i + 1.0 */
 Exp -> Exp' PLUS/MINUS/STAR/DIV Exp'' (43/44/45/46)
 Exp'.iDimension = 0
 Exp''.iDimension = 0 
+/* 下面语义规则不是非常准确，有谎言，具体请看代码 */
 Exp.sValid = Exp'.sValid && Exp''.sValid && Exp'.sType == Exp''.sType && Exp'.sDimension == 0 && Exp''.sDimension == 0
 Exp.sType = Exp'.stype
 Exp.sDimension = Exp'.sDimension

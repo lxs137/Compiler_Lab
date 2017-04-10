@@ -1,6 +1,9 @@
 int main()
 {
-    int i;
-    i = 3.7;
-    int k;
+    int i = 1.5;
+    
+    int j[1];
+    int a = j;
+    int b[1] = j;
+    int c[1][2] = j;
 }
