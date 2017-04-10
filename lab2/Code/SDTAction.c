@@ -185,6 +185,14 @@ SD(9)
 
 SD(16)
 {
+    D_child_1;
+    if (getSymbol(child_1->str + 4) != NULL)
+    {
+        printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
+                child_1->loc_line, 
+                child_1->str + 4);
+        return;
+    }
     D_parent_info;
     parent_info->sType = parent_info->iType;
     parent_info->sDimension = parent_info->iDimension;
@@ -194,15 +202,7 @@ SD(16)
     /* D_child_1_info; */
     /* child_1_info = type_info; */
     parent->first_child->other_info = type_info;
-    if (getSymbol(parent->first_child->str + 4) != NULL)
-    {
-        printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", parent->first_child->loc_line, parent->first_child->str + 4);
-    }
-    else
-    {
-        addSymbol(parent->first_child->str + 4, parent->first_child);
-    }
-    /* printf("%s's type is %s, dimension is %d.\n", parent->first_child->str + 4, type_info->sType, type_info->sDimension); */
+    addSymbol(parent->first_child->str + 4, parent->first_child);
 }
 
 SD(17)
@@ -226,7 +226,9 @@ SD(38)
 {
     D_child_1_info;
     D_child_3_info;
-    if (child_1_info->sDimension != child_3_info->sDimension || strcmp(child_1_info->sType, child_3_info->sType))
+    if (!child_3_info->sValid || 
+         child_1_info->sDimension != child_3_info->sDimension || 
+         strcmp(child_1_info->sType, child_3_info->sType))
     {
         printf("Error type 5 at Line %d: Type mismatched for assignment.\n", parent->first_child->loc_line);
     }
@@ -237,20 +239,46 @@ SD(39)
     D_parent_info;
     D_child_1_info;
     D_child_3_info;
-    parent_info->sValid = child_1_info->sValid && child_3_info->sValid;
-    if (parent_info->sValid)
+
+    if (child_1_info->sValid && child_3_info->sValid)
     {
-        parent_info->sValid &= !strcmp(child_1_info->sType, child_3_info->sType);
-        parent_info->sValid &= child_1_info->sDimension == child_3_info->sDimension;
-    }
-    if (parent_info->sValid)
-    {
+        parent_info->sValid = 1;
         parent_info->sType = child_1_info->sType;
         parent_info->sDimension = child_1_info->sDimension;
+        if (strcmp(child_1_info->sType, child_3_info->sType) || child_1_info->sDimension != child_3_info->sDimension)
+        {
+            D_child_1;
+            printf("Error type 5 at Line %d: Type mismatched for assignment.\n", 
+                    child_1->loc_line);
+        }
+    }
+    else if (child_1_info->sValid)
+    {
+        parent_info->sValid = 1;
+        parent_info->sType = child_1_info->sType;
+        parent_info->sDimension = child_1_info->sDimension;
+
+        D_child_3;
+        printf("Error type 5 at Line %d: Type mismatched for assignment.\n", 
+                child_3->loc_line);
+    }
+    else if (child_3_info->sValid)
+    {
+        parent_info->sValid = 1;
+        parent_info->sType = child_3_info->sType;
+        parent_info->sDimension = child_3_info->sDimension;
+
+        D_child_1;
+        printf("Error type 5 at Line %d: Type mismatched for assignment.\n", 
+                child_1->loc_line);
     }
     else
     {
-        printf("Error type 5 at Line %d: Type mismatched for assignment.\n", parent->first_child->loc_line);
+        parent_info->sValid = 0;
+
+        D_child_1;
+        printf("Error type 5 at Line %d: Type mismatched for assignment.\n", 
+                child_1->loc_line);
     }
 }
 
