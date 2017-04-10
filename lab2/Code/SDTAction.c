@@ -321,10 +321,12 @@ SD(42)
     D_parent_info;
     D_child_1_info;
     D_child_3_info;
-    int v1 = child_1_info->sValid && 
+    /* int v1 = child_1_info->sValid && */ 
+    int v1 =
              (!strcmp(child_1_info->sType, "int") || !strcmp(child_1_info->sType, "float")) && 
              child_1_info->sDimension == 0;
-    int v3 = child_3_info->sValid && 
+    /* int v3 = child_3_info->sValid && */ 
+    int v3 =
              (!strcmp(child_3_info->sType, "int") || !strcmp(child_3_info->sType, "float")) && 
              child_3_info->sDimension == 0;
     int v = v1 && v3 && !strcmp(child_1_info->sType, child_3_info->sType);
