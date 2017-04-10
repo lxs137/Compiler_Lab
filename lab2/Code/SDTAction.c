@@ -157,10 +157,16 @@ IDS(39, 40, 41, 42, 43, 44, 45, 46)
 
 ID(52)
 {
-    if (childNum == 1 || childNum == 3)
+    if (childNum == 1)
     {
         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
         type_info->iDimension = ((TypeInfo *)parent->other_info)->iDimension + 1;
+        child->other_info = type_info;
+    }
+    else if (childNum == 3)
+    {
+        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+        type_info->iDimension = 0;
         child->other_info = type_info;
     }
 }
