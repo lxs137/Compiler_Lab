@@ -83,12 +83,12 @@ Exp.sType = Exp'.sType
 Exp.sDimenison = Exp'.sDimension
 Exp.sVaild = Exp'.sValid
 
-/* j; */
-
 /* 检查错误类型1，变量未定义而使用 */
-/* 所以有Id.ifExist，具体动作是道符号表里查是否已有该变量 */
-/* int x[1][2]; */
-/* x[1][2][3]; */
+/* 所以有Id.ifExist，具体动作是到符号表里查是否已有该变量 */
+/* 测试如下：j; */
+/* 为类型检查做准备，配合52号产生式能够产生类型int／float／array of int／array of float */
+/* 检查错误类型10，对非数组类型变量使用数组访问操作符 */
+/* 测试如下：int x[1][2]; x[1]; x[1][2]; x[1][2][3]; int y; y[0]; */
 Exp -> ID (54)
 Exp.sValid = Id.ifExist && Exp.iDimension <= ID.sDimension
 Exp.sType = ID.sType
