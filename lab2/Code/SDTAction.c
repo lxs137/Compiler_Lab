@@ -155,6 +155,16 @@ IDS(39, 40, 41, 42, 43, 44, 45, 46)
     }
 }
 
+ID(47)
+{
+    if (childNum == 2)
+    {
+        D_type_info;
+        type_info->iDimension = 0;
+        child->other_info = type_info;
+    }
+}
+
 ID(52)
 {
     if (childNum == 1)
@@ -380,6 +390,14 @@ SDS(43, 44, 45, 46)
     }
 }
 
+SD(47)
+{
+    D_parent_info;
+    D_child_2_info;
+    parent_info->sType = child_2_info->sType;
+    parent_info->sDimension = child_2_info->sDimension;
+}
+
 SD(52)
 {
     D_parent_info;
@@ -443,8 +461,8 @@ SDS(55, 56)
 
 void initTable()
 {
-    IS(17, 26, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 52);
-    SS(9, 16, 17, 26, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 52, 54, 55, 56);
+    IS(17, 26, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 52);
+    SS(9, 16, 17, 26, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 52, 54, 55, 56);
     IS(6, 18, 20, 22, 59);
     SS(18, 19, 20, 21, 22);
 }

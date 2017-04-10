@@ -190,6 +190,12 @@ Exp.sValid = Exp'.sValid && Exp''.sValid && Exp'.sType == Exp''.sType && Exp'.sD
 Exp.sType = Int
 Exp.sDimension = 0
 
+不检查任何错误，只做内存分配等琐碎工作
+Exp -> LP Exp' RP (47)
+Exp'.iDimension = 0
+Exp.sType = Exp'.sType
+Exp.sDimension = Exp'.sDimension
+
 /* i & 1 */
 Exp -> Exp' AND/OR Exp'' (40/41)
 Exp'.iDimension = 0
