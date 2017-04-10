@@ -342,23 +342,27 @@ SD(52)
 SD(54)
 {
     D_parent_info;
-    AST_node *child = getSymbol(parent->first_child->str + 4);
+
+    D_child_1;
+    AST_node *child = getSymbol(child_1->str + 4);
     if (child == NULL)
     {
         printf("Error type 1 at Line %d: Undefined variable \"%s\".\n",
-               parent->first_child->loc_line,
-               parent->first_child->str + 4);
+               child_1->loc_line,
+               child_1->str + 4);
         parent_info->sValid = 0;
         return;
     }
+
     D_child_info;
-    /* TypeInfo *child_info = (TypeInfo *)child->other_info; */
     parent_info->sType = child_info->sType;
     parent_info->sDimension = child_info->sDimension - parent_info->iDimension;
     if (parent_info->sDimension < 0)
     {
         parent_info->sValid = 0;
-        printf("Error type 10 at Line %d: \"%s\" is not an array.\n", parent->first_child->loc_line, parent->first_child->str + 4);
+        printf("Error type 10 at Line %d: \"%s\" is not an array.\n", 
+                child_1->loc_line, 
+                child_1->str + 4);
         return;
     }
     parent_info->sValid = 1;
