@@ -34,7 +34,12 @@ syntax-c: $(YFILE)
 # 定义的一些伪目标
 .PHONY: clean test
 test:
-	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="memLog" ./parser ../Test/OneError/test7.cmm
+	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_1" ./parser ../Test/OneError/test1.cmm
+	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_3" ./parser ../Test/OneError/test3.cmm
+	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_5" ./parser ../Test/OneError/test5.cmm
+	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_7" ./parser ../Test/OneError/test7.cmm
+	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_10" ./parser ../Test/OneError/test10.cmm
+	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_12" ./parser ../Test/OneError/test12.cmm
 	 # valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --log-file="memLog" ./parser test.cmm
 clean:
 	rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output
