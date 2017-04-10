@@ -432,9 +432,9 @@ SD(52)
                 child_3->loc_line, 
                 child_3->str);
     }
+    parent_info->sValid = child_1_info->sValid;
     parent_info->sType = child_1_info->sType;
     parent_info->sDimension = child_1_info->sDimension;
-    parent_info->sValid = child_1_info->sValid;
 }
 
 SD(54)
