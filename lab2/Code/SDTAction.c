@@ -155,7 +155,7 @@ IDS(39, 40, 41, 42, 43, 44, 45, 46)
     }
 }
 
-ID(47)
+IDS(47, 49)
 {
     if (childNum == 2)
     {
@@ -404,6 +404,21 @@ SD(47)
     }
 }
 
+SD(49)
+{
+    D_parent_info;
+    parent_info->sValid = 1;
+    parent_info->sType = "int";
+    parent_info->sDimension = 0;
+
+    D_child_2_info;
+    if (strcmp(child_2_info->sType, "int") || !(child_2_info->sDimension == 0))
+    {
+        D_child_2;
+        printf("Error type 7 at Line %d: Type mismatched for operands.\n", child_2->loc_line);
+    }
+}
+
 SD(52)
 {
     D_parent_info;
@@ -467,8 +482,8 @@ SDS(55, 56)
 
 void initTable()
 {
-    IS(17, 26, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 52);
-    SS(9, 16, 17, 26, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 52, 54, 55, 56);
+    IS(17, 26, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 49, 52);
+    SS(9, 16, 17, 26, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 49, 52, 54, 55, 56);
     IS(6, 18, 20, 22, 59);
     SS(18, 19, 20, 21, 22);
 }

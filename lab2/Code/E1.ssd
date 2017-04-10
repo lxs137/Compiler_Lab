@@ -196,6 +196,15 @@ Exp'.iDimension = 0
 Exp.sType = Exp'.sType
 Exp.sDimension = Exp'.sDimension
 
+/* 检查错误类型7.3，单目逻辑运算符操作数类型不匹配 */
+/* 不论是否报错，表达式都是合法的，类型都是确定的，以防止错误漫溢 */
+/* int j[1]; !(!j) */
+Exp -> NOT Exp' (49)
+Exp'.iDimension = 0
+Exp.sValid = 1
+Exp.sDimension = 0
+Exp.sType = "int"
+
 /* i & 1 */
 Exp -> Exp' AND/OR Exp'' (40/41)
 Exp'.iDimension = 0

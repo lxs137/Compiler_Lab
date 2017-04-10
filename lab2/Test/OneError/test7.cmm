@@ -2,4 +2,6 @@ int main()
 {
     float j;
     1 > (j > 1);
+
+    !(!j);
 }
