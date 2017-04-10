@@ -311,21 +311,21 @@ SD(42)
     D_parent_info;
     D_child_1_info;
     D_child_3_info;
-    parent_info->sValid = child_1_info->sValid && child_3_info->sValid;
-    if (parent_info->sValid)
+    int v1 = child_1_info->sValid && 
+             (!strcmp(child_1_info->sType, "int") || !strcmp(child_1_info->sType, "float")) && 
+             child_1_info->sDimension == 0;
+    int v3 = child_3_info->sValid && 
+             (!strcmp(child_3_info->sType, "int") || !strcmp(child_3_info->sType, "float")) && 
+             child_3_info->sDimension == 0;
+    int v = v1 && v3 && !strcmp(child_1_info->sType, child_3_info->sType);
+    parent_info->sValid = 1;
+    parent_info->sType = "int";
+    parent_info->sDimension = 0;
+    if (!v)
     {
-        parent_info->sValid &= strcmp(child_1_info->sType, child_3_info->sType);
-        parent_info->sValid &= child_1_info->sDimension == 0;
-        parent_info->sValid &= child_3_info->sDimension == 0;
-    }
-    if (parent_info->sValid)
-    {
-        parent_info->sType = "Int";
-        parent_info->sDimension = 0;
-    }
-    else
-    {
-        /* printf("error.\n"); */
+        D_child_1;
+        printf("Error type 7 at Line %d: Type mismatched for operands.\n",
+                child_1->loc_line);
     }
 }
 
