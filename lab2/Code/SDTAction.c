@@ -282,7 +282,7 @@ SD(39)
     }
 }
 
-SDS(40, 41, 44, 45, 46)
+SDS(40, 41)
 {
     D_parent_info;
     D_child_1_info;
@@ -329,26 +329,54 @@ SD(42)
     }
 }
 
-SD(43)
+SDS(43, 44, 45, 46)
 {
     D_parent_info;
     D_child_1_info;
     D_child_3_info;
-    parent_info->sValid = child_1_info->sValid && child_3_info->sValid;
-    if (parent_info->sValid)
+    int v1 = child_1_info->sValid && 
+             (!strcmp(child_1_info->sType, "int") || !strcmp(child_1_info->sType, "float")) && 
+             child_1_info->sDimension == 0;
+    int v3 = child_3_info->sValid && 
+             (!strcmp(child_3_info->sType, "int") || !strcmp(child_3_info->sType, "float")) && 
+             child_3_info->sDimension == 0;
+    if (v1 && v3)
     {
-        parent_info->sValid &= strcmp(child_1_info->sType, child_3_info->sType);
-        parent_info->sValid &= child_1_info->sDimension == 0;
-        parent_info->sValid &= child_3_info->sDimension == 0;
-    }
-    if (parent_info->sValid)
-    {
+        parent_info->sValid = 1;
         parent_info->sType = child_1_info->sType;
         parent_info->sDimension = child_1_info->sDimension;
+
+        if (strcmp(child_1_info->sType, child_3_info->sType) ||
+            child_1_info->sDimension != child_3_info->sDimension)
+        {
+            D_child_1;
+            printf("Error type 7 at Line %d: Type mismatched for operands.\n", child_1->loc_line);
+        }
+    }
+    else if(v1)
+    {
+        parent_info->sValid = 1;
+        parent_info->sType = child_1_info->sType;
+        parent_info->sDimension = child_1_info->sDimension;
+
+        D_child_3;
+        printf("Error type 7 at Line %d: Type mismatched for operands.\n", child_3->loc_line);
+    }
+    else if(v3)
+    {
+        parent_info->sValid = 1;
+        parent_info->sType = child_3_info->sType;
+        parent_info->sDimension = child_3_info->sDimension;
+
+        D_child_1;
+        printf("Error type 7 at Line %d: Type mismatched for operands.\n", child_1->loc_line);
     }
     else
     {
-        /* printf("error.\n"); */
+        parent_info->sValid = 0;
+
+        D_child_1;
+        printf("Error type 7 at Line %d: Type mismatched for operands.\n", child_1->loc_line);
     }
 }
 
