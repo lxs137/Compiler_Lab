@@ -205,10 +205,12 @@ Exp.sValid = 1
 Exp.sDimension = 0
 Exp.sType = "int"
 
+/* 检查错误类型7.4，双目逻辑运算符操作数类型不匹配 */
+/* 不论是否报错，表达式都是合法的，类型都是确定的，以防止错误漫溢 */
 /* i & 1 */
 Exp -> Exp' AND/OR Exp'' (40/41)
 Exp'.iDimension = 0
 Exp''.iDimension = 0 
-Exp.sValid = Exp'.sValid && Exp''.sValid && Exp'.sType == Int && Exp''.sType == Int && Exp'.sDimension == 0 && Exp''.sDimension == 0
-Exp.sType = Int
+Exp.sValid = 1
 Exp.sDimension = 0
+Exp.sType = "int"
