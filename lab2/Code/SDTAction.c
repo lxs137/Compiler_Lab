@@ -329,13 +329,14 @@ SD(52)
     D_parent_info;
     D_child_1_info;
     D_child_3_info;
+    if (!(child_3_info->sDimension == 0 && !strcmp(child_3_info->sType, "int")))
+    {
+        D_child_3;
+        printf("Error type 12 at Line %d: \"%s\" is not an integer.\n", child_3->loc_line, child_3->str);
+    }
     parent_info->sType = child_1_info->sType;
     parent_info->sDimension = child_1_info->sDimension;
     parent_info->sValid = child_1_info->sValid;
-    if (!(child_3_info->sDimension == 0 && !strcmp(child_3_info->sType, "int")))
-    {
-        printf("Error type 12 at Line %d: \"%s\" is not an integer.\n", parent->first_child->next_brother->next_brother->loc_line, parent->first_child->next_brother->next_brother->str);
-    }
 }
 
 SD(54)

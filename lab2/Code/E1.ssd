@@ -74,12 +74,13 @@ Exp.iDimension = 0
 /* 如果Exp''不是整数类型，报错后把Exp''看成整数类型，即错误不向上传递 */
 /* 如果Exp''出现了其他错误，也是一样的，报错后不向上传递错误 */
 /* 所以Exp.sValid = Exp'.sValid 而不是Exp'.sValid && Exp''.sValid*/
+/* 测试如下：i[int]／i[float]／i[数组]／i[非法表达式] */
 Exp -> Exp' LB Exp'' RB (52)
 Exp'.iDimension = Exp.iDimension + 1
 Exp''.iDimension = 0
+if (!(Exp''.sType == "int" && Exp''.sDimension = 0)) error ...
 Exp.sType = Exp'.sType
 Exp.sDimenison = Exp'.sDimension
-if (!(Exp''.sType == "int" && Exp''.sDimension = 0)) error ...
 Exp.sVaild = Exp'.sValid
 
 /* j; */

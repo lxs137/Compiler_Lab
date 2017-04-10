@@ -42,6 +42,13 @@
     TypeInfo *child_3_info = (TypeInfo *) \
     parent->first_child->next_brother->next_brother->other_info;
 
+#define D_child_1 \
+    AST_node *child_1 = parent->first_child;
+#define D_child_2 \
+    AST_node *child_2 = parent->first_child->next_brother;
+#define D_child_3 \
+    AST_node *child_3 = parent->first_child->next_brother->next_brother;
+
 /* 产生式总数目 */
 #define ProCount 59
 /* 第一个参数是父亲节点，第二个参数是需要准备继承属性的儿子节点 */
