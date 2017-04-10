@@ -2,7 +2,6 @@
 /* 检查错误类型3，变量出现重复定义 */
 /* 检查错误类型5，赋值号两边的表达式类型不匹配 */
 /* 检查错误类型10，对非数组类型变量使用数组访问操作符 */
-/* 检查错误类型12，数组访问操作符中出现非整数 */
 
 Def -> Specifier DecList SEMI (34)
 DecList.iType = Specifier.sType
@@ -69,12 +68,18 @@ int a[2][3][4];
 Stmt -> Exp SEMI (26)
 Exp.iDimension = 0
 
+/* 检查错误类型12，数组访问操作符中出现非整数 */
+/* 检查Exp''是否是整数类型 */
+/* 如果Exp''不是整数类型，报错后把Exp''看成整数类型，即错误不向上传递 */
+/* 如果Exp''出现了其他错误，也是一样的，报错后不向上传递错误 */
+/* 所以Exp.sValid = Exp'.sValid 而不是Exp'.sValid && Exp''.sValid*/
 Exp -> Exp' LB Exp'' RB (52)
 Exp'.iDimension = Exp.iDimension + 1
 Exp''.iDimension = 0
 Exp.sType = Exp'.sType
 Exp.sDimenison = Exp'.sDimension
-Exp.sVaild = Exp'.sValid && Exp''.sValid && Exp''.sType == "Int" && Exp''.sDimension = 0
+if (!(Exp''.sType == "int" && Exp''.sDimension = 0)) error ...
+Exp.sVaild = Exp'.sValid
 
 /* j; */
 

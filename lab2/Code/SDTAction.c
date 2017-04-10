@@ -325,7 +325,7 @@ SD(52)
     D_child_3_info;
     parent_info->sType = child_1_info->sType;
     parent_info->sDimension = child_1_info->sDimension;
-    parent_info->sValid = child_1_info->sValid && child_3_info->sValid;
+    parent_info->sValid = child_1_info->sValid;
     if (child_3_info->sDimension == 0 || !strcmp(child_3_info->sType, "int"))
     {
         printf("Error type 12 at Line %d: \"%s\" is not an integer.\n", parent->first_child->next_brother->next_brother->loc_line, parent->first_child->next_brother->next_brother->str);
