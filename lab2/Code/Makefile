@@ -34,16 +34,17 @@ syntax-c: $(YFILE)
 # 定义的一些伪目标
 .PHONY: clean test
 test:
-	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_1" ./parser ../Test/OneError/test1.cmm
-	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_3" ./parser ../Test/OneError/test3.cmm
-	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_5" ./parser ../Test/OneError/test5.cmm
-	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_7" ./parser ../Test/OneError/test7.cmm
-	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_10" ./parser ../Test/OneError/test10.cmm
-	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_12" ./parser ../Test/OneError/test12.cmm
+	# valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_1" ./parser ../Test/OneError/test1.cmm
+	# valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_3" ./parser ../Test/OneError/test3.cmm
+	# valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_5" ./parser ../Test/OneError/test5.cmm
+	# valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_7" ./parser ../Test/OneError/test7.cmm
+	# valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_10" ./parser ../Test/OneError/test10.cmm
+	# valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_12" ./parser ../Test/OneError/test12.cmm
 	 # valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --log-file="memLog" ./parser test.cmm
+	 for i in 1 3 5 7 10 12; do valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_$$i" ./parser ../Test/OneError/test$$i.cmm; done;
 clean:
 	rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output
 	rm -f $(OBJS) $(OBJS:.o=.d)
 	rm -f $(LFC) $(YFC) $(YFC:.c=.h)
 	rm -f *~
-	rm memLog
+	rm mem_log_*
