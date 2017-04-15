@@ -3,6 +3,8 @@
 #include <stdarg.h>
 #include <malloc.h>
 
+/* 处理函数定义, 声明和使用 */
+
 ID(6)
 {
     if(childNum == 2)
@@ -14,6 +16,13 @@ ID(6)
         funDec->param_num = 0;
         funDec->param_list = NULL;
         child->other_info = funDec;
+    }
+    else if(childNum == 3)
+    {
+        TypeInfo *specifier = (TypeInfo*)(parent->first_child->other_info);
+        TypeInfo *compSt = (TypeInfo*)malloc(sizeof(TypeInfo));
+        compSt->sType = specifier->sType;
+        child->other_info = compSt
     }
 }
 
@@ -59,6 +68,28 @@ ID(22)
     }
 }
 
+ID(23)
+{
+    if(childNum == 3)
+    {
+        TypeInfo *stmtList = (TypeInfo*)malloc(sizeof(TypeInfo));
+        TypeInfo *compSt = (TypeInfo*)(parent->other_info);
+        stmtList->sType = compSt->sType;
+        child->other_info = stmtList;
+    }
+}
+
+ID(24)
+{
+    if(childNum == 1)
+    {
+        TypeInfo *stmt = (TypeInfo*)malloc(sizeof(TypeInfo));
+        TypeInfo *stmtList = (TypeInfo*)(parent->other_info);
+        stmt->sType = stmtList->sType;
+        child->other_info = stmt;
+    }
+}
+
 // SD(9)
 // {
 //     TypeInfo *specifier = (TypeInfo*)malloc(sizeof(TypeInfo));
@@ -96,7 +127,6 @@ SDS(18, 19)
         printf("Error type 19 at Line %d: Function \"%s\" has been defined with confliction.\n", 
             parent->loc_line, func_name);
     freeTempParamList(varList->param_list);
-    free(varList);
 }
 
 SD(22)
@@ -117,16 +147,39 @@ SD(22)
     }
 }
 
-SD(51)
+SD(28)
+{
+    TypeInfo* stmt = (TypeInfo*)(parent->other_info);
+    TypeInfo* exp = (TypeInfo*)(parent->first_child->next_brother->other_info);
+    if(exp->isValid)
+    {
+        if(exp->sDimension != 0 || strcmp(exp->sType, stmt->sType) != 0)
+            printf("Error type 8 at Line %d: Unmatching return value type.\n", parent->loc_line);
+    }
+
+}
+
+SDS(50, 51)
 {
     const char* func_name = parent->first_child->str + 4;
     Symbol *func_in_table = getFuncSymbol(func_name);
     if(func_in_table == NULL)
-        printf("Error type 2 at Line %d: Function %s has not been defined.\n",
-         parent->loc_line, func_name);
+    {
+        if(getSymbol(func_name) != NULL)
+            printf("Error type 11 at Line %d: Value %s is not a function.\n",
+                parent->loc_line, func_name);
+        else
+            printf("Error type 2 at Line %d: Function %s has not been defined.\n",
+                parent->loc_line, func_name);
+    }
     // 在变量符号表中查找该ID
     // TODO change find symbol function
     if(getSymbol(func_name) != NULL)
-        printf("Error type 11 at Line %d: Variable %s is not a function.\n",
-         parent->loc_line, func_name);
+
 }
+
+
+
+/**************************************************************/
+/**************************************************************/
+/* 处理结构体定义和使用 */

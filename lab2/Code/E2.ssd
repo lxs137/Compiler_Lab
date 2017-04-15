@@ -5,6 +5,7 @@
 
 ExtDef -> Specifier FunDec CompSt (6)
 FunDec.otherInfomation = new FuncInfo()
+CompSt.otherInfomation = (Specifier.sType, Specifier.sDimension)
 
 ExtDef -> Specifier FunDec SEMI (59)
 FunDec.otherInfomation = new FuncInfo()
@@ -51,4 +52,25 @@ Args.sValid = Exp.sValid
 
 Args -> Exp (58)
 Args.sValid = Exp.sValid
+
+
+// 检查错误类型8，return语句的返回类型与函数定义的返回类型不匹配
+
+CompSt -> LC DefList StmtList RC (23)
+StmtList->otherInfomation = CompSt.sType
+
+
+StmtList -> Stmt StmtList' (24)
+Stmt->otherInfomation = StmtList.sType
+
+
+Stmt -> RETURN Exp SEMI (28)
+check Exp->isValid
+check (exp->sType == Stmt->sType)
+
+
+/*******************************************************/
+/******************************************************/
+
+
 
