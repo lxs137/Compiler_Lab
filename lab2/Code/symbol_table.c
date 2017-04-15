@@ -33,7 +33,9 @@ static void deleteSymbol(void *p)
 
 static void deleteFuncSymbol(void *p)
 {
-    free(((Symbol*)p)->u.detail);
+    FuncInfo* func = (FuncInfo*)(((Symbol*)p)->u.detail);
+    free(func->use_line);
+    free(func);
     free(p);
 }
 
@@ -200,24 +202,52 @@ void addTempFuncParam(FuncInfo *function, const char *param_name,
         last_param->u.next = param;
     }
 }
+
+int *expandFuncUseLine(int *old_line, int old_size)
+{
+    int *new_line;
+    if(old_line == NULL)
+    {
+        new_line = (int*)malloc(sizeof(int));
+    }
+    else
+    {
+        new_line = (int*)malloc(sizeof(int) * (old_size + 1));
+        memmove(new_line, old_line, sizeof(int) * old_size);
+        free(old_line);
+    }
+    return new_line;
+}
+
 // 将语法树节点中存的函数定义信息存入符号表
 // 若返回1表示成功
 // 返回0表示失败,函数重复定义; 
 // 返回-1表示失败，函数多次声明相互冲突、声明和定义相互冲突
-int addNewFunc(const char *name, FuncInfo *function)
+int addNewFunc(const char *name, FuncInfo *function, int line)
 {
     void *symbol = findSymbol(globalFuncSymbolTable, name);
     // 符号表中不存在该函数名
     if(symbol == NULL)
     {
+        if(function->status == 0)
+        {
+            function->use_line = (int*)malloc(sizeof(int));
+            function->use_line[0] = line;
+            function->use_line_size = 1;
+        }
+        else
+        {
+            function->use_line = NULL;
+            function->use_line_size = 0;
+        }
         Symbol *func_symbol = (Symbol*)malloc(sizeof(Symbol));
         func_symbol->name = name;
         func_symbol->kind = 2;
         func_symbol->type = function->return_type;
         func_symbol->u.detail = function;
-        int insert_result = insertFuncIntoTable(func_symbol);
+        insertFuncIntoTable(func_symbol);
         free(func_symbol);
-        return ((insert_result == 0) ? 1:0);
+        return 1;
     }
     else 
     {
@@ -230,10 +260,18 @@ int addNewFunc(const char *name, FuncInfo *function)
             return -1;
         int check_result = checkFuncParamMatch(func_in_table, function);
         // 修改函数定义声明状态
-        if(check_result == 1 
-            && function->status == 1 && func_in_table->status == 0)
-            func_in_table->status = 1;
-        return check_result;
+        if(check_result == 1){
+            if(function->status == 1 && func_in_table->status == 0)
+                func_in_table->status = 1;
+            else if(function->status == 0)
+            {
+                int old_size = func_in_table->use_line_size;
+                func_in_table->use_line = expandFuncUseLine(func_in_table->use_line, old_size);
+                func_in_table->use_line[old_size] = line;
+                func_in_table->use_line_size = old_size + 1;
+            }
+        }
+        return (check_result == 0 ? -1 : 1);
     }
 }
 
@@ -303,9 +341,40 @@ int checkFuncParamMatch(FuncInfo *func_exist, FuncInfo *func_uncheck)
 
 Symbol *getFuncSymbol(const char *func_name)
 {
-    printFuncSymbolTable();
     void *symbol = findSymbol(globalFuncSymbolTable, func_name);
     if(symbol == NULL)
         return NULL;
     return (Symbol*)symbol;
+}
+
+void findUndefinedFunction()
+{
+    jsw_rbtrav_t *rbtrav;
+    rbtrav = jsw_rbtnew();
+    FuncInfo *func_info;
+    
+    for (Symbol *symbol = jsw_rbtfirst(rbtrav, globalFuncSymbolTable);
+            symbol != NULL;
+            symbol = jsw_rbtnext(rbtrav))
+    {
+        func_info = (FuncInfo*)(symbol->u.detail);
+        if(func_info->status == 0)
+        {
+            int n = func_info->use_line_size;
+            int *use_line = func_info->use_line;
+            while(n > 0)
+            {
+                n--;
+                if(use_line[n] > 0)
+                    printf("Error type 18 at Line %d: Function \"%s\" has been declared but not been defined.\n",
+                     use_line[n], symbol->name);
+                else
+                    printf("Error type 2 at Line %d: Function \"%s\" has not been defined.\n",
+                        -(use_line[n]), symbol->name);
+            }
+
+        }
+    }
+    
+    free(rbtrav);
 }

@@ -52,6 +52,7 @@ Program
         globalSymbolTable = newSymbolTable();
         globalFuncSymbolTable = newFuncSymbolTable();
         traversalTreePerformAction($$);
+        findUndefinedFunction();
         clean_up_syntax_tree($$);
         cleanUpSymbolTable();
     }

@@ -189,7 +189,7 @@ SDS(18, 19)
 
     const char *func_name = parent->first_child->str + 4;
     FuncInfo *varList = (FuncInfo*)(parent->other_info);
-    int result = addNewFunc(func_name, varList);
+    int result = addNewFunc(func_name, varList, parent->loc_line);
     parent->other_info = NULL;
     if(result == 0)
         printf("Error type 4 at Line %d: Redefined function \"%s\".\n", 
@@ -249,8 +249,8 @@ SD(28)
 SDS(50, 51)
 {
     const char* func_name = parent->first_child->str + 4;
-    Symbol *func_in_table = getFuncSymbol(func_name);
-    if(func_in_table == NULL)
+    Symbol *symbol_in_table = getFuncSymbol(func_name);
+    if(symbol_in_table == NULL)
     {
         if(getSymbol(func_name) != NULL)
             printf("Error type 11 at Line %d: Value %s is not a function.\n",
@@ -263,9 +263,17 @@ SDS(50, 51)
     // 在变量符号表中查找该ID
     // TODO change find symbol function
     FuncInfo *func_call = (FuncInfo*)(parent->first_child->other_info);
-    if(!checkFuncParamMatch(func_in_table->u.detail, func_call))
+    FuncInfo *func_in_table = (FuncInfo*)(symbol_in_table->u.detail);
+    if(!checkFuncParamMatch(func_in_table, func_call))
         printf("Error type 9 at Line %d: Function \"%s\" call is not match its defination.\n", 
             parent->loc_line, func_name);
+    else
+    {
+        int old_size = func_in_table->use_line_size;
+        func_in_table->use_line = expandFuncUseLine(func_in_table->use_line, old_size);
+        func_in_table->use_line[old_size] = -(parent->loc_line);
+        func_in_table->use_line_size = old_size + 1;
+    }
     freeTempParamList(func_call->param_list);
 }
 

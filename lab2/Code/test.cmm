@@ -1,9 +1,11 @@
 float func(int c, float d);
+float func(int q, float w);
 int main()
 {
     int a = 1;
     float f = 2.3;
-    func(f, f);
+    func(a, f);
     return 1.4;
 }
+float func(int c, float d);
 
