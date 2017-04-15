@@ -112,7 +112,12 @@ ID(28)
 
 IDS(29, 31)
 {
-    if(childNum == 5)
+    if(childNum == 3)
+    {
+        TypeInfo *exp = (TypeInfo*)malloc(sizeof(TypeInfo));
+        child->other_info = exp;
+    }
+    else if(childNum == 5)
     {
         TypeInfo *stmt_ = (TypeInfo*)malloc(sizeof(TypeInfo));
         TypeInfo *stmt = (TypeInfo*)(parent->other_info);
@@ -123,6 +128,11 @@ IDS(29, 31)
 
 ID(30)
 {
+    if(childNum == 3)
+    {
+        TypeInfo *exp = (TypeInfo*)malloc(sizeof(TypeInfo));
+        child->other_info = exp;
+    }
     if(childNum == 5 || childNum == 7)
     {
         TypeInfo *stmt_ = (TypeInfo*)malloc(sizeof(TypeInfo));
