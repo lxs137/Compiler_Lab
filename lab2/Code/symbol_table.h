@@ -68,7 +68,7 @@ void cleanUpSymbolTable();
 SymbolTable *globalFuncSymbolTable;
 
 SymbolTable *newFuncSymbolTable();
-void addFuncParam(FuncInfo *function, const char *param_name,
+void addTempFuncParam(FuncInfo *function, const char *param_name,
  const char*param_type, int param_dimension);
 // 清理临时参数列表
 void freeTempParamList(Symbol *param_list);
@@ -78,7 +78,7 @@ void freeTempParamList(Symbol *param_list);
 // 返回-1表示失败，函数多次声明相互冲突、声明和定义相互冲突
 int addNewFunc(const char *name, FuncInfo *function);
 int insertFuncIntoTable(Symbol *function);
-int checkFuncParam(FuncInfo *func_exist, FuncInfo *func_uncheck);
+int checkFuncParamMatch(FuncInfo *func_exist, FuncInfo *func_uncheck);
 // 在函数符号表中查找相应函数信息
 Symbol *getFuncSymbol(const char *func_name);
 

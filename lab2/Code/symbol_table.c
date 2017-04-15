@@ -152,7 +152,7 @@ SymbolTable *newFuncSymbolTable()
     return rbtree;
 }
 
-void addFuncParam(FuncInfo *function, const char *param_name,
+void addTempFuncParam(FuncInfo *function, const char *param_name,
  const char*param_type, int param_dimension)
 {
     Symbol *param = (Symbol*)malloc(sizeof(Symbol));
@@ -202,7 +202,7 @@ int addNewFunc(const char *name, FuncInfo *function)
             return 0;
         if(strcmp(func_in_table->return_type, function->return_type) != 0)
             return -1;
-        int check_result = checkFuncParam(func_in_table, function);
+        int check_result = checkFuncParamMatch(func_in_table, function);
         // 修改函数定义声明状态
         if(check_result == 1 
             && function->status == 1 && func_in_table->status == 0)
@@ -257,10 +257,10 @@ void freeTempParamList(Symbol *param_list)
     } 
 }
 
-int checkFuncParam(FuncInfo *func_exist, FuncInfo *func_uncheck)
+int checkFuncParamMatch(FuncInfo *func_exist, FuncInfo *func_uncheck)
 {
     if(func_exist->param_num != func_uncheck->param_num)
-        return -1;
+        return 0;
     Symbol *exi_param = func_exist->param_list;
     Symbol *unc_param = func_uncheck->param_list;
     while(exi_param != NULL)
@@ -268,7 +268,7 @@ int checkFuncParam(FuncInfo *func_exist, FuncInfo *func_uncheck)
         if(exi_param->kind != unc_param->kind 
             || strcmp(exi_param->type, unc_param->type) != 0
             || exi_param->dimension != unc_param->dimension)
-            return -1;
+            return 0;
         exi_param = exi_param->u.next;
         unc_param = unc_param->u.next;
     }

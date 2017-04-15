@@ -22,7 +22,7 @@ ID(6)
         TypeInfo *specifier = (TypeInfo*)(parent->first_child->other_info);
         TypeInfo *compSt = (TypeInfo*)malloc(sizeof(TypeInfo));
         compSt->sType = specifier->sType;
-        child->other_info = compSt
+        child->other_info = compSt;
     }
 }
 
@@ -81,12 +81,74 @@ ID(23)
 
 ID(24)
 {
-    if(childNum == 1)
+    if(childNum == 1 || childNum == 2)
     {
         TypeInfo *stmt = (TypeInfo*)malloc(sizeof(TypeInfo));
         TypeInfo *stmtList = (TypeInfo*)(parent->other_info);
         stmt->sType = stmtList->sType;
         child->other_info = stmt;
+    }
+}
+
+ID(27)
+{
+    if(childNum == 1)
+    {
+        TypeInfo *compSt = (TypeInfo*)malloc(sizeof(TypeInfo));
+        TypeInfo *stmt = (TypeInfo*)(parent->other_info);
+        compSt->sType = stmt->sType;
+        child->other_info = compSt;
+    }
+}
+
+ID(28)
+{
+    if(childNum == 2)
+    {
+        TypeInfo *exp = (TypeInfo*)malloc(sizeof(TypeInfo));
+        child->other_info = exp;
+    }
+}
+
+IDS(29, 31)
+{
+    if(childNum == 5)
+    {
+        TypeInfo *stmt_ = (TypeInfo*)malloc(sizeof(TypeInfo));
+        TypeInfo *stmt = (TypeInfo*)(parent->other_info);
+        stmt_->sType = stmt->sType;
+        child->other_info = stmt_;
+    }
+}
+
+ID(30)
+{
+    if(childNum == 5 || childNum == 7)
+    {
+        TypeInfo *stmt_ = (TypeInfo*)malloc(sizeof(TypeInfo));
+        TypeInfo *stmt = (TypeInfo*)(parent->other_info);
+        stmt_->sType = stmt->sType;
+        child->other_info = stmt_;
+    }
+}
+
+ID(50)
+{
+    if(childNum == 3)
+    {
+        FuncInfo *args = (FuncInfo*)malloc(sizeof(FuncInfo));
+        args->param_num = 0;
+        args->param_list = NULL;
+        child->other_info = args;
+        parent->first_child->other_info = args;
+    }
+}
+
+ID(57)
+{
+    if(childNum == 3)
+    {
+        child->other_info = parent->other_info;
     }
 }
 
@@ -97,21 +159,6 @@ ID(24)
 //     parent->other_info = specifier;
 // }
 
-SDS(20, 21)
-{
-    FuncInfo *varList = (FuncInfo*)(parent->other_info);
-    TypeInfo *paramDec = (TypeInfo*)(parent->first_child->other_info);
-    if(paramDec == NULL){
-        parent->other_info = NULL;
-        return;
-    }
-    AST_node *varDec = parent->first_child->first_child->next_brother;
-    while(varDec->first_child != NULL)
-        varDec = varDec->first_child;
-    // TODO add Struct Type
-    addFuncParam(varList, varDec->str + 4, paramDec->sType, paramDec->sDimension);
-    parent->other_info = NULL;
-}
 
 SDS(18, 19)
 {
@@ -127,6 +174,22 @@ SDS(18, 19)
         printf("Error type 19 at Line %d: Function \"%s\" has been defined with confliction.\n", 
             parent->loc_line, func_name);
     freeTempParamList(varList->param_list);
+}
+
+SDS(20, 21)
+{
+    FuncInfo *varList = (FuncInfo*)(parent->other_info);
+    TypeInfo *paramDec = (TypeInfo*)(parent->first_child->other_info);
+    if(paramDec == NULL){
+        parent->other_info = NULL;
+        return;
+    }
+    AST_node *varDec = parent->first_child->first_child->next_brother;
+    while(varDec->first_child != NULL)
+        varDec = varDec->first_child;
+    // TODO add Struct Type
+    addTempFuncParam(varList, varDec->str + 4, paramDec->sType, paramDec->sDimension);
+    parent->other_info = NULL;
 }
 
 SD(22)
@@ -151,7 +214,7 @@ SD(28)
 {
     TypeInfo* stmt = (TypeInfo*)(parent->other_info);
     TypeInfo* exp = (TypeInfo*)(parent->first_child->next_brother->other_info);
-    if(exp->isValid)
+    if(exp->sValid)
     {
         if(exp->sDimension != 0 || strcmp(exp->sType, stmt->sType) != 0)
             printf("Error type 8 at Line %d: Unmatching return value type.\n", parent->loc_line);
@@ -171,11 +234,25 @@ SDS(50, 51)
         else
             printf("Error type 2 at Line %d: Function %s has not been defined.\n",
                 parent->loc_line, func_name);
+        return;
     }
     // 在变量符号表中查找该ID
     // TODO change find symbol function
-    if(getSymbol(func_name) != NULL)
+    FuncInfo *func_call = (FuncInfo*)(parent->first_child->other_info);
+    if(!checkFuncParamMatch(func_in_table->u.detail, func_call))
+        printf("Error type 9 at Line %d: %s Function call is not match its defination.\n", 
+            parent->loc_line, func_name);
+    freeTempParamList(func_call->param_list);
+}
 
+
+SDS(57, 58)
+{
+    FuncInfo *args = (FuncInfo*)(parent->other_info);
+    TypeInfo *exp = (TypeInfo*)(parent->first_child->other_info);
+    if(exp->sValid)
+        addTempFuncParam(args, NULL, exp->sType, exp->sDimension);
+    parent->other_info = NULL;
 }
 
 
@@ -183,3 +260,17 @@ SDS(50, 51)
 /**************************************************************/
 /**************************************************************/
 /* 处理结构体定义和使用 */
+
+
+
+
+
+
+
+
+
+void initTable_lxs()
+{
+    IS(6, 18, 20, 22, 23, 24, 27, 28, 29, 30, 31, 50, 57, 59);
+    SS(18, 19, 20, 21, 22, 28, 50, 51, 57, 58);
+}
