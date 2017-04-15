@@ -17,14 +17,14 @@ void traversalTreePerformAction(AST_node *parent)
 //     print_child_node(parent, 0);
 // #endif
     int i = 1;
+#ifdef SDT_DEBUG_PRINT
+    printf("Line %d: %s childNum(%d) (%d) I Action start.\n",
+        parent->loc_line, parent->str, i, proNum);
+#endif
     for (AST_node *child = parent->first_child;
             child != NULL;
             child = child->next_brother)
     {
-#ifdef SDT_DEBUG_PRINT
-    printf("Line %d: %s childNum(%d) (%d) I Action start.\n",
-     parent->loc_line, parent->str, i, proNum);
-#endif
         if (f != NULL)
         {
             f(parent, child, i);

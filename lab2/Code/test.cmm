@@ -1,17 +1,9 @@
 float func(int c, float d);
 int main()
 {
+    int a = 1;
+    float f = 2.3;
+    func(f, f);
     return 1.4;
 }
-float func(int b, float a)
-{
-    b = 1;
-    while(1)
-    {
-        if(b = 1)
-            b = 2;
-        else
-            return -1;
-    }
 
-}

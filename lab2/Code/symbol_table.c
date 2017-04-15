@@ -152,6 +152,32 @@ SymbolTable *newFuncSymbolTable()
     return rbtree;
 }
 
+void printFuncSymbolTable()
+{
+    jsw_rbtrav_t *rbtrav;
+    rbtrav = jsw_rbtnew();
+    FuncInfo *func_info;
+    Symbol *param_list;
+    
+    for (Symbol *symbol = jsw_rbtfirst(rbtrav, globalFuncSymbolTable);
+            symbol != NULL;
+            symbol = jsw_rbtnext(rbtrav))
+    {
+        func_info = (FuncInfo*)(symbol->u.detail);
+        printf("name: %s, status: %d, return_type: %s, param_num: %d.\n", symbol->name,
+         func_info->status, func_info->return_type, func_info->param_num);
+        param_list = func_info->param_list;
+        printf("Param List:\n");
+        while(param_list != NULL)
+        {
+            printf("type: %s, dimension: %d\n", param_list->type, param_list->dimension);
+            param_list = param_list->u.next;
+        }
+    }
+    
+    free(rbtrav);
+}
+
 void addTempFuncParam(FuncInfo *function, const char *param_name,
  const char*param_type, int param_dimension)
 {
@@ -277,6 +303,7 @@ int checkFuncParamMatch(FuncInfo *func_exist, FuncInfo *func_uncheck)
 
 Symbol *getFuncSymbol(const char *func_name)
 {
+    printFuncSymbolTable();
     void *symbol = findSymbol(globalFuncSymbolTable, func_name);
     if(symbol == NULL)
         return NULL;

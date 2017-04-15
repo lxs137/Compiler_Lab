@@ -156,9 +156,23 @@ ID(50)
 
 ID(57)
 {
+    if(childNum == 1)
+    {
+        TypeInfo* exp = (TypeInfo*)malloc(sizeof(TypeInfo));
+        child->other_info = exp;
+    }
     if(childNum == 3)
     {
         child->other_info = parent->other_info;
+    }
+}
+
+ID(58)
+{
+    if(childNum == 1)
+    {
+        TypeInfo* exp = (TypeInfo*)malloc(sizeof(TypeInfo));
+        child->other_info = exp; 
     }
 }
 
@@ -173,7 +187,7 @@ ID(57)
 SDS(18, 19)
 {
 
-    const char *func_name = parent->first_child->str;
+    const char *func_name = parent->first_child->str + 4;
     FuncInfo *varList = (FuncInfo*)(parent->other_info);
     int result = addNewFunc(func_name, varList);
     parent->other_info = NULL;
@@ -250,7 +264,7 @@ SDS(50, 51)
     // TODO change find symbol function
     FuncInfo *func_call = (FuncInfo*)(parent->first_child->other_info);
     if(!checkFuncParamMatch(func_in_table->u.detail, func_call))
-        printf("Error type 9 at Line %d: %s Function call is not match its defination.\n", 
+        printf("Error type 9 at Line %d: Function \"%s\" call is not match its defination.\n", 
             parent->loc_line, func_name);
     freeTempParamList(func_call->param_list);
 }
@@ -281,6 +295,6 @@ SDS(57, 58)
 
 void initTable_lxs()
 {
-    IS(6, 18, 20, 22, 23, 24, 27, 28, 29, 30, 31, 50, 57, 59);
+    IS(6, 18, 20, 22, 23, 24, 27, 28, 29, 30, 31, 50, 57, 58, 59);
     SS(18, 19, 20, 21, 22, 28, 50, 51, 57, 58);
 }

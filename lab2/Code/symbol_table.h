@@ -67,6 +67,7 @@ void cleanUpSymbolTable();
 
 SymbolTable *globalFuncSymbolTable;
 
+void printFuncSymbolTable();
 SymbolTable *newFuncSymbolTable();
 void addTempFuncParam(FuncInfo *function, const char *param_name,
  const char*param_type, int param_dimension);
