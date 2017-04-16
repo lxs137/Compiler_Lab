@@ -6,7 +6,10 @@ RUN apt-get update
 
 RUN apt-get install --assume-yes flex bison make valgrind
 
-RUN apt-get install --assume-yes git curl
+RUN apt-get install --assume-yes git
+RUN ehco "[user]\n	email = 837940593@qq.com\n	name = demons\n[credential]\n    helper = store" >> ~/.gitconfig
+
+RUN apt-get install --assume-yes curl
 RUN apt-get install --assume-yes zsh
 # RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
 
