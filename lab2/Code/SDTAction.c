@@ -196,13 +196,7 @@ SD(9)
 SD(16)
 {
     D_child_1;
-    if (getSymbol(child_1->str + 4) != NULL)
-    {
-        printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
-                child_1->loc_line, 
-                child_1->str + 4);
-        return;
-    }
+
     D_parent_info;
     parent_info->sType = parent_info->iType;
     parent_info->sDimension = parent_info->iDimension;
@@ -212,6 +206,14 @@ SD(16)
     /* D_child_1_info; */
     /* child_1_info = type_info; */
     parent->first_child->other_info = type_info;
+
+    if (getSymbol(child_1->str + 4) != NULL)
+    {
+        printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
+                child_1->loc_line, 
+                child_1->str + 4);
+        return;
+    }
     addSymbol(parent->first_child->str + 4, parent->first_child);
 }
 
