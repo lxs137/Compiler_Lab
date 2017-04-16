@@ -10,4 +10,8 @@ RUN apt-get install --assume-yes git curl
 RUN apt-get install --assume-yes zsh
 # RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
 
+RUN apt-get install vim
+RUN git clone https://github.com/amix/vimrc.git ~/.vim_runtime
+RUN sh ~/.vim_runtime/install_awesome_vimrc.sh
+
 RUN apt-get upgrade --assume-yes
