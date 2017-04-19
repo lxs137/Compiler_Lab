@@ -11,10 +11,12 @@ RUN echo "[user]\n	email = 837940593@qq.com\n	name = demons\n[credential]\n    h
 
 RUN apt-get install --assume-yes curl
 RUN apt-get install --assume-yes zsh
-# RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /root/.oh-my-zsh
+# sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 RUN apt-get install --assume-yes vim
 RUN git clone https://github.com/amix/vimrc.git ~/.vim_runtime
 RUN sh ~/.vim_runtime/install_awesome_vimrc.sh
+
+RUN cd /home && git clone https://github.com/Clcanny/Compiler_Lab.git
 
 RUN apt-get upgrade --assume-yes
