@@ -1,11 +1,14 @@
-float func(int c, float d);
-float func(int q, float w);
+struct A{
+    int a;
+    struct B{
+        float c;
+        int d;
+    }b_struct;
+};
+
 int main()
 {
-    int a = 1;
-    float f = 2.3;
-    func(a, f);
-    return 1.4;
+    struct A a_struct;
+    a_struct.a;
 }
-float func(int c, float d);
 

@@ -109,7 +109,8 @@ void printSymbolTable(SymbolTable *st)
             symbol != NULL;
             symbol = jsw_rbtnext(rbtrav))
     {
-        printf("name: %s, pointer: %p\n", symbol->name, symbol->p);
+        printf("name: %-15s, kind: %d, type: %-15s, dimension: %d, pointer: %p\n",
+             symbol->name, symbol->kind, symbol->type, symbol->dimension, symbol->p);
     }
     
     free(rbtrav);
@@ -144,6 +145,7 @@ void cleanUpSymbolTable()
 {
     delSymbolTable(globalSymbolTable);
     delSymbolTable(globalFuncSymbolTable);
+    free(globalStructStack);
 }
 
 
@@ -352,7 +354,6 @@ void findUndefinedFunction()
     jsw_rbtrav_t *rbtrav;
     rbtrav = jsw_rbtnew();
     FuncInfo *func_info;
-    
     for (Symbol *symbol = jsw_rbtfirst(rbtrav, globalFuncSymbolTable);
             symbol != NULL;
             symbol = jsw_rbtnext(rbtrav))
@@ -377,4 +378,88 @@ void findUndefinedFunction()
     }
     
     free(rbtrav);
+}
+
+
+StructStack *newStructStack()
+{
+    StructStack *structStack = (StructStack*)malloc(sizeof(StructStack));
+    structStack->anonymous_struct_n = 0;
+    structStack->stack_top = NULL;
+    structStack->isEmpty = stackIsEmpty;
+    structStack->addRegion = stackAddRegion;
+    structStack->push = stackPush;
+    structStack->pop = stackPop;
+    return structStack;
+}
+
+int stackIsEmpty()
+{
+    return globalStructStack->stack_top == NULL;
+}
+
+int stackAddRegion(const char *region_name, void *type_info)
+{
+    if(globalStructStack->isEmpty())
+        return -1;
+    TypeInfo *region_info = (TypeInfo*)type_info;
+    insertSymbol(globalSymbolTable, region_name, 0, region_info->sType,
+        region_info->sDimension, NULL, type_info);
+    Symbol *new_region = (Symbol*)findSymbol(globalSymbolTable, region_name);
+
+    globalStructStack->stack_top->last_region->u.next = new_region;
+    globalStructStack->stack_top->last_region = new_region;
+}
+
+void stackPush(const char *struct_name, int is_anonymous)
+{
+    if(is_anonymous){
+        char *new_name = (char*)malloc(sizeof(char) * MAX_ANONYMOUS_STRUCT_LENGTH);
+        sprintf(new_name, "struct-%d", globalStructStack->anonymous_struct_n);
+        globalStructStack->anonymous_struct_n++;
+        struct_name = new_name;
+    }
+    StackElement *element = (StackElement*)malloc(sizeof(StackElement));
+    insertSymbol(globalSymbolTable, struct_name, 1, NULL, 0, NULL, NULL);
+    element->struct_symbol = (Symbol*)findSymbol(globalSymbolTable, struct_name);
+    element->last_region = element->struct_symbol;
+    element->down = globalStructStack->stack_top;
+    globalStructStack->stack_top = element;
+}
+
+Symbol *stackPop()
+{
+    if(globalStructStack->isEmpty())
+        return NULL;
+    StackElement *top_element  = globalStructStack->stack_top;
+    Symbol *top_symbol = top_element->struct_symbol;
+    globalStructStack->stack_top = top_element->down;
+    free(top_element);
+    printSymbolTable(globalSymbolTable);
+    return top_symbol;
+}
+
+Symbol *findRegionInStruct(const char *struct_name, const char *region_name)
+{
+    Symbol *struct_region = (Symbol*)findSymbol(globalSymbolTable, struct_name);
+    while(struct_region->u.next != NULL)
+    {
+        struct_region = (Symbol*)(struct_region->u.next);
+        if(strcmp(struct_region->name, region_name) == 0)
+            return struct_region;
+    }
+    return NULL;
+}
+
+Symbol *getSymbolFull(const char *name)
+{
+    void *p = findSymbol(globalSymbolTable, name);
+    if (p == NULL)
+    {
+        return NULL;
+    }
+    else
+    {
+        return (Symbol *)p;
+    }
 }

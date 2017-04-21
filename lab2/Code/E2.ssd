@@ -90,6 +90,33 @@ check (exp->sType == Stmt->sType)
 
 /*******************************************************/
 /******************************************************/
+// 处理结构体的定义
+
+Specifier -> StructSpecifier (10)
+Specifier = StructSpecifier
+
+
+StructSpecifier -> STRUCT OptTag LC DefList RC (11)
+stackPush()
+stackPop()
+
+
+StructSpecifier -> STRUCT Tag (12)
+getSymbolFull(tag.name)
+
+
+OptTag -> ID (13)
+
+
+OptTag -> %empty (14)
+
+
+Tag -> ID (15)
+
+
+Exp -> Exp' DOT ID (53)
+struct_name = findSymbol(Exp).type
+findRegionInStruct(struct_name, ID)
 
 
 
