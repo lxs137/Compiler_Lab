@@ -1,7 +1,14 @@
 struct A{
+    int a;
     struct B{
         float c;
         int d;
     }b_struct;
 };
+
+int main()
+{
+    struct A a_struct;
+    a_struct.a;
+}
 

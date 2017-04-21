@@ -114,4 +114,9 @@ OptTag -> %empty (14)
 Tag -> ID (15)
 
 
+Exp -> Exp' DOT ID (53)
+struct_name = findSymbol(Exp).type
+findRegionInStruct(struct_name, ID)
+
+
 
