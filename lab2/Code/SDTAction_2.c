@@ -294,6 +294,27 @@ SDS(57, 58)
 /* 处理结构体定义和使用 */
 
 
+ID(11)
+{
+    if(childNum == 4)
+    {
+        AST_node *optTag = parent->first_child->next_brother;
+        if(optTag->first_child == NULL)
+        {
+            stackPush(NULL, 1);
+        }
+        else
+        {
+            stackPush(optTag->first_child->str + 4, 0);
+        }
+    }
+}
+
+
+SD(12)
+{
+    
+}
 
 
 

@@ -11,13 +11,13 @@ typedef struct
 {
     const char *name;
     
-    // kind：0表示name为变量名、结构体域名或者形参名，1表示name为结构体名，2表示name为函数名
+    // kind：0表示name为普通变量名、结构体域名或者形参名，1表示name为结构类型名，2表示name为函数名
     int kind; 
 
-    // type也可以表示函数的返回值类型
+    // kind=0时有效，表类型名
     const char *type;
 
-    // 只在kind=0或者1时有效，表示维度
+    // 只在kind=0时有效，表示维度
     int dimension;
 
     union
@@ -42,10 +42,36 @@ typedef struct
     Symbol *param_list;
 } FuncInfo;
 
-typedef struct 
+typedef struct stack_element
 {
-    Symbol *field_list;
-} StructInfo;
+    Symbol *struct_symbol;
+    Symbol *last_region;
+    struct stack_element *down; // 指向更靠近栈底的一个元素
+} StackElememt;
+
+#define MAX_ANONYMOUS_STRUCT_LENGTH 10
+typedef struct
+{
+    int anonymous_struct_n; // 无名结构体个数，无名结构体以struct-1形式存在符号表中
+    StackElememt *stack_top;
+
+    int (*isEmpty)(); //0为false, 1为true
+    // 在结构体中时，定义一个新变量应调用这个函数，无需插入符号表
+    void (*addRegion)(const char *region_name, void *type_info); 
+
+    void (*push)(const char *struct_name, int is_anonymous);
+    (Symbol*) ((*pop)());
+
+} StructStack;
+
+StructStack *globalStructStack;
+StructStack *newStructStack();
+//0为false, 1为true
+int stackIsEmpty();
+// 在结构体中时，定义一个新变量应调用这个函数，无需插入符号表
+int stackAddRegion(const char *region_name, void *type_info);
+void stackPush(const char *struct_name, int is_anonymous);
+Symbol *stackPop();
 
 
 typedef struct jsw_rbtree SymbolTable;

@@ -90,6 +90,29 @@ check (exp->sType == Stmt->sType)
 
 /*******************************************************/
 /******************************************************/
+// 处理结构体的定义
 
+Specifier -> StructSpecifier (10)
+
+
+StructSpecifier -> STRUCT OptTag LC DefList RC (11)
+
+
+StructSpecifier -> STRUCT Tag (12)
+
+
+OptTag -> ID (13)
+
+
+OptTag -> %empty (14)
+
+
+Tag -> ID (15)
+
+
+DefList -> Def DefList (32)
+
+
+DefList -> %empt (33)
 
 

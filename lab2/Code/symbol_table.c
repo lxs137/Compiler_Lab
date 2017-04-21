@@ -144,6 +144,7 @@ void cleanUpSymbolTable()
 {
     delSymbolTable(globalSymbolTable);
     delSymbolTable(globalFuncSymbolTable);
+    free(globalStructStack);
 }
 
 
@@ -377,4 +378,62 @@ void findUndefinedFunction()
     }
     
     free(rbtrav);
+}
+
+
+StructStack *newStructStack()
+{
+    StructStack *structStack = (StructStack*)malloc(sizeof(StructStack*));
+    structStack->anonymous_struct_n = 0;
+    structStack->stack_top = NULL;
+    structStack->isEmpty = stack_isEmpty;
+    structStack->addRegion = stackAddRegion;
+    structStack->push = stackPush;
+    structStack->pop = stackPop;
+    return structStack;
+}
+
+int stack_isEmpty()
+{
+    return globalStructStack->stack_top == NULL;
+}
+
+int stackAddRegion(const char *region_name, void *type_info)
+{
+    if(globalStructStack->isEmpty())
+        return -1;
+    TypeInfo *region_info = (TypeInfo*)type_info;
+    insertSymbol(globalSymbolTable, region_name, 0, region_info->sType,
+        region_info->sDimension, NULL, type_info);
+    Symbol *new_region = (Symbol*)findSymbol(globalSymbolTable, region_name);
+
+    globalStructStack->stack_top->last_region->u.next = new_region;
+    globalStructStack->stack_top->last_region = new_region;
+}
+
+void stackPush(const char *struct_name, int is_anonymous)
+{
+    if(is_anonymous){
+        char *new_name = (char*)malloc(sizeof(char) * MAX_ANONYMOUS_STRUCT_LENGTH);
+        sprintf(new_name, "struct-%d", globalStructStack->anonymous_struct_n);
+        globalStructStack->anonymous_struct_n++;
+        struct_name = new_name;
+    }
+    StackElement *element = (StackElement*)malloc(sizeof(StackElement));
+    insertSymbol(globalSymbolTable, struct_name, 1, NULL, 0, NULL, NULL);
+    element->struct_symbol = (Symbol*)findSymbol(globalSymbolTable, struct_name);
+    element->last_region = NULL;
+    element->down = globalStructStack->stack_top;
+    globalStructStack->stack_top = element;
+}
+
+Symbol *stackPop();
+{
+    if(globalStructStack->isEmpty())
+        return NULL;
+    StackElement *top_element  = globalStructStack->stack_top;
+    Symbol *top_symbol = top_element->struct_symbol;
+    globalStructStack->stack_top = top_element->down;
+    free(top_element);
+    return top_symbol;
 }

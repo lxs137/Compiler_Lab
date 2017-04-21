@@ -51,6 +51,7 @@ Program
         initTable_lxs();
         globalSymbolTable = newSymbolTable();
         globalFuncSymbolTable = newFuncSymbolTable();
+        globalStructStack = newStructStack();
         traversalTreePerformAction($$);
         findUndefinedFunction();
         clean_up_syntax_tree($$);
