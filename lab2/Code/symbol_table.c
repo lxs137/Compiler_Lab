@@ -109,7 +109,8 @@ void printSymbolTable(SymbolTable *st)
             symbol != NULL;
             symbol = jsw_rbtnext(rbtrav))
     {
-        printf("name: %s, pointer: %p\n", symbol->name, symbol->p);
+        printf("name: %-15s, kind: %d, type: %-15s, dimension: %d, pointer: %p\n",
+             symbol->name, symbol->kind, symbol->type, symbol->dimension, symbol->p);
     }
     
     free(rbtrav);
@@ -353,7 +354,6 @@ void findUndefinedFunction()
     jsw_rbtrav_t *rbtrav;
     rbtrav = jsw_rbtnew();
     FuncInfo *func_info;
-    
     for (Symbol *symbol = jsw_rbtfirst(rbtrav, globalFuncSymbolTable);
             symbol != NULL;
             symbol = jsw_rbtnext(rbtrav))
@@ -383,7 +383,7 @@ void findUndefinedFunction()
 
 StructStack *newStructStack()
 {
-    StructStack *structStack = (StructStack*)malloc(sizeof(StructStack*));
+    StructStack *structStack = (StructStack*)malloc(sizeof(StructStack));
     structStack->anonymous_struct_n = 0;
     structStack->stack_top = NULL;
     structStack->isEmpty = stackIsEmpty;
@@ -422,7 +422,7 @@ void stackPush(const char *struct_name, int is_anonymous)
     StackElement *element = (StackElement*)malloc(sizeof(StackElement));
     insertSymbol(globalSymbolTable, struct_name, 1, NULL, 0, NULL, NULL);
     element->struct_symbol = (Symbol*)findSymbol(globalSymbolTable, struct_name);
-    element->last_region = NULL;
+    element->last_region = element->struct_symbol;
     element->down = globalStructStack->stack_top;
     globalStructStack->stack_top = element;
 }
@@ -435,6 +435,7 @@ Symbol *stackPop()
     Symbol *top_symbol = top_element->struct_symbol;
     globalStructStack->stack_top = top_element->down;
     free(top_element);
+    printSymbolTable(globalSymbolTable);
     return top_symbol;
 }
 
@@ -448,4 +449,17 @@ Symbol *findRegionInStruct(const char *struct_name, const char *region_name)
             return struct_region;
     }
     return NULL;
+}
+
+Symbol *getSymbolFull(const char *name)
+{
+    void *p = findSymbol(globalSymbolTable, name);
+    if (p == NULL)
+    {
+        return NULL;
+    }
+    else
+    {
+        return (Symbol *)p;
+    }
 }

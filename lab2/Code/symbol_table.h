@@ -50,6 +50,7 @@ typedef struct stack_element
 } StackElement;
 
 #define MAX_ANONYMOUS_STRUCT_LENGTH 10
+
 typedef struct
 {
     int anonymous_struct_n; // 无名结构体个数，无名结构体以struct-1形式存在符号表中
@@ -73,6 +74,7 @@ int stackAddRegion(const char *region_name, void *type_info);
 void stackPush(const char *struct_name, int is_anonymous);
 Symbol *stackPop();
 Symbol *findRegionInStruct(const char *struct_name, const char *region_name);
+Symbol *getSymbolFull(const char *name);
 
 
 typedef struct jsw_rbtree SymbolTable;

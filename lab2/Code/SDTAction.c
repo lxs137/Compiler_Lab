@@ -2,7 +2,7 @@
 #include "SDTAction.h"
 #include <stdarg.h>
 #include <malloc.h>
-//#define SDT_DEBUG_PRINT
+#define SDT_DEBUG_PRINT
 
 void traversalTreePerformAction(AST_node *parent)
 {
@@ -214,7 +214,7 @@ SD(16)
                 child_1->str + 4);
         return;
     }
-    if (stackIsEmpty())
+    if (!stackIsEmpty())
     {
         stackAddRegion(parent->first_child->str + 4, type_info);
     }
@@ -239,6 +239,7 @@ SD(26)
 
 SD(37)
 {
+    
 }
 
 SD(38)

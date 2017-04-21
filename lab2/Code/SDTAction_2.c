@@ -310,10 +310,29 @@ ID(11)
     }
 }
 
+SD(10)
+{
+    TypeInfo *specifier = (TypeInfo*)malloc(sizeof(TypeInfo));
+    TypeInfo *structSpecifier = (TypeInfo*)(parent->first_child->other_info);
+    specifier->sType = structSpecifier->sType;
+    parent->other_info = specifier;
+}
 
 SD(11)
 {
     Symbol *struct_symbol = stackPop();
+    TypeInfo *structSpecifier = (TypeInfo*)malloc(sizeof(TypeInfo));
+    structSpecifier->sType = struct_symbol->name; 
+    parent->other_info = structSpecifier;
+}
+
+SD(12)
+{
+    const char *struct_name = parent->first_child->next_brother->first_child->str + 4;
+    Symbol *struct_symbol = getSymbolFull(struct_name);
+    TypeInfo *structSpecifier = (TypeInfo*)malloc(sizeof(TypeInfo));
+    structSpecifier->sType = struct_symbol->type; 
+    parent->other_info = structSpecifier;
 }
 
 
@@ -324,6 +343,6 @@ SD(11)
 
 void initTable_lxs()
 {
-    IS(6, 18, 20, 22, 23, 24, 27, 28, 29, 30, 31, 50, 57, 58, 59);
-    SS(18, 19, 20, 21, 22, 28, 50, 51, 57, 58);
+    IS(6, 11, 18, 20, 22, 23, 24, 27, 28, 29, 30, 31, 50, 57, 58, 59);
+    SS(10, 11, 12, 18, 19, 20, 21, 22, 28, 50, 51, 57, 58);
 }
