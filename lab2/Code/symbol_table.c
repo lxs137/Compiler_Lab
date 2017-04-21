@@ -386,14 +386,14 @@ StructStack *newStructStack()
     StructStack *structStack = (StructStack*)malloc(sizeof(StructStack*));
     structStack->anonymous_struct_n = 0;
     structStack->stack_top = NULL;
-    structStack->isEmpty = stack_isEmpty;
+    structStack->isEmpty = stackIsEmpty;
     structStack->addRegion = stackAddRegion;
     structStack->push = stackPush;
     structStack->pop = stackPop;
     return structStack;
 }
 
-int stack_isEmpty()
+int stackIsEmpty()
 {
     return globalStructStack->stack_top == NULL;
 }
@@ -427,7 +427,7 @@ void stackPush(const char *struct_name, int is_anonymous)
     globalStructStack->stack_top = element;
 }
 
-Symbol *stackPop();
+Symbol *stackPop()
 {
     if(globalStructStack->isEmpty())
         return NULL;

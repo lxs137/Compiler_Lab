@@ -47,20 +47,20 @@ typedef struct stack_element
     Symbol *struct_symbol;
     Symbol *last_region;
     struct stack_element *down; // 指向更靠近栈底的一个元素
-} StackElememt;
+} StackElement;
 
 #define MAX_ANONYMOUS_STRUCT_LENGTH 10
 typedef struct
 {
     int anonymous_struct_n; // 无名结构体个数，无名结构体以struct-1形式存在符号表中
-    StackElememt *stack_top;
+    StackElement *stack_top;
 
     int (*isEmpty)(); //0为false, 1为true
     // 在结构体中时，定义一个新变量应调用这个函数，无需插入符号表
-    void (*addRegion)(const char *region_name, void *type_info); 
+    int (*addRegion)(const char *region_name, void *type_info); 
 
     void (*push)(const char *struct_name, int is_anonymous);
-    (Symbol*) ((*pop)());
+    Symbol* ((*pop)());
 
 } StructStack;
 

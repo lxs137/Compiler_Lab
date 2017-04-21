@@ -313,7 +313,7 @@ ID(11)
 
 SD(11)
 {
-    Symbol *struct = stackPop();
+    Symbol *struct_symbol = stackPop();
 }
 
 
