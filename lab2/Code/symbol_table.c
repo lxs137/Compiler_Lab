@@ -437,3 +437,15 @@ Symbol *stackPop();
     free(top_element);
     return top_symbol;
 }
+
+Symbol *findRegionInStruct(const char *struct_name, const char *region_name)
+{
+    Symbol *struct_region = (Symbol*)findSymbol(globalSymbolTable, struct_name);
+    while(struct_region->u.next != NULL)
+    {
+        struct_region = (Symbol*)(struct_region->u.next);
+        if(strcmp(struct_region->name, region_name) == 0)
+            return struct_region;
+    }
+    return NULL;
+}
