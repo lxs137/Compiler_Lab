@@ -39,11 +39,14 @@ VarDec.iType = Dec.iType
 VarDec.iDimension = 0
 Exp.iDimension = 0;
 Dec.sLegalInType = VarDec.sType == Exp.sType && VarDec.sDimension = Exp.sDimension
+/* 如果在结构体之中，不能使用赋值语句 */
+/* isInStruct函数提供是否在结构体内的信息 */
 
 /* 检查错误类型3，变量出现重复定义 */
 /* 变量定义只可能通过这个产生式，所以用这个产生式就可以检测完该类错误 */
 /* 所以有checkIDNotExist，具体动作是查询符号表看变量是否已经存在 */
 /* 如果变量已经存在，则符号表／语法树还保留原符号的信息，后续分析使用原符号 */
+/* 如果变量已经存在，sType和sDimension还是要给的，否则会影响后续的分析 */
 /* 测试如下：int i; int i; int j; float j; */
 VarDec -> ID (16)
 checkIDNotExist(ID) else return
@@ -51,6 +54,8 @@ VarDec.sType = VarDec.iType
 VarDec.sDimension = VarDec.iDemension
 ID.sType = VarDec.sType
 ID.sDimension = VarDec.sDimension
+/* 如果处于结构体中间，应该调用stackAddRegion函数 */
+/* 而不是调用addSymbol函数 */
 addSymbol(ID)
 
 VarDec -> VarDec' LB INT RB (17)

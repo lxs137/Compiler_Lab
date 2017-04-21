@@ -196,13 +196,7 @@ SD(9)
 SD(16)
 {
     D_child_1;
-    if (getSymbol(child_1->str + 4) != NULL)
-    {
-        printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
-                child_1->loc_line, 
-                child_1->str + 4);
-        return;
-    }
+
     D_parent_info;
     parent_info->sType = parent_info->iType;
     parent_info->sDimension = parent_info->iDimension;
@@ -212,7 +206,22 @@ SD(16)
     /* D_child_1_info; */
     /* child_1_info = type_info; */
     parent->first_child->other_info = type_info;
-    addSymbol(parent->first_child->str + 4, parent->first_child);
+
+    if (getSymbol(child_1->str + 4) != NULL)
+    {
+        printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
+                child_1->loc_line, 
+                child_1->str + 4);
+        return;
+    }
+    if (stackIsEmpty())
+    {
+        stackAddRegion(parent->first_child->str + 4, type_info);
+    }
+    else
+    {
+        addSymbol(parent->first_child->str + 4, parent->first_child);
+    }
 }
 
 SD(17)
@@ -241,6 +250,10 @@ SD(38)
          strcmp(child_1_info->sType, child_3_info->sType))
     {
         printf("Error type 5 at Line %d: Type mismatched for assignment.\n", parent->first_child->loc_line);
+    }
+    if (!stackIsEmpty())
+    {
+        printf("Error type 15 at line %d: initialize in struct.\n", parent->first_child->loc_line);
     }
 }
 

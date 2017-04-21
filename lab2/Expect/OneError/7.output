@@ -1,1 +1,6 @@
-Error type B at line 9: syntax error, unexpected INT, expecting RP
+Error type 7 at Line 4: Type mismatched for operands.
+Error type 7 at Line 6: Type mismatched for operands.
+Error type 7 at Line 8: Type mismatched for operands.
+Error type 7 at Line 8: Type mismatched for operands.
+Error type 7 at Line 9: Type mismatched for operands.
+Error type 7 at Line 9: Type mismatched for operands.
