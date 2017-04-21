@@ -68,7 +68,7 @@ StructStack *globalStructStack;
 StructStack *newStructStack();
 //0为false, 1为true
 int stackIsEmpty();
-// 在结构体中时，定义一个新变量应调用这个函数，无需插入符号表
+// 在结构体中时，定义一个新变量时应调用这个函数，无需插入符号表
 int stackAddRegion(const char *region_name, void *type_info);
 void stackPush(const char *struct_name, int is_anonymous);
 Symbol *stackPop();

@@ -311,9 +311,9 @@ ID(11)
 }
 
 
-SD(12)
+SD(11)
 {
-    
+    Symbol *struct = stackPop();
 }
 
 
