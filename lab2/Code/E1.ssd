@@ -39,6 +39,8 @@ VarDec.iType = Dec.iType
 VarDec.iDimension = 0
 Exp.iDimension = 0;
 Dec.sLegalInType = VarDec.sType == Exp.sType && VarDec.sDimension = Exp.sDimension
+/* 如果在结构体之中，不能使用赋值语句 */
+/* isInStruct函数提供是否在结构体内的信息 */
 
 /* 检查错误类型3，变量出现重复定义 */
 /* 变量定义只可能通过这个产生式，所以用这个产生式就可以检测完该类错误 */
@@ -52,6 +54,8 @@ VarDec.sType = VarDec.iType
 VarDec.sDimension = VarDec.iDemension
 ID.sType = VarDec.sType
 ID.sDimension = VarDec.sDimension
+/* 如果处于结构体中间，应该调用stackAddRegion函数 */
+/* 而不是调用addSymbol函数 */
 addSymbol(ID)
 
 VarDec -> VarDec' LB INT RB (17)

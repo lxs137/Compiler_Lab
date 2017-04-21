@@ -74,5 +74,7 @@ void initTable();
 
 void initTable_lxs();
 
+int stackIsEmpty();
+int stackAddRegion(const char *region_name, void *type_info);
 
 #endif

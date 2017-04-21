@@ -214,7 +214,14 @@ SD(16)
                 child_1->str + 4);
         return;
     }
-    addSymbol(parent->first_child->str + 4, parent->first_child);
+    if (stackIsEmpty())
+    {
+        stackAddRegion(parent->first_child->str + 4, type_info);
+    }
+    else
+    {
+        addSymbol(parent->first_child->str + 4, parent->first_child);
+    }
 }
 
 SD(17)
@@ -243,6 +250,10 @@ SD(38)
          strcmp(child_1_info->sType, child_3_info->sType))
     {
         printf("Error type 5 at Line %d: Type mismatched for assignment.\n", parent->first_child->loc_line);
+    }
+    if (!stackIsEmpty())
+    {
+        printf("Error type 15 at line %d: initialize in struct.\n", parent->first_child->loc_line);
     }
 }
 
