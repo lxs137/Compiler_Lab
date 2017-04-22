@@ -217,7 +217,10 @@ SD(16)
     }
     if (!stackIsEmpty())
     {
-        stackAddRegion(parent->first_child->str + 4, type_info);
+        if (stackAddRegion(parent->first_child->str + 4, type_info) == 0)
+        {
+            printf("Error type 15 at Line: %d: Redefine variable in a struct.\n", child_1->loc_line);
+        }
     }
     else
     {
