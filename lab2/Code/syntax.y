@@ -63,7 +63,7 @@ ExtDefList
     | /* empty */ { $$ = new_parent_node("EMPTY", 3, 0); }
     ;
 ExtDef
-    : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 3, 4, $1, $2, $3); }
+    : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 4, 3, $1, $2, $3); }
     | Specifier SEMI { $$ = new_parent_node("ExtDef", 5, 2, $1, $2); }
     | Specifier FunDec CompSt { $$ = new_parent_node("ExtDef", 6, 3, $1, $2, $3); }
     | Specifier FunDec SEMI { $$ = new_parent_node("ExtDef", 59, 3, $1, $2, $3); }
