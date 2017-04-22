@@ -438,7 +438,6 @@ Symbol *stackPop()
     Symbol *top_symbol = top_element->struct_symbol;
     globalStructStack->stack_top = top_element->down;
     free(top_element);
-    printSymbolTable(globalSymbolTable);
     return top_symbol;
 }
 

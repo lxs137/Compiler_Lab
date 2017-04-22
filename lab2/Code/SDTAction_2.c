@@ -28,6 +28,7 @@ ID(6)
             compSt->sType = NULL;
         else
             compSt->sType = specifier->sType;
+        compSt->sValid = 1;
         child->other_info = compSt;
     }
 }
@@ -73,6 +74,7 @@ ID(22)
         TypeInfo *specifier = (TypeInfo*)(parent->first_child->other_info);
         varDec->iType = specifier->sType;
         varDec->iDimension = 0;
+        varDec->sValid = 1;
         child->other_info = varDec;
     }
 }
@@ -84,6 +86,7 @@ ID(23)
         TypeInfo *stmtList = (TypeInfo*)malloc(sizeof(TypeInfo));
         TypeInfo *compSt = (TypeInfo*)(parent->other_info);
         stmtList->sType = compSt->sType;
+        stmtList->sValid = compSt->sValid;
         child->other_info = stmtList;
     }
 }
@@ -95,6 +98,7 @@ ID(24)
         TypeInfo *stmt = (TypeInfo*)malloc(sizeof(TypeInfo));
         TypeInfo *stmtList = (TypeInfo*)(parent->other_info);
         stmt->sType = stmtList->sType;
+        stmt->sValid = stmtList->sValid;
         child->other_info = stmt;
     }
 }
@@ -106,6 +110,7 @@ ID(27)
         TypeInfo *compSt = (TypeInfo*)malloc(sizeof(TypeInfo));
         TypeInfo *stmt = (TypeInfo*)(parent->other_info);
         compSt->sType = stmt->sType;
+        compSt->sValid = stmt->sValid;
         child->other_info = compSt;
     }
 }
@@ -131,6 +136,7 @@ IDS(29, 31)
         TypeInfo *stmt_ = (TypeInfo*)malloc(sizeof(TypeInfo));
         TypeInfo *stmt = (TypeInfo*)(parent->other_info);
         stmt_->sType = stmt->sType;
+        stmt_->sValid = stmt->sValid;
         child->other_info = stmt_;
     }
 }
@@ -147,6 +153,7 @@ ID(30)
         TypeInfo *stmt_ = (TypeInfo*)malloc(sizeof(TypeInfo));
         TypeInfo *stmt = (TypeInfo*)(parent->other_info);
         stmt_->sType = stmt->sType;
+        stmt_->sValid = stmt->sValid;
         child->other_info = stmt_;
     }
 }
@@ -207,6 +214,8 @@ SDS(18, 19)
         printf("Error type 19 at Line %d: Function \"%s\" has been defined with confliction.\n", 
             parent->loc_line, func_name);
     freeTempParamList(varList->param_list);
+    free(varList);
+    parent->other_info = NULL;
 }
 
 SDS(20, 21)
@@ -233,6 +242,7 @@ SD(22)
     {
         paramDec->sType = varDec->sType;
         paramDec->sDimension = varDec->sDimension;
+        paramDec->sValid = varDec->sValid;
         parent->other_info = paramDec;
     }
     else
@@ -249,7 +259,8 @@ SD(28)
     TypeInfo* exp = (TypeInfo*)(parent->first_child->next_brother->other_info);
     if(exp->sValid)
     {
-        if(!exp->sValid || exp->sDimension != 0 || stmt->sType == NULL 
+        if(exp->sDimension != 0 
+            || stmt->sType == NULL 
             || strcmp(exp->sType, stmt->sType) != 0)
             printf("Error type 8 at Line %d: Unmatch return value type.\n", parent->loc_line);
     }
@@ -346,7 +357,7 @@ SD(10)
     TypeInfo *structSpecifier = (TypeInfo*)(parent->first_child->other_info);
     if(!structSpecifier->sValid)
         specifier->sValid = 0;
-    else
+    else 
         specifier->sType = structSpecifier->sType;
     parent->other_info = specifier;
 }
@@ -355,7 +366,8 @@ SD(11)
 {
     Symbol *struct_symbol = stackPop();
     TypeInfo *structSpecifier = (TypeInfo*)malloc(sizeof(TypeInfo));
-    structSpecifier->sType = struct_symbol->name; 
+    structSpecifier->sType = struct_symbol->name;
+    structSpecifier->sValid = 1; 
     parent->other_info = structSpecifier;
 }
 
