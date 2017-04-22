@@ -2,7 +2,8 @@
 #include "SDTAction.h"
 #include <stdarg.h>
 #include <malloc.h>
-//#define SDT_DEBUG_PRINT
+
+/* #define SDT_DEBUG_PRINT */
 
 void traversalTreePerformAction(AST_node *parent)
 {
@@ -475,9 +476,8 @@ SD(54)
         return;
     }
 
-    D_child_info;
-    parent_info->sType = child_info->sType;
-    parent_info->sDimension = child_info->sDimension - parent_info->iDimension;
+    parent_info->sType = ((TypeInfo *)child->other_info)->sType;
+    parent_info->sDimension = ((TypeInfo *)child->other_info)->sDimension - parent_info->iDimension;
     if (parent_info->sDimension < 0)
     {
         parent_info->sValid = 0;

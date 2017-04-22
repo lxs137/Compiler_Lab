@@ -74,5 +74,4 @@ void initTable();
 
 void initTable_lxs();
 
-
 #endif
