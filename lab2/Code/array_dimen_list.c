@@ -8,4 +8,4 @@ list *new_list_dimen()
     return p;
 }
 
-list *add
+/* list *add */
