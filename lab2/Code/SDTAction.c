@@ -2,7 +2,7 @@
 #include "SDTAction.h"
 #include <stdarg.h>
 #include <malloc.h>
-#define SDT_DEBUG_PRINT
+//#define SDT_DEBUG_PRINT
 
 void traversalTreePerformAction(AST_node *parent)
 {

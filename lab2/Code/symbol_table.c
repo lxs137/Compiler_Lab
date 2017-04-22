@@ -403,12 +403,15 @@ int stackAddRegion(const char *region_name, void *type_info)
     if(globalStructStack->isEmpty())
         return -1;
     TypeInfo *region_info = (TypeInfo*)type_info;
+    if(findRegionInStruct(globalStructStack->stack_top->struct_symbol->name, region_name) != NULL)
+        return 0;
     insertSymbol(globalSymbolTable, region_name, 0, region_info->sType,
         region_info->sDimension, NULL, type_info);
     Symbol *new_region = (Symbol*)findSymbol(globalSymbolTable, region_name);
 
     globalStructStack->stack_top->last_region->u.next = new_region;
     globalStructStack->stack_top->last_region = new_region;
+    return 1;
 }
 
 void stackPush(const char *struct_name, int is_anonymous)
