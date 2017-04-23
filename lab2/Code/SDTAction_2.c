@@ -28,6 +28,7 @@ ID(6)
             compSt->sType = NULL;
         else
             compSt->sType = specifier->sType;
+        compSt->sValid = 1;
         child->other_info = compSt;
     }
 }
@@ -73,6 +74,7 @@ ID(22)
         TypeInfo *specifier = (TypeInfo*)(parent->first_child->other_info);
         varDec->iType = specifier->sType;
         varDec->iDimension = 0;
+        varDec->sValid = 1;
         child->other_info = varDec;
     }
 }
@@ -84,6 +86,7 @@ ID(23)
         TypeInfo *stmtList = (TypeInfo*)malloc(sizeof(TypeInfo));
         TypeInfo *compSt = (TypeInfo*)(parent->other_info);
         stmtList->sType = compSt->sType;
+        stmtList->sValid = compSt->sValid;
         child->other_info = stmtList;
     }
 }
@@ -95,6 +98,7 @@ ID(24)
         TypeInfo *stmt = (TypeInfo*)malloc(sizeof(TypeInfo));
         TypeInfo *stmtList = (TypeInfo*)(parent->other_info);
         stmt->sType = stmtList->sType;
+        stmt->sValid = stmtList->sValid;
         child->other_info = stmt;
     }
 }
@@ -106,6 +110,7 @@ ID(27)
         TypeInfo *compSt = (TypeInfo*)malloc(sizeof(TypeInfo));
         TypeInfo *stmt = (TypeInfo*)(parent->other_info);
         compSt->sType = stmt->sType;
+        compSt->sValid = stmt->sValid;
         child->other_info = compSt;
     }
 }
@@ -131,6 +136,7 @@ IDS(29, 31)
         TypeInfo *stmt_ = (TypeInfo*)malloc(sizeof(TypeInfo));
         TypeInfo *stmt = (TypeInfo*)(parent->other_info);
         stmt_->sType = stmt->sType;
+        stmt_->sValid = stmt->sValid;
         child->other_info = stmt_;
     }
 }
@@ -147,6 +153,7 @@ ID(30)
         TypeInfo *stmt_ = (TypeInfo*)malloc(sizeof(TypeInfo));
         TypeInfo *stmt = (TypeInfo*)(parent->other_info);
         stmt_->sType = stmt->sType;
+        stmt_->sValid = stmt->sValid;
         child->other_info = stmt_;
     }
 }
@@ -160,6 +167,17 @@ ID(50)
         args->param_list = NULL;
         child->other_info = args;
         parent->first_child->other_info = args;
+    }
+}
+
+ID(51)
+{
+    if(childNum == 2)
+    {
+        FuncInfo *args = (FuncInfo*)malloc(sizeof(FuncInfo));
+        args->param_num = 0;
+        args->param_list = NULL;
+        parent->first_child->other_info = args;        
     }
 }
 
@@ -207,6 +225,8 @@ SDS(18, 19)
         printf("Error type 19 at Line %d: Function \"%s\" has been defined with confliction.\n", 
             parent->loc_line, func_name);
     freeTempParamList(varList->param_list);
+    free(varList);
+    parent->other_info = NULL;
 }
 
 SDS(20, 21)
@@ -233,6 +253,7 @@ SD(22)
     {
         paramDec->sType = varDec->sType;
         paramDec->sDimension = varDec->sDimension;
+        paramDec->sValid = varDec->sValid;
         parent->other_info = paramDec;
     }
     else
@@ -249,7 +270,8 @@ SD(28)
     TypeInfo* exp = (TypeInfo*)(parent->first_child->next_brother->other_info);
     if(exp->sValid)
     {
-        if(!exp->sValid || exp->sDimension != 0 || stmt->sType == NULL 
+        if(exp->sDimension != 0 
+            || stmt->sType == NULL 
             || strcmp(exp->sType, stmt->sType) != 0)
             printf("Error type 8 at Line %d: Unmatch return value type.\n", parent->loc_line);
     }
@@ -268,6 +290,9 @@ SDS(50, 51)
         else
             printf("Error type 2 at Line %d: Function %s has not been defined.\n",
                 parent->loc_line, func_name);
+        TypeInfo* exp = (TypeInfo*)malloc(sizeof(TypeInfo));
+        exp->sValid = 0;
+        parent->other_info = exp;
         return;
     }
     // 在变量符号表中查找该ID
@@ -285,15 +310,18 @@ SDS(50, 51)
         func_in_table->use_line_size = old_size + 1;
     }
 
-    TypeInfo* exp = (TypeInfo*)(parent->other_info);
+    TypeInfo* exp = (TypeInfo*)malloc(sizeof(TypeInfo));
     exp->sType = func_in_table->return_type;
     exp->sDimension = 0;
     if(exp->sType == NULL)
         exp->sValid = 0;
     else
         exp->sValid = 1;
+    exp->nextInfo = (void*)0;
+    parent->other_info = exp;
 
-    freeTempParamList(func_call->param_list);
+    if(func_call->param_list != NULL)
+        freeTempParamList(func_call->param_list);
 }
 
 
@@ -312,23 +340,20 @@ SDS(57, 58)
 /**************************************************************/
 /* 处理结构体定义和使用 */
 
-/* StructSPecifier -> STRUCT OptTag LC DefLIst RC */
+
 ID(11)
 {
     if(childNum == 4)
     {
         AST_node *optTag = parent->first_child->next_brother;
-        /* 无名结构体的定义 */
         if(optTag->first_child == NULL)
         {
             stackPush(NULL, 1);
         }
-        /* 非无名结构体则把该结构体的名称压栈 */
         else
         {
             stackPush(optTag->first_child->str + 4, 0);
         }
-        /* stackAddRegion函数会处理结构体内定义变量的情况 */
     }
 }
 
@@ -343,30 +368,26 @@ ID(53)
 
 }
 
-/* Specifier -> StructSpecifier */
 SD(10)
 {
     TypeInfo *specifier = (TypeInfo*)malloc(sizeof(TypeInfo));
     TypeInfo *structSpecifier = (TypeInfo*)(parent->first_child->other_info);
-    /* structSpecifier->sValid表征符号表有没有该结构体名称 */
     if(!structSpecifier->sValid)
         specifier->sValid = 0;
-    else
+    else 
         specifier->sType = structSpecifier->sType;
     parent->other_info = specifier;
 }
 
-/* StructSpecifier -> STRUCT OptTag LC DefList RC */
 SD(11)
 {
     Symbol *struct_symbol = stackPop();
     TypeInfo *structSpecifier = (TypeInfo*)malloc(sizeof(TypeInfo));
-    structSpecifier->sType = struct_symbol->name; 
+    structSpecifier->sType = struct_symbol->name;
+    structSpecifier->sValid = 1; 
     parent->other_info = structSpecifier;
 }
 
-/* StructSpecifier -> STRUCT Tag */
-/* Tag -> ID */
 SD(12)
 {
     const char *struct_name = parent->first_child->next_brother->first_child->str + 4;
@@ -381,12 +402,12 @@ SD(12)
     else
     {
         structSpecifier->sValid = 1;
-        structSpecifier->sType = struct_symbol->type; 
+        structSpecifier->sType = struct_symbol->name; 
     }
     parent->other_info = structSpecifier;
 }
 
-/* OptTag -> ID */
+
 SD(13)
 {
     const char *struct_name = parent->first_child->str + 4;
@@ -395,15 +416,8 @@ SD(13)
              parent->loc_line, struct_name);
 }
 
-/* Exp -> Exp DOT ID */
 SD(53)
 {
-    TypeInfo *parent_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-    /* 表明该表达式是左值 */
-    parent_info->nextInfo = (void *)1;
-    parent_info->sValid = 0;
-    parent->other_info = parent_info;
-
     TypeInfo *exp_ = (TypeInfo*)(parent->first_child->other_info);
     if(exp_->sValid) 
     {
@@ -411,23 +425,35 @@ SD(53)
             || exp_->sDimension != 0) 
         {
             printf("Error type 13 at Line %d: Exp is not a struct.\n", parent->loc_line);
+            TypeInfo *exp =  (TypeInfo*)malloc(sizeof(TypeInfo));
+            exp->sValid = 0;
+            parent->other_info = exp;            
             return;
         }
     }
-    else
+    else {
+        TypeInfo *exp =  (TypeInfo*)malloc(sizeof(TypeInfo));
+        exp->sValid = 0;
+        parent->other_info = exp;
         return;
+    }
     const char* struct_name = exp_->sType;
     const char *region_id = parent->first_child->next_brother->next_brother->str + 4;
+    TypeInfo *exp =  (TypeInfo*)malloc(sizeof(TypeInfo));
     Symbol *region_symbol = findRegionInStruct(struct_name, region_id);
-    if(region_symbol == NULL)
+    if(region_symbol == NULL) {
         printf("Error type 14 at Line %d: \"%s\" is not a region in struct \"%s\".\n",
              parent->loc_line, region_id, struct_name);
-    else
-    {
-        parent_info->sValid = 1;
-        parent_info->sType = region_symbol->type;
-        parent_info->sDimension = region_symbol->dimension;
+        exp->sValid = 0;
     }
+    else {
+        exp->sValid = 1;
+        exp->sType = region_symbol->type;
+        exp->sDimension = region_symbol->dimension;
+        exp->nextInfo = (void*)1;
+    }
+    parent->other_info = exp;
+
 }
 
 
@@ -436,6 +462,6 @@ SD(53)
 
 void initTable_lxs()
 {
-    IS(6, 11, 18, 20, 22, 23, 24, 27, 28, 29, 30, 31, 50, 53, 57, 58, 59);
+    IS(6, 11, 18, 20, 22, 23, 24, 27, 28, 29, 30, 31, 50, 51, 53, 57, 58, 59);
     SS(10, 11, 12, 13, 18, 19, 20, 21, 22, 28, 50, 51, 53, 57, 58);
 }

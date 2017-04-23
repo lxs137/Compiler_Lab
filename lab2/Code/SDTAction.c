@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include <malloc.h>
 #include <inttypes.h>
-/* #define SDT_DEBUG_PRINT */
+// #define SDT_DEBUG_PRINT
 
 void traversalTreePerformAction(AST_node *parent)
 {
@@ -186,6 +186,7 @@ SD(9)
 {
     TypeInfo *parent_info = (TypeInfo *)malloc(sizeof(TypeInfo));
     parent_info->sType = parent->first_child->str;
+    parent_info->sValid = 1;
     /* D_type_info; */
     /* type_info->sType = parent->first_child->str + 6; */
     /* D_parent_info; */
@@ -193,30 +194,6 @@ SD(9)
     parent->other_info = parent_info;
     /* printf("%s\n", parent_info->sType); */
 }
-
-/* SD(10) */
-/* { */
-/*     TypeInfo *parent_info = (TypeInfo *)malloc(sizeof(TypeInfo)); */
-/*     D_child_1_info; */
-/*     parent_info->sType = child_1_info->sType; */
-/*     parent->other_info = parent_info; */
-/* } */
-
-/* SD(12) */
-/* { */
-/*     TypeInfo *parent_info = (TypeInfo *)malloc(sizeof(TypeInfo)); */
-/*     D_child_2_info; */
-/*     parent_info->sType = child_2_info->sType; */
-/*     parent->other_info = parent_info; */
-/* } */
-
-/* SD(15) */
-/* { */
-/*     TypeInfo *parent_info = (TypeInfo *)malloc(sizeof(TypeInfo)); */
-/*     D_child_1; */
-/*     parent_info -> sType = child_1 -> str; */
-/*     parent->other_info = parent_info; */
-/* } */
 
 SD(16)
 {
@@ -228,6 +205,8 @@ SD(16)
     D_type_info;
     type_info->sType = parent_info->sType;
     type_info->sDimension = parent_info->sDimension;
+    /* D_child_1_info; */
+    /* child_1_info = type_info; */
     parent->first_child->other_info = type_info;
 
     if (!stackIsEmpty())
@@ -246,11 +225,9 @@ SD(16)
             printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
                     child_1->loc_line, 
                     child_1->str + 4);
+            return;
         }
-        else
-        {
-            addSymbol(parent->first_child->str + 4, parent->first_child);
-        }
+        addSymbol(parent->first_child->str + 4, parent->first_child);
     }
 }
 
