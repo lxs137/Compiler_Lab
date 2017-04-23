@@ -2,6 +2,7 @@
 #include "SDTAction.h"
 #include <stdarg.h>
 #include <malloc.h>
+#include <inttypes.h>
 /* #define SDT_DEBUG_PRINT */
 
 void traversalTreePerformAction(AST_node *parent)
@@ -207,22 +208,24 @@ SD(16)
     /* child_1_info = type_info; */
     parent->first_child->other_info = type_info;
 
-    if (getSymbol(child_1->str + 4) != NULL)
-    {
-        printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
-                child_1->loc_line, 
-                child_1->str + 4);
-        return;
-    }
     if (!stackIsEmpty())
     {
         if (stackAddRegion(parent->first_child->str + 4, type_info) == 0)
         {
-            printf("Error type 15 at Line: %d: Redefine variable in a struct.\n", child_1->loc_line);
+            printf("Error type 15 at Line: %d: Redefine field \"%s\".\n", 
+                    child_1->loc_line,
+                    child_1->str + 4);
         }
     }
     else
     {
+        if (getSymbol(child_1->str + 4) != NULL)
+        {
+            printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
+                    child_1->loc_line, 
+                    child_1->str + 4);
+            return;
+        }
         addSymbol(parent->first_child->str + 4, parent->first_child);
     }
 }
@@ -264,8 +267,21 @@ SD(38)
 SD(39)
 {
     D_parent_info;
+    /* 直接用nextInfo表征Exp是否是左值表达式 */
+    /* 因为也只用0／1，所以不另外用一个结构体 */
+    parent_info->nextInfo = (void*)0;
+    /* (intptr_t)parent_info->nextInfo; */
+
     D_child_1_info;
     D_child_3_info;
+
+    /* 检查赋值号左边不是左值 */
+    if ((intptr_t)child_1_info->nextInfo == 0)
+    {
+        D_child_1;
+        printf("Error type 6 at Line %d: The left-hand side of an assignment must be a variable.\n",
+                child_1->loc_line);
+    }
 
     if (child_1_info->sValid && child_3_info->sValid)
     {
@@ -312,6 +328,7 @@ SD(39)
 SDS(40, 41)
 {
     D_parent_info;
+    parent_info->nextInfo = (void*)0;
     parent_info->sValid = 1;
     parent_info->sType = "int";
     parent_info->sDimension = 0;
@@ -337,6 +354,8 @@ SDS(40, 41)
 SD(42)
 {
     D_parent_info;
+    parent_info->nextInfo = (void*)0;
+
     D_child_1_info;
     D_child_3_info;
     int v1 = child_1_info->sValid && 
@@ -362,6 +381,8 @@ SD(42)
 SDS(43, 44, 45, 46)
 {
     D_parent_info;
+    parent_info->nextInfo = (void*)0;
+
     D_child_1_info;
     D_child_3_info;
     int v1 = child_1_info->sValid && 
@@ -413,6 +434,8 @@ SDS(43, 44, 45, 46)
 SD(47)
 {
     D_parent_info;
+    parent_info->nextInfo = (void*)1;
+
     D_child_2_info;
     parent_info->sValid = child_2_info->sValid;
     if (parent_info->sValid)
@@ -427,6 +450,7 @@ SD(48)
     TypeInfo* exp = (TypeInfo*)(parent->other_info);
     TypeInfo* exp_ = (TypeInfo*)(parent->first_child->next_brother->other_info);
     exp->sValid = 1;
+    exp->nextInfo = (void*)0;
     exp->sType = exp_->sType;
     exp->sDimension = exp_->sDimension;
 }
@@ -434,6 +458,7 @@ SD(48)
 SD(49)
 {
     D_parent_info;
+    parent_info->nextInfo = (void*)0;
     parent_info->sValid = 1;
     parent_info->sType = "int";
     parent_info->sDimension = 0;
@@ -449,6 +474,8 @@ SD(49)
 SD(52)
 {
     D_parent_info;
+    parent_info->nextInfo = (void*)1;
+
     D_child_1_info;
     D_child_3_info;
     if (!(child_3_info->sDimension == 0 && !strcmp(child_3_info->sType, "int")))
@@ -466,6 +493,7 @@ SD(52)
 SD(54)
 {
     D_parent_info;
+    parent_info->nextInfo = (void*)1;
 
     D_child_1;
     AST_node *child = getSymbol(child_1->str + 4);
@@ -494,6 +522,7 @@ SD(54)
 SDS(55, 56)
 {
     D_parent_info;
+    parent_info->nextInfo = (void*)0;
     parent_info->sValid = 1;
     if (parent->first_child->str[0] == 'I')
     {

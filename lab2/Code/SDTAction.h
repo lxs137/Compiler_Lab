@@ -68,6 +68,10 @@ typedef struct
     int iDimension;
     int sDimension;
     int sValid;
+
+    /* 留有指向下一个结构体的域 */
+    /* 有些时候，除了TypeInfo还需要其它的信息 */
+    void *nextInfo;
 } TypeInfo;
 
 void initTable();
