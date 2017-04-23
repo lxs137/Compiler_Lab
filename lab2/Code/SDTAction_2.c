@@ -312,16 +312,18 @@ SDS(57, 58)
 /**************************************************************/
 /* 处理结构体定义和使用 */
 
-
+/* StructSPecifier -> STRUCT OptTag LC DefLIst RC */
 ID(11)
 {
     if(childNum == 4)
     {
         AST_node *optTag = parent->first_child->next_brother;
+        /* 无名结构体的定义 */
         if(optTag->first_child == NULL)
         {
             stackPush(NULL, 1);
         }
+        /* 非无名结构体则把该结构体的名称压栈 */
         else
         {
             stackPush(optTag->first_child->str + 4, 0);
@@ -340,10 +342,12 @@ ID(53)
 
 }
 
+/* Specifier -> StructSpecifier */
 SD(10)
 {
     TypeInfo *specifier = (TypeInfo*)malloc(sizeof(TypeInfo));
     TypeInfo *structSpecifier = (TypeInfo*)(parent->first_child->other_info);
+    /* structSpecifier->sValid表征符号表有没有该结构体名称 */
     if(!structSpecifier->sValid)
         specifier->sValid = 0;
     else
@@ -351,6 +355,7 @@ SD(10)
     parent->other_info = specifier;
 }
 
+/* StructSpecifier -> STRUCT OptTag LC DefList RC */
 SD(11)
 {
     Symbol *struct_symbol = stackPop();
@@ -359,6 +364,8 @@ SD(11)
     parent->other_info = structSpecifier;
 }
 
+/* StructSpecifier -> STRUCT Tag */
+/* Tag -> ID */
 SD(12)
 {
     const char *struct_name = parent->first_child->next_brother->first_child->str + 4;
@@ -378,7 +385,7 @@ SD(12)
     parent->other_info = structSpecifier;
 }
 
-
+/* OptTag -> ID */
 SD(13)
 {
     const char *struct_name = parent->first_child->str + 4;
@@ -386,6 +393,7 @@ SD(13)
         printf("Error type 16 at Line %d: Struct \"%s\" has been redefined.\n",
              parent->loc_line, struct_name);
 }
+
 
 SD(53)
 {
