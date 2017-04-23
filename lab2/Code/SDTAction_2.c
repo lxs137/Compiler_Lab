@@ -328,6 +328,7 @@ ID(11)
         {
             stackPush(optTag->first_child->str + 4, 0);
         }
+        /* stackAddRegion函数会处理结构体内定义变量的情况 */
     }
 }
 
@@ -394,9 +395,15 @@ SD(13)
              parent->loc_line, struct_name);
 }
 
-
+/* Exp -> Exp DOT ID */
 SD(53)
 {
+    TypeInfo *parent_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+    /* 表明该表达式是左值 */
+    parent_info->nextInfo = (void *)1;
+    parent_info->sValid = 0;
+    parent->other_info = parent_info;
+
     TypeInfo *exp_ = (TypeInfo*)(parent->first_child->other_info);
     if(exp_->sValid) 
     {
@@ -415,7 +422,12 @@ SD(53)
     if(region_symbol == NULL)
         printf("Error type 14 at Line %d: \"%s\" is not a region in struct \"%s\".\n",
              parent->loc_line, region_id, struct_name);
-
+    else
+    {
+        parent_info->sValid = 1;
+        parent_info->sType = region_symbol->type;
+        parent_info->sDimension = region_symbol->dimension;
+    }
 }
 
 
