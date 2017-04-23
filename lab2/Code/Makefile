@@ -34,7 +34,7 @@ syntax-c: $(YFILE)
 # 定义的一些伪目标
 .PHONY: clean test
 test:
-	 for i in 1 2 3 4 5 6 7 8 10 11 12 13 15; do echo; echo Now testing test$$i.cmm; valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_$$i" ./parser ../Test/OneError/test$$i.cmm > test_result_$$i.output; echo Comparing; diff test_result_$$i.output ../Expect/OneError/$$i.output; wc -l mem_log_$$i; done;
+	 for i in 1 2 3 4 5 6 7 8 10 11 12 13 15 16 17; do echo; echo Now testing test$$i.cmm; valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_$$i" ./parser ../Test/OneError/test$$i.cmm > test_result_$$i.output; echo Comparing; diff test_result_$$i.output ../Expect/OneError/$$i.output; wc -l mem_log_$$i; done;
 clean:
 	rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output
 	rm -f $(OBJS) $(OBJS:.o=.d)
