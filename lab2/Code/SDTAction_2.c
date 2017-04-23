@@ -177,7 +177,6 @@ ID(51)
         FuncInfo *args = (FuncInfo*)malloc(sizeof(FuncInfo));
         args->param_num = 0;
         args->param_list = NULL;
-        child->other_info = args;
         parent->first_child->other_info = args;        
     }
 }
@@ -291,6 +290,9 @@ SDS(50, 51)
         else
             printf("Error type 2 at Line %d: Function %s has not been defined.\n",
                 parent->loc_line, func_name);
+        TypeInfo* exp = (TypeInfo*)malloc(sizeof(TypeInfo));
+        exp->sValid = 0;
+        parent->other_info = exp;
         return;
     }
     // 在变量符号表中查找该ID
@@ -308,15 +310,18 @@ SDS(50, 51)
         func_in_table->use_line_size = old_size + 1;
     }
 
-    TypeInfo* exp = (TypeInfo*)(parent->other_info);
+    TypeInfo* exp = (TypeInfo*)malloc(sizeof(TypeInfo));
     exp->sType = func_in_table->return_type;
     exp->sDimension = 0;
     if(exp->sType == NULL)
         exp->sValid = 0;
     else
         exp->sValid = 1;
+    exp->nextInfo = (void*)0;
+    parent->other_info = exp;
 
-    freeTempParamList(func_call->param_list);
+    if(func_call->param_list != NULL)
+        freeTempParamList(func_call->param_list);
 }
 
 
@@ -397,7 +402,7 @@ SD(12)
     else
     {
         structSpecifier->sValid = 1;
-        structSpecifier->sType = struct_symbol->type; 
+        structSpecifier->sType = struct_symbol->name; 
     }
     parent->other_info = structSpecifier;
 }
@@ -420,17 +425,34 @@ SD(53)
             || exp_->sDimension != 0) 
         {
             printf("Error type 13 at Line %d: Exp is not a struct.\n", parent->loc_line);
+            TypeInfo *exp =  (TypeInfo*)malloc(sizeof(TypeInfo));
+            exp->sValid = 0;
+            parent->other_info = exp;            
             return;
         }
     }
-    else
+    else {
+        TypeInfo *exp =  (TypeInfo*)malloc(sizeof(TypeInfo));
+        exp->sValid = 0;
+        parent->other_info = exp;
         return;
+    }
     const char* struct_name = exp_->sType;
     const char *region_id = parent->first_child->next_brother->next_brother->str + 4;
+    TypeInfo *exp =  (TypeInfo*)malloc(sizeof(TypeInfo));
     Symbol *region_symbol = findRegionInStruct(struct_name, region_id);
-    if(region_symbol == NULL)
+    if(region_symbol == NULL) {
         printf("Error type 14 at Line %d: \"%s\" is not a region in struct \"%s\".\n",
              parent->loc_line, region_id, struct_name);
+        exp->sValid = 0;
+    }
+    else {
+        exp->sValid = 1;
+        exp->sType = region_symbol->type;
+        exp->sDimension = region_symbol->dimension;
+        exp->nextInfo = (void*)1;
+    }
+    parent->other_info = exp;
 
 }
 
@@ -440,6 +462,6 @@ SD(53)
 
 void initTable_lxs()
 {
-    IS(6, 11, 18, 20, 22, 23, 24, 27, 28, 29, 30, 31, 50, 53, 57, 58, 59);
+    IS(6, 11, 18, 20, 22, 23, 24, 27, 28, 29, 30, 31, 50, 51, 53, 57, 58, 59);
     SS(10, 11, 12, 13, 18, 19, 20, 21, 22, 28, 50, 51, 53, 57, 58);
 }
