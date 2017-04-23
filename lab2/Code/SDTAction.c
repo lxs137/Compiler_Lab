@@ -208,22 +208,24 @@ SD(16)
     /* child_1_info = type_info; */
     parent->first_child->other_info = type_info;
 
-    if (getSymbol(child_1->str + 4) != NULL)
-    {
-        printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
-                child_1->loc_line, 
-                child_1->str + 4);
-        return;
-    }
     if (!stackIsEmpty())
     {
         if (stackAddRegion(parent->first_child->str + 4, type_info) == 0)
         {
-            printf("Error type 15 at Line: %d: Redefine variable in a struct.\n", child_1->loc_line);
+            printf("Error type 15 at Line: %d: Redefine field \"%s\".\n", 
+                    child_1->loc_line,
+                    child_1->str + 4);
         }
     }
     else
     {
+        if (getSymbol(child_1->str + 4) != NULL)
+        {
+            printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
+                    child_1->loc_line, 
+                    child_1->str + 4);
+            return;
+        }
         addSymbol(parent->first_child->str + 4, parent->first_child);
     }
 }
