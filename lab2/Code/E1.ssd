@@ -15,6 +15,15 @@ DecList.iType = Specifier.sType
 Specifier -> TYPE (9)
 Specifier.sType = TYPE.str
 
+Specifier -> StructSpecifier (10)
+Specifier.sType = StructSpecifier.sType
+
+StructSpecifier -> Struct Tag (12)
+StructSpecifier.sType = Tag.sType
+
+Tag -> ID (15)
+Tag.sType = "Struct " + ID.sName
+
 DecList -> Dec (35)
 Dec.iType = Declist.iType
 
