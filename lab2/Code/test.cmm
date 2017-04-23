@@ -1,9 +1,17 @@
 struct A{
     int a;
-    float a;
     struct B{
         float c;
         int d;
     }b_struct;
 };
+
+struct C func()
+{
+    int func_a;
+    return func_a;
+}
+
+
+
 

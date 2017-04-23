@@ -56,6 +56,8 @@ addTempFuncParam(Exp)
 Args.otherInfomation = NULL
 
 
+/*******************************************************/
+/******************************************************/
 // 检查错误类型8，return语句的返回类型与函数定义的返回类型不匹配
 
 CompSt -> LC DefList StmtList RC (23)

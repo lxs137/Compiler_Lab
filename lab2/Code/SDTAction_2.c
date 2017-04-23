@@ -11,7 +11,10 @@ ID(6)
     {
         FuncInfo *funDec = (FuncInfo*)malloc(sizeof(FuncInfo));
         TypeInfo *specifier = (TypeInfo*)(parent->first_child->other_info);
-        funDec->return_type = specifier->sType;
+        if(!specifier->sValid)
+            funDec->return_type = NULL;
+        else
+            funDec->return_type = specifier->sType;
         funDec->status = 1;
         funDec->param_num = 0;
         funDec->param_list = NULL;
@@ -21,7 +24,10 @@ ID(6)
     {
         TypeInfo *specifier = (TypeInfo*)(parent->first_child->other_info);
         TypeInfo *compSt = (TypeInfo*)malloc(sizeof(TypeInfo));
-        compSt->sType = specifier->sType;
+        if(!specifier->sValid)
+            compSt->sType = NULL;
+        else
+            compSt->sType = specifier->sType;
         child->other_info = compSt;
     }
 }
@@ -32,7 +38,10 @@ ID(59)
     {
         FuncInfo *funDec = (FuncInfo*)malloc(sizeof(FuncInfo));
         TypeInfo *specifier = (TypeInfo*)(parent->first_child->other_info);
-        funDec->return_type = specifier->sType;
+        if(!specifier->sValid)
+            funDec->return_type = NULL;
+        else
+            funDec->return_type = specifier->sType;
         funDec->status = 0;
         funDec->param_num = 0;
         funDec->param_list = NULL;
@@ -240,8 +249,9 @@ SD(28)
     TypeInfo* exp = (TypeInfo*)(parent->first_child->next_brother->other_info);
     if(exp->sValid)
     {
-        if(exp->sDimension != 0 || strcmp(exp->sType, stmt->sType) != 0)
-            printf("Error type 8 at Line %d: Unmatching return value type.\n", parent->loc_line);
+        if(!exp->sValid || exp->sDimension != 0 || stmt->sType == NULL 
+            || strcmp(exp->sType, stmt->sType) != 0)
+            printf("Error type 8 at Line %d: Unmatch return value type.\n", parent->loc_line);
     }
 
 }
@@ -278,7 +288,10 @@ SDS(50, 51)
     TypeInfo* exp = (TypeInfo*)(parent->other_info);
     exp->sType = func_in_table->return_type;
     exp->sDimension = 0;
-    exp->sValid = 1;
+    if(exp->sType == NULL)
+        exp->sValid = 0;
+    else
+        exp->sValid = 1;
 
     freeTempParamList(func_call->param_list);
 }
@@ -331,7 +344,10 @@ SD(10)
 {
     TypeInfo *specifier = (TypeInfo*)malloc(sizeof(TypeInfo));
     TypeInfo *structSpecifier = (TypeInfo*)(parent->first_child->other_info);
-    specifier->sType = structSpecifier->sType;
+    if(!structSpecifier->sValid)
+        specifier->sValid = 0;
+    else
+        specifier->sType = structSpecifier->sType;
     parent->other_info = specifier;
 }
 
@@ -348,10 +364,28 @@ SD(12)
     const char *struct_name = parent->first_child->next_brother->first_child->str + 4;
     Symbol *struct_symbol = getSymbolFull(struct_name);
     TypeInfo *structSpecifier = (TypeInfo*)malloc(sizeof(TypeInfo));
-    structSpecifier->sType = struct_symbol->type; 
+    if(struct_symbol == NULL) 
+    {
+        printf("Error type 17 at Line %d: Struct \"%s\" has not been defined.\n",
+           parent->loc_line, struct_name);
+        structSpecifier->sValid = 0;
+    }
+    else
+    {
+        structSpecifier->sValid = 1;
+        structSpecifier->sType = struct_symbol->type; 
+    }
     parent->other_info = structSpecifier;
 }
 
+
+SD(13)
+{
+    const char *struct_name = parent->first_child->str + 4;
+    if(getSymbolFull(struct_name) != NULL)
+        printf("Error type 16 at Line %d: Struct \"%s\" has been redefined.\n",
+             parent->loc_line, struct_name);
+}
 
 SD(53)
 {
@@ -359,9 +393,10 @@ SD(53)
     if(exp_->sValid) 
     {
         if(strcmp(exp_->sType, "int") == 0 || strcmp(exp_->sType, "float") == 0 
-            || exp_->sDimension != 0) {
+            || exp_->sDimension != 0) 
+        {
             printf("Error type 13 at Line %d: Exp is not a struct.\n", parent->loc_line);
-        return;
+            return;
         }
     }
     else
@@ -382,5 +417,5 @@ SD(53)
 void initTable_lxs()
 {
     IS(6, 11, 18, 20, 22, 23, 24, 27, 28, 29, 30, 31, 50, 53, 57, 58, 59);
-    SS(10, 11, 12, 18, 19, 20, 21, 22, 28, 50, 51, 53, 57, 58);
+    SS(10, 11, 12, 13, 18, 19, 20, 21, 22, 28, 50, 51, 53, 57, 58);
 }
