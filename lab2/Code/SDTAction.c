@@ -194,6 +194,30 @@ SD(9)
     /* printf("%s\n", parent_info->sType); */
 }
 
+/* SD(10) */
+/* { */
+/*     TypeInfo *parent_info = (TypeInfo *)malloc(sizeof(TypeInfo)); */
+/*     D_child_1_info; */
+/*     parent_info->sType = child_1_info->sType; */
+/*     parent->other_info = parent_info; */
+/* } */
+
+/* SD(12) */
+/* { */
+/*     TypeInfo *parent_info = (TypeInfo *)malloc(sizeof(TypeInfo)); */
+/*     D_child_2_info; */
+/*     parent_info->sType = child_2_info->sType; */
+/*     parent->other_info = parent_info; */
+/* } */
+
+/* SD(15) */
+/* { */
+/*     TypeInfo *parent_info = (TypeInfo *)malloc(sizeof(TypeInfo)); */
+/*     D_child_1; */
+/*     parent_info -> sType = child_1 -> str; */
+/*     parent->other_info = parent_info; */
+/* } */
+
 SD(16)
 {
     D_child_1;
