@@ -204,8 +204,6 @@ SD(16)
     D_type_info;
     type_info->sType = parent_info->sType;
     type_info->sDimension = parent_info->sDimension;
-    /* D_child_1_info; */
-    /* child_1_info = type_info; */
     parent->first_child->other_info = type_info;
 
     if (!stackIsEmpty())
@@ -224,9 +222,11 @@ SD(16)
             printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
                     child_1->loc_line, 
                     child_1->str + 4);
-            return;
         }
-        addSymbol(parent->first_child->str + 4, parent->first_child);
+        else
+        {
+            addSymbol(parent->first_child->str + 4, parent->first_child);
+        }
     }
 }
 
