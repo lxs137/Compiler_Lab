@@ -170,6 +170,18 @@ ID(50)
     }
 }
 
+ID(51)
+{
+    if(childNum == 2)
+    {
+        FuncInfo *args = (FuncInfo*)malloc(sizeof(FuncInfo));
+        args->param_num = 0;
+        args->param_list = NULL;
+        child->other_info = args;
+        parent->first_child->other_info = args;        
+    }
+}
+
 ID(57)
 {
     if(childNum == 1)

@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include <malloc.h>
 #include <inttypes.h>
-/* #define SDT_DEBUG_PRINT */
+#define SDT_DEBUG_PRINT
 
 void traversalTreePerformAction(AST_node *parent)
 {
@@ -186,6 +186,7 @@ SD(9)
 {
     TypeInfo *parent_info = (TypeInfo *)malloc(sizeof(TypeInfo));
     parent_info->sType = parent->first_child->str;
+    parent_info->sValid = 1;
     /* D_type_info; */
     /* type_info->sType = parent->first_child->str + 6; */
     /* D_parent_info; */

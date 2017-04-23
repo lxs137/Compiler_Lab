@@ -1,10 +1,4 @@
-struct A{
-    int a;
-};
-
-struct A func(int b) 
+int func()
 {
-    struct A a_struct;
-    return a_struct;
+    return 1;
 }
-
