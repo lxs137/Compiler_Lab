@@ -186,6 +186,11 @@ void printFuncSymbolTable()
     free(rbtrav);
 }
 
+int isDefineFunction()
+{
+    return globalFuncSymbolTable->is_defining;
+}
+
 void startDefineFunction(const char *name, int status, const char *return_type)
 {
     FuncInfo *def_func = (FuncInfo*)malloc(sizeof(FuncInfo));
@@ -197,7 +202,6 @@ void startDefineFunction(const char *name, int status, const char *return_type)
     def_func->param_num = 0;
     def_func->param_list = NULL;
     globalFuncSymbolTable->cur_def_func = def_func;
-    globalFuncSymbolTable->cur_add_param_tail = NULL;
     globalFuncSymbolTable->func_in_table = findFuncSymbol(name);
     globalFuncSymbolTable->is_defining = 1;
 }
@@ -209,6 +213,12 @@ int funcDefineEnd(int line)
     int result;
     if(func_in_table == NULL) {
         result = 1;
+        if(cur_def_func->status == 0) 
+        {
+            cur_def_func->use_line = (int*)malloc(sizeof(int));
+            cur_def_func->use_line[0] = line;
+            cur_def_func->use_line_size = 1;
+        }
         insertFuncIntoTable(cur_def_func);
     }
     else
@@ -217,10 +227,16 @@ int funcDefineEnd(int line)
             result = 0;
         else 
         {
-            if(checkFuncParamMatch() 
+            if(checkFuncParamMatch()
                 && strcmp(func_in_table->return_type, cur_def_func->return_type) == 0)
             {
-                if(cur_def_func->status == 0) 
+                if(func_in_table->status == 0 && cur_def_func->status == 1) {
+                    func_in_table->status = 1;
+                    free(func_in_table->use_line);
+                    func_in_table->use_line = NULL;
+                    func_in_table->use_line_size = 0;
+                }
+                if(func_in_table->status == 0 && cur_def_func->status == 0) 
                 {
                     int old_size = func_in_table->use_line_size;
                     func_in_table->use_line = expandFuncUseLine(func_in_table->use_line, old_size);
@@ -236,20 +252,9 @@ int funcDefineEnd(int line)
     free(globalFuncSymbolTable->cur_def_func->param_list);
     free(globalFuncSymbolTable->cur_def_func);
     globalFuncSymbolTable->cur_def_func = NULL;
-    globalFuncSymbolTable->cur_add_param_tail = NULL;
     globalFuncSymbolTable->func_in_table = NULL;
     globalFuncSymbolTable->is_defining = 0;
     return result;
-}
-
-void addParamToTail(Symbol *param)
-{
-    if(globalFuncSymbolTable->cur_add_param_tail == NULL)
-        globalFuncSymbolTable->cur_add_param_tail = param;
-    else {
-        globalFuncSymbolTable->cur_add_param_tail->next = param;
-        globalFuncSymbolTable->cur_add_param_tail = param;
-    }    
 }
 
 int addTempFuncParam(const char *param_name,
@@ -263,11 +268,27 @@ int addTempFuncParam(const char *param_name,
     param->dimension = param_dimension;
     param->next = NULL;
     globalFuncSymbolTable->cur_def_func->param_num += 1;
+    // 检测在同一函数参数列表中是否重名的参数
+    Symbol *param_new = globalFuncSymbolTable->cur_def_func->param_list;
+    if(param_new == NULL)
+        globalFuncSymbolTable->cur_def_func->param_list = param;
+    else
+    {
+        if(strcmp(param_new->name, param_name) == 0)
+            return 0;
+        while(param_new->next != NULL) 
+        {
+            param_new = param_new->next;
+            if(strcmp(param_new->name, param_name) == 0)
+                return 0;
+        }
+        param_new->next = param;
+    }
+
 
     Symbol *param_in_table = getSymbolFull(param_name);
     // 函数定义或声明第一次出现
-    if(globalFuncSymbolTable->func_in_table == NULL) {
-        addParamToTail(param);    
+    if(globalFuncSymbolTable->func_in_table == NULL) {   
         if(param_in_table == NULL)
             return 1;
         else
@@ -277,25 +298,13 @@ int addTempFuncParam(const char *param_name,
     // 函数定义或声明之前出现过
     // 参数和变量、结构体域名或者结构类型名重复
     if(param_in_table != NULL && param_in_table->kind != 2) {
-        addParamToTail(param);
         return 0;
     }
 
-    FuncInfo *function = globalFuncSymbolTable->cur_def_func;
     int param_list_index = 0;
-    Symbol *param_new = function->param_list,
-        *param_exist = globalFuncSymbolTable->func_in_table->param_list;
+    param_new = globalFuncSymbolTable->cur_def_func->param_list;
+    Symbol *param_exist = globalFuncSymbolTable->func_in_table->param_list;
     while(param_new != NULL) {
-        // 参数名和本函数其他参数重复
-        if(strcmp(param_name, param_new->name) == 0) {
-            if(globalFuncSymbolTable->cur_add_param_tail == NULL)
-                globalFuncSymbolTable->cur_add_param_tail = param;
-            else {
-                globalFuncSymbolTable->cur_add_param_tail->next = param;
-                globalFuncSymbolTable->cur_add_param_tail = param;
-            }
-            return 0;
-        }
         param_list_index++;
         param_new = param_new->next;
     }
@@ -308,7 +317,6 @@ int addTempFuncParam(const char *param_name,
 
     // 参数和之前该函数的定义名字完全一致 
     if(param_list_index == 0 && param_exist != NULL) {
-        addParamToTail(param);
         if(strcmp(param_type, param_exist->type) == 0
             && param_dimension == param_exist->dimension)
             return 1;
@@ -316,18 +324,14 @@ int addTempFuncParam(const char *param_name,
             return 0;
     }
     else if(param_list_index != 0 && param_exist != NULL) {
-        addParamToTail(param);
         return 0;
     }
     // 参数名和之前函数的定义名字完全不一致
-    else if(param_list_index != 0 && param_exist == NULL) {
-        addParamToTail(param);
+    else if(param_exist == NULL) {       
         insertSymbol(globalSymbolTable, param_name, 2, param_type,
            param_dimension, NULL, NULL);
         return 1;
     }
-    else
-        return 0;
 }
 
 int *expandFuncUseLine(int *old_line, int old_size)
@@ -412,14 +416,14 @@ int insertFuncIntoTable(FuncInfo *function)
     {
         insertSymbol(globalSymbolTable, param->name, param->kind, 
             param->type, param->dimension, param->next, param->p);
-        cur_param = (Symbol*)findSymbol(globalSymbolTable, param->name);
+        cur_param = getSymbolFull(param->name);
         function->param_list = cur_param;
         while(param->next != NULL)
         {
             param = param->next;
             insertSymbol(globalSymbolTable, param->name, param->kind, 
                 param->type, param->dimension, param->next, param->p);
-            cur_param->next = (Symbol*)findSymbol(globalSymbolTable, param->name);
+            cur_param->next = getSymbolFull(param->name);
             cur_param = cur_param->next;
         }
     }

@@ -50,7 +50,6 @@ typedef struct
 {
     SymbolTable *table;
     FuncInfo *cur_def_func; // 当前正处于定义状态的函数
-    Symbol *cur_add_param_tail;
     FuncInfo *func_in_table;
     int is_defining;
 
@@ -114,6 +113,7 @@ void cleanUpSymbolTable();
 // funcSymbol
 FuncSymbolTable *globalFuncSymbolTable;
 
+int isDefineFunction();
 void printFuncSymbolTable();
 FuncSymbolTable *newFuncSymbolTable();
 void startDefineFunction(const char *name, int status, const char *return_type);

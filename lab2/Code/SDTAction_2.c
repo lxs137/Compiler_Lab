@@ -203,7 +203,7 @@ SDS(50, 51)
     if(!checkFuncParamMatch(func_in_table, func_call))
         printf("Error type 9 at Line %d: Function \"%s\" call is not match its defination.\n", 
             parent->loc_line, func_name);
-    else
+    else if(func_in_table->status == 0)
     {
         int old_size = func_in_table->use_line_size;
         func_in_table->use_line = expandFuncUseLine(func_in_table->use_line, old_size);

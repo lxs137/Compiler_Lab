@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include <malloc.h>
 #include <inttypes.h>
-// #define SDT_DEBUG_PRINT
+#define SDT_DEBUG_PRINT
 
 void traversalTreePerformAction(AST_node *parent)
 {
@@ -217,6 +217,14 @@ SD(16)
                     child_1->loc_line,
                     child_1->str + 4);
         }
+    }
+    else if(isDefineFunction())
+    {
+        if(addTempFuncParam(parent->first_child->str, type_info->sType,
+            type_info->sDimension) == 0)
+            printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
+                    child_1->loc_line, 
+                    child_1->str + 4);
     }
     else
     {
