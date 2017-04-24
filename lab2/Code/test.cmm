@@ -3,4 +3,8 @@ int main()
 {
     func(1, 2);
 }
+int func(int a, int b)
+{
+    return 1;
+}
 

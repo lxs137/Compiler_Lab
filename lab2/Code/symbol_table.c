@@ -227,7 +227,7 @@ int funcDefineEnd(int line)
             result = 0;
         else 
         {
-            if(checkFuncParamMatch()
+            if(checkFuncParamMatch(func_in_table, cur_def_func)
                 && strcmp(func_in_table->return_type, cur_def_func->return_type) == 0)
             {
                 if(func_in_table->status == 0 && cur_def_func->status == 1) {
@@ -452,10 +452,8 @@ void freeTempParamList(Symbol *param_list)
     } 
 }
 
-int checkFuncParamMatch()
+int checkFuncParamMatch(FuncInfo *func_exist, FuncInfo *func_uncheck)
 {
-    FuncInfo *func_exist = globalFuncSymbolTable->func_in_table, 
-        *func_uncheck = globalFuncSymbolTable->cur_def_func;
     if(func_exist->param_num != func_uncheck->param_num)
         return 0;
     Symbol *exi_param = func_exist->param_list;

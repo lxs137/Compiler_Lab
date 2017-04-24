@@ -133,7 +133,7 @@ int *expandFuncUseLine(int *old_line, int old_size);
 // // 返回-1表示失败，函数多次声明相互冲突、声明和定义相互冲突
 // int addNewFunc(const char *name, FuncInfo *function, int line);
 int insertFuncIntoTable(FuncInfo *function);
-int checkFuncParamMatch();
+int checkFuncParamMatch(FuncInfo *func_exist, FuncInfo *func_uncheck);
 FuncInfo *findFuncSymbol(const char *func_name);
 // 在所有SDT执行完后, 查看函数符号表确认是否有函数未定义
 void findUndefinedFunction();
