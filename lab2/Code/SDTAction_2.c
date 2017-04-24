@@ -73,13 +73,6 @@ ID(22)
     }
 }
 
-// SD(9)
-// {
-//     TypeInfo *specifier = (TypeInfo*)malloc(sizeof(TypeInfo));
-//     specifier->sType = parent->first_child->str;
-//     parent->other_info = specifier;
-// }
-
 
 SDS(18, 19)
 {

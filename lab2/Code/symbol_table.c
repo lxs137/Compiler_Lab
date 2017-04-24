@@ -350,62 +350,6 @@ int *expandFuncUseLine(int *old_line, int old_size)
     return new_line;
 }
 
-// 将语法树节点中存的函数定义信息存入符号表
-// 若返回1表示成功
-// 返回0表示失败,函数重复定义; 
-// 返回-1表示失败，函数多次声明相互冲突、声明和定义相互冲突
-// int addNewFunc(const char *name, FuncInfo *function, int line)
-// {
-//     void *symbol = findSymbol(globalFuncSymbolTable->table, name);
-//     // 符号表中不存在该函数名
-//     if(symbol == NULL)
-//     {
-//         if(function->status == 0)
-//         {
-//             function->use_line = (int*)malloc(sizeof(int));
-//             function->use_line[0] = line;
-//             function->use_line_size = 1;
-//         }
-//         else
-//         {
-//             function->use_line = NULL;
-//             function->use_line_size = 0;
-//         }
-//         Symbol *func_symbol = (Symbol*)malloc(sizeof(Symbol));
-//         func_symbol->name = name;
-//         func_symbol->kind = 2;
-//         func_symbol->type = function->return_type;
-//         func_symbol->next = function;
-//         insertFuncIntoTable(func_symbol);
-//         free(func_symbol);
-//         return 1;
-//     }
-//     else 
-//     {
-//         Symbol *func_symbol = (Symbol*)symbol;
-//         FuncInfo *func_in_table = (FuncInfo*)func_symbol->next;
-//         if(func_symbol->kind != 2 
-//             || (func_in_table->status == 1 && function->status == 1))
-//             return 0;
-//         if(strcmp(func_in_table->return_type, function->return_type) != 0)
-//             return -1;
-//         int check_result = checkFuncParamMatch(func_in_table, function);
-//         // 修改函数定义声明状态
-//         if(check_result == 1){
-//             if(function->status == 1 && func_in_table->status == 0)
-//                 func_in_table->status = 1;
-//             else if(function->status == 0)
-//             {
-//                 int old_size = func_in_table->use_line_size;
-//                 func_in_table->use_line = expandFuncUseLine(func_in_table->use_line, old_size);
-//                 func_in_table->use_line[old_size] = line;
-//                 func_in_table->use_line_size = old_size + 1;
-//             }
-//         }
-//         return (check_result == 0 ? -1 : 1);
-//     }
-// }
-
 int insertFuncIntoTable(FuncInfo *function)
 {
     int result;

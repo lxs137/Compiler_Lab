@@ -127,11 +127,6 @@ void freeTempParamList(Symbol *param_list);
 
 int *expandFuncUseLine(int *old_line, int old_size);
 
-// // 将语法树节点中存的函数定义信息存入符号表
-// // 若返回1表示成功
-// // 返回0表示失败,函数重复定义; 
-// // 返回-1表示失败，函数多次声明相互冲突、声明和定义相互冲突
-// int addNewFunc(const char *name, FuncInfo *function, int line);
 int insertFuncIntoTable(FuncInfo *function);
 int checkFuncParamMatch(FuncInfo *func_exist, FuncInfo *func_uncheck);
 FuncInfo *findFuncSymbol(const char *func_name);
