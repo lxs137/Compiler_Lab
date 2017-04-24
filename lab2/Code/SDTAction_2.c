@@ -159,7 +159,29 @@ ID(57)
         TypeInfo* exp = (TypeInfo*)malloc(sizeof(TypeInfo));
         child->other_info = exp;
     }
-    if(childNum == 3)
+    else if(childNum == 2)
+    {
+        FuncInfo *args = (FuncInfo*)(parent->other_info);
+        TypeInfo *exp = (TypeInfo*)(parent->first_child->other_info);
+        if(exp->sValid) 
+        {
+            Symbol *param = (Symbol*)malloc(sizeof(Symbol));
+            param->type = exp->sType;
+            param->dimension = exp->sDimension;
+            param->next = NULL;
+            args->param_num++;
+            Symbol *param_list = args->param_list;
+            if(param_list == NULL)
+                args->param_list = param;
+            else
+            {
+                while(param_list->next != NULL)
+                    param_list = param_list->next;
+                param_list->next = param;
+            }
+        }
+    }
+    else if(childNum == 3)
     {
         child->other_info = parent->other_info;
     }
@@ -220,7 +242,7 @@ SDS(50, 51)
 }
 
 
-SDS(57, 58)
+SD(58)
 {
     FuncInfo *args = (FuncInfo*)(parent->other_info);
     TypeInfo *exp = (TypeInfo*)(parent->first_child->other_info);
@@ -468,5 +490,5 @@ SD(53)
 void initTable_lxs()
 {
     IS(6, 11, 18, 20, 22, 23, 24, 27, 28, 29, 30, 31, 50, 51, 53, 57, 58, 59);
-    SS(10, 11, 12, 13, 18, 19, 20, 21, 22, 28, 50, 51, 53, 57, 58);
+    SS(10, 11, 12, 13, 18, 19, 20, 21, 22, 28, 50, 51, 53, 58);
 }
