@@ -7,11 +7,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+typedef struct jsw_rbtree SymbolTable;
+
 typedef struct
 {
     const char *name;
     
-    // kind：0表示name为普通变量名、结构体域名或者形参名，1表示name为结构类型名，2表示name为函数名
+    // kind：0表示name为普通变量名、结构体域名，1表示name为结构类型名，2表示为形参名
     int kind; 
 
     // kind=0时有效，表类型名
@@ -20,20 +22,22 @@ typedef struct
     // 只在kind=0时有效，表示维度
     int dimension;
 
-    union
-    {
-        // next用于连接同属于一个struct的域，或者连接同一个函数的形参列表
-        void *next;
+    // union
+    // {
+    //     // next用于连接同属于一个struct的域，或者连接同一个函数的形参列表
+    //     void *next;
 
-        // 当kind=1时，detail指向StructInfo; 当kind=2时，detail指向FuncInfo
-        void *detail; 
-    } u;
+    //     // 当kind=1时，detail指向StructInfo; 当kind=2时，detail指向FuncInfo
+    //     void *detail; 
+    // } u;
+    void *next;
 
     void *p;
 } Symbol;
 
 typedef struct
 {
+    const char *name; //函数名
     int status; // 0表示为函数声明，1表示为函数定义
     const char *return_type;
     int *use_line; // 函数声明或者使用所在行数, 为正代表声明，为负代表使用
@@ -41,6 +45,16 @@ typedef struct
     int param_num;
     Symbol *param_list;
 } FuncInfo;
+
+typedef struct
+{
+    SymbolTable *table;
+    FuncInfo *cur_def_func; // 当前正处于定义状态的函数
+    Symbol *cur_add_param_tail;
+    FuncInfo *func_in_table;
+    int is_defining;
+
+} FuncSymbolTable;
 
 typedef struct stack_element
 {
@@ -76,8 +90,9 @@ Symbol *stackPop();
 Symbol *findRegionInStruct(const char *struct_name, const char *region_name);
 Symbol *getSymbolFull(const char *name);
 
+/***************************************/
+// Normal Symbol
 
-typedef struct jsw_rbtree SymbolTable;
 
 SymbolTable *newSymbolTable();
 void delSymbolTable(SymbolTable *st);
@@ -95,25 +110,31 @@ int delSymbol(const char *name);
 AST_node *getSymbol(const char *name);
 void cleanUpSymbolTable();
 
-
-SymbolTable *globalFuncSymbolTable;
+/*******************************************/
+// funcSymbol
+FuncSymbolTable *globalFuncSymbolTable;
 
 void printFuncSymbolTable();
-SymbolTable *newFuncSymbolTable();
-void addTempFuncParam(FuncInfo *function, const char *param_name,
- const char*param_type, int param_dimension);
-int *expandFuncUseLine(int *old_line, int old_size);
+FuncSymbolTable *newFuncSymbolTable();
+void startDefineFunction(const char *name, int status, const char *return_type);
+// 返回1表示成功，返回0表示函数重定义，返回-1表示函数声明与定义间不匹配
+int funcDefineEnd(int line);
+// 返回1代表成功，返回0代表失败
+int addTempFuncParam(const char *param_name,
+    const char *param_type, int param_dimension);
 // 清理临时参数列表
 void freeTempParamList(Symbol *param_list);
-// 将语法树节点中存的函数定义信息存入符号表
-// 若返回1表示成功
-// 返回0表示失败,函数重复定义; 
-// 返回-1表示失败，函数多次声明相互冲突、声明和定义相互冲突
-int addNewFunc(const char *name, FuncInfo *function, int line);
-int insertFuncIntoTable(Symbol *function);
-int checkFuncParamMatch(FuncInfo *func_exist, FuncInfo *func_uncheck);
-// 在函数符号表中查找相应函数信息
-Symbol *getFuncSymbol(const char *func_name);
+
+int *expandFuncUseLine(int *old_line, int old_size);
+
+// // 将语法树节点中存的函数定义信息存入符号表
+// // 若返回1表示成功
+// // 返回0表示失败,函数重复定义; 
+// // 返回-1表示失败，函数多次声明相互冲突、声明和定义相互冲突
+// int addNewFunc(const char *name, FuncInfo *function, int line);
+int insertFuncIntoTable(FuncInfo *function);
+int checkFuncParamMatch();
+FuncInfo *findFuncSymbol(const char *func_name);
 // 在所有SDT执行完后, 查看函数符号表确认是否有函数未定义
 void findUndefinedFunction();
 
