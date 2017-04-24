@@ -21,14 +21,10 @@ static void *dupSymbol(void *p)
 
 static void *dupFuncSymbol(void *p)
 {
-    void *dup_p;
     void *dup_func_info;
     dup_func_info = calloc(1, sizeof(FuncInfo));
-    memmove(dup_func_info, ((Symbol*)p)->next, sizeof(FuncInfo));
-    dup_p = calloc(1, sizeof(Symbol));
-    memmove(dup_p, p, sizeof(Symbol));
-    ((Symbol*)dup_p)->next = dup_func_info;
-    return dup_p;
+    memmove(dup_func_info, p, sizeof(FuncInfo));
+    return dup_func_info;
 }
 
 static void deleteSymbol(void *p)
