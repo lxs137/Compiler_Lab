@@ -1,13 +1,13 @@
 struct A{
-    int a_ele[2];
+    int a_ele[2][2];
 };
-int func(struct A a, int b)
+int func(int a[2])
 {
-    return b;
+    return 1;
 }
 int main()
 {
     struct A a_;
-    func(a_, 1);
+    func((a_.a_ele)[1]);
     return 1;
 }
