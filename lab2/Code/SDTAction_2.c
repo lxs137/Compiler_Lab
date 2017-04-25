@@ -200,6 +200,7 @@ SDS(50, 51)
 {
     const char* func_name = parent->first_child->str + 4;
     FuncInfo *func_in_table = findFuncSymbol(func_name);
+    FuncInfo *func_call = (FuncInfo*)(parent->first_child->other_info);
     if(func_in_table == NULL)
     {
         if(getSymbolFull(func_name) != NULL)
@@ -211,10 +212,12 @@ SDS(50, 51)
         TypeInfo* exp = (TypeInfo*)malloc(sizeof(TypeInfo));
         exp->sValid = 0;
         parent->other_info = exp;
+        if(func_call->param_list != NULL)
+            freeTempParamList(func_call->param_list);
+        free(func_call);
+        parent->first_child->other_info = NULL;
         return;
     }
-    // 在变量符号表中查找该ID
-    FuncInfo *func_call = (FuncInfo*)(parent->first_child->other_info);
     if(!checkFuncParamMatch(func_in_table, func_call))
         printf("Error type 9 at Line %d: Function \"%s\" call is not match its defination.\n", 
             parent->loc_line, func_name);
@@ -239,8 +242,13 @@ SDS(50, 51)
     if(func_call->param_list != NULL)
         freeTempParamList(func_call->param_list);
     free(func_call);
+    parent->first_child->other_info = NULL;
 }
 
+SD(57)
+{
+    parent->other_info = NULL;
+}
 
 SD(58)
 {
@@ -263,6 +271,7 @@ SD(58)
             param_list->next = param;
         }
     }
+    parent->other_info = NULL;
 }
 
 
@@ -388,8 +397,7 @@ ID(53)
 {
     if(childNum == 1)
     {
-        TypeInfo *exp_ = (TypeInfo *)malloc(sizeof(TypeInfo));
-        exp_->iDimension = 0;
+        TypeInfo *exp_ = (TypeInfo*)malloc(sizeof(TypeInfo));
         child->other_info = exp_;
     }
 
@@ -490,5 +498,5 @@ SD(53)
 void initTable_lxs()
 {
     IS(6, 11, 18, 20, 22, 23, 24, 27, 28, 29, 30, 31, 50, 51, 53, 57, 58, 59);
-    SS(10, 11, 12, 13, 18, 19, 20, 21, 22, 28, 50, 51, 53, 58);
+    SS(10, 11, 12, 13, 18, 19, 20, 21, 22, 28, 50, 51, 53, 57, 58);
 }
