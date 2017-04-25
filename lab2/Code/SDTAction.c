@@ -59,6 +59,52 @@ SDTSAction sdtSActionTable[ProCount + 1] = { NULL };
 //     int sValid;
 // } TypeInfo;
 
+ID(4)
+{
+    if (childNum == 2)
+    {
+        D_child_1_info;
+        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+        type_info->iType = child_1_info->sType;
+        /* type_info->iDimension = 0; */
+        child->other_info = type_info;
+    }
+}
+
+ID(7)
+{
+    if (childNum == 1)
+    {
+        D_parent_info;
+        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+        type_info->iType = parent_info->iType;
+        type_info->iDimension = 0;
+
+        child->other_info = type_info;
+    }
+}
+
+ID(8)
+{
+    if (childNum == 1)
+    {
+        D_parent_info;
+        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+        type_info->iType = parent_info->iType;
+        type_info->iDimension = 0;
+
+        child->other_info = type_info;
+    }
+    else if (childNum == 3)
+    {
+        D_parent_info;
+        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+        type_info->iType = parent_info->iType;
+
+        child->other_info = type_info;
+    }
+}
+
 ID(17)
 {
     if (childNum == 1)
@@ -547,6 +593,6 @@ SDS(55, 56)
 
 void initTable()
 {
-    IS(17, 26, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 52);
+    IS(4, 7, 8, 17, 26, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 52);
     SS(9, 16, 17, 26, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 49, 48, 52, 54, 55, 56);
 }
