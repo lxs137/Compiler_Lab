@@ -27,6 +27,20 @@ VarDec.iType = Dec.iType
 VarDec.iDimension = 0
 Dec.sLegalInType = true
 
+ExtDef -> Specifier ExtDecList SEMI (4)
+ExtDecList.iType = Specifier.sType
+
+ExtDecList -> VarDec (7)
+VarDec.iType = ExtDecList.iType
+VarDec.iDimension = 0
+/* ExtDecList.sLegalInType = true */
+
+ExtDecList -> VarDec COMMA ExtDecList' (8)
+VarDec.iType = ExtDecList.iType
+VarDec.iDimension = 0
+ExtDecList'.iType = ExtDecList.iType
+/* ExtDecList.sLegalInType = true */
+
 /* 检查错误类型5，赋值号两边的表达式类型不匹配 */
 /* 如果Exp不合法，也报相同类型错误 */
 /* 使用到ASSIGNOP的产生式有38号产生式和39号产生式，所以除了本产生式以外，还要用到39号产生式来检查该类错误 */
