@@ -6,6 +6,11 @@ static int compSymbol(const void *p1, const void *p2)
     return strcmp(((Symbol *)p1)->name, ((Symbol *)p2)->name);
 }
 
+static int compFuncSymbol(const void *p1, const void *p2)
+{
+    return strcmp(((FuncInfo *)p1)->name, ((FuncInfo *)p2)->name);
+}
+
 static void *dupSymbol(void *p)
 {
     void *dup_p;
@@ -16,14 +21,10 @@ static void *dupSymbol(void *p)
 
 static void *dupFuncSymbol(void *p)
 {
-    void *dup_p;
     void *dup_func_info;
     dup_func_info = calloc(1, sizeof(FuncInfo));
-    memmove(dup_func_info, ((Symbol*)p)->u.detail, sizeof(FuncInfo));
-    dup_p = calloc(1, sizeof(Symbol));
-    memmove(dup_p, p, sizeof(Symbol));
-    ((Symbol*)dup_p)->u.detail = dup_func_info;
-    return dup_p;
+    memmove(dup_func_info, p, sizeof(FuncInfo));
+    return dup_func_info;
 }
 
 static void deleteSymbol(void *p)
@@ -33,10 +34,9 @@ static void deleteSymbol(void *p)
 
 static void deleteFuncSymbol(void *p)
 {
-    FuncInfo* func = (FuncInfo*)(((Symbol*)p)->u.detail);
+    FuncInfo* func = (FuncInfo*)p;
     free(func->use_line);
     free(func);
-    free(p);
 }
 
 SymbolTable *newSymbolTable()
@@ -61,7 +61,7 @@ int insertSymbol(SymbolTable *st, const char *name, int kind,
     symbol->kind = kind;
     symbol->type = type;
     symbol->dimension = dimension;
-    symbol->u.next = next_detail;
+    symbol->next = next_detail;
     symbol->p = p;
     
     ret = jsw_rbinsert(st, (void *)symbol);
@@ -144,16 +144,21 @@ AST_node *getSymbol(const char *name)
 void cleanUpSymbolTable()
 {
     delSymbolTable(globalSymbolTable);
-    delSymbolTable(globalFuncSymbolTable);
+    delSymbolTable(globalFuncSymbolTable->table);
+    free(globalFuncSymbolTable);
     free(globalStructStack);
 }
 
 
-SymbolTable *newFuncSymbolTable()
+FuncSymbolTable *newFuncSymbolTable()
 {
     jsw_rbtree_t *rbtree;
-    rbtree = jsw_rbnew(compSymbol, dupFuncSymbol, deleteFuncSymbol);
-    return rbtree;
+    rbtree = jsw_rbnew(compFuncSymbol, dupFuncSymbol, deleteFuncSymbol);
+    FuncSymbolTable *func_table = (FuncSymbolTable*)malloc(sizeof(FuncSymbolTable));
+    func_table->table = rbtree;
+    func_table->cur_def_func = NULL;
+    func_table->func_in_table = NULL;
+    return func_table;
 }
 
 void printFuncSymbolTable()
@@ -163,45 +168,169 @@ void printFuncSymbolTable()
     FuncInfo *func_info;
     Symbol *param_list;
     
-    for (Symbol *symbol = jsw_rbtfirst(rbtrav, globalFuncSymbolTable);
-            symbol != NULL;
-            symbol = jsw_rbtnext(rbtrav))
+    for (FuncInfo *func_info = jsw_rbtfirst(rbtrav, globalFuncSymbolTable->table);
+            func_info != NULL;
+            func_info = jsw_rbtnext(rbtrav))
     {
-        func_info = (FuncInfo*)(symbol->u.detail);
-        printf("name: %s, status: %d, return_type: %s, param_num: %d.\n", symbol->name,
+        printf("name: %s, status: %d, return_type: %s, param_num: %d.\n", func_info->name,
          func_info->status, func_info->return_type, func_info->param_num);
         param_list = func_info->param_list;
         printf("Param List:\n");
         while(param_list != NULL)
         {
             printf("type: %s, dimension: %d\n", param_list->type, param_list->dimension);
-            param_list = param_list->u.next;
+            param_list = param_list->next;
         }
     }
     
     free(rbtrav);
 }
 
-void addTempFuncParam(FuncInfo *function, const char *param_name,
- const char*param_type, int param_dimension)
+int isDefineFunction()
 {
-    Symbol *param = (Symbol*)malloc(sizeof(Symbol));
-    param->name = param_name;
-    param->kind = 0;
-    param->type = param_type;
-    param->dimension = param_dimension;
-    param->u.next = NULL;
-    function->param_num += 1;
-    if(function->param_list == NULL)
-    {
-        function->param_list = param;
+    return globalFuncSymbolTable->is_defining;
+}
+
+void startDefineFunction(const char *name, int status, const char *return_type)
+{
+    FuncInfo *def_func = (FuncInfo*)malloc(sizeof(FuncInfo));
+    def_func->name = name;
+    def_func->status = status;
+    def_func->return_type = return_type;
+    def_func->use_line = NULL;
+    def_func->use_line_size = 0;
+    def_func->param_num = 0;
+    def_func->param_list = NULL;
+    globalFuncSymbolTable->cur_def_func = def_func;
+    globalFuncSymbolTable->func_in_table = findFuncSymbol(name);
+    globalFuncSymbolTable->is_defining = 1;
+}
+
+int funcDefineEnd(int line)
+{
+    FuncInfo *func_in_table = globalFuncSymbolTable->func_in_table,
+        *cur_def_func = globalFuncSymbolTable->cur_def_func;
+    int result;
+    if(func_in_table == NULL) {
+        result = 1;
+        if(cur_def_func->status == 0) 
+        {
+            cur_def_func->use_line = (int*)malloc(sizeof(int));
+            cur_def_func->use_line[0] = line;
+            cur_def_func->use_line_size = 1;
+        }
+        insertFuncIntoTable(cur_def_func);
     }
     else
     {
-        Symbol *last_param = function->param_list;
-        while(last_param->u.next != NULL)
-            last_param = last_param->u.next;
-        last_param->u.next = param;
+        if(func_in_table->status == 1 && cur_def_func->status == 1)
+            result = 0;
+        else 
+        {
+            if(checkFuncParamMatch(func_in_table, cur_def_func)
+                && strcmp(func_in_table->return_type, cur_def_func->return_type) == 0)
+            {
+                if(func_in_table->status == 0 && cur_def_func->status == 1) {
+                    func_in_table->status = 1;
+                    free(func_in_table->use_line);
+                    func_in_table->use_line = NULL;
+                    func_in_table->use_line_size = 0;
+                }
+                if(func_in_table->status == 0 && cur_def_func->status == 0) 
+                {
+                    int old_size = func_in_table->use_line_size;
+                    func_in_table->use_line = expandFuncUseLine(func_in_table->use_line, old_size);
+                    func_in_table->use_line[old_size] = line;
+                    func_in_table->use_line_size = old_size + 1;
+                }
+                result = 1;
+            }
+            else
+                result = -1;
+        }
+    }
+    free(globalFuncSymbolTable->cur_def_func->param_list);
+    free(globalFuncSymbolTable->cur_def_func);
+    globalFuncSymbolTable->cur_def_func = NULL;
+    globalFuncSymbolTable->func_in_table = NULL;
+    globalFuncSymbolTable->is_defining = 0;
+    return result;
+}
+
+int addTempFuncParam(const char *param_name,
+    const char *param_type, int param_dimension)
+{
+    // create a new param symbol
+    Symbol *param = (Symbol*)malloc(sizeof(Symbol));
+    param->name = param_name;
+    param->kind = 2;
+    param->type = param_type;
+    param->dimension = param_dimension;
+    param->next = NULL;
+    globalFuncSymbolTable->cur_def_func->param_num += 1;
+    // 检测在同一函数参数列表中是否重名的参数
+    Symbol *param_new = globalFuncSymbolTable->cur_def_func->param_list;
+    if(param_new == NULL)
+        globalFuncSymbolTable->cur_def_func->param_list = param;
+    else
+    {
+        if(strcmp(param_new->name, param_name) == 0)
+            return 0;
+        while(param_new->next != NULL) 
+        {
+            param_new = param_new->next;
+            if(strcmp(param_new->name, param_name) == 0)
+                return 0;
+        }
+        param_new->next = param;
+    }
+
+
+    Symbol *param_in_table = getSymbolFull(param_name);
+    // 函数定义或声明第一次出现
+    if(globalFuncSymbolTable->func_in_table == NULL) {   
+        if(param_in_table == NULL)
+            return 1;
+        else
+            return 0;
+    }
+
+    // 函数定义或声明之前出现过
+    // 参数和变量、结构体域名或者结构类型名重复
+    if(param_in_table != NULL && param_in_table->kind != 2) {
+        return 0;
+    }
+
+    int param_list_index = 0;
+    param_new = globalFuncSymbolTable->cur_def_func->param_list;
+    Symbol *param_exist = globalFuncSymbolTable->func_in_table->param_list;
+    while(param_new != NULL) {
+        param_list_index++;
+        param_new = param_new->next;
+    }
+    while(param_exist != NULL) {
+        param_list_index--;
+        if(strcmp(param_name, param_exist->name) == 0)
+            break;
+        param_exist = param_exist->next;
+    }
+
+    // 参数和之前该函数的定义名字完全一致 
+    if(param_list_index == 0 && param_exist != NULL) {
+        if(strcmp(param_type, param_exist->type) == 0
+            && param_dimension == param_exist->dimension)
+            return 1;
+        else
+            return 0;
+    }
+    else if(param_list_index != 0 && param_exist != NULL) {
+        return 0;
+    }
+    // 参数名和之前函数的定义名字完全不一致
+    else if(param_exist == NULL) {       
+        insertSymbol(globalSymbolTable, param_name, 2, param_type,
+           param_dimension, NULL, NULL);
+        return 1;
     }
 }
 
@@ -221,92 +350,36 @@ int *expandFuncUseLine(int *old_line, int old_size)
     return new_line;
 }
 
-// 将语法树节点中存的函数定义信息存入符号表
-// 若返回1表示成功
-// 返回0表示失败,函数重复定义; 
-// 返回-1表示失败，函数多次声明相互冲突、声明和定义相互冲突
-int addNewFunc(const char *name, FuncInfo *function, int line)
-{
-    void *symbol = findSymbol(globalFuncSymbolTable, name);
-    // 符号表中不存在该函数名
-    if(symbol == NULL)
-    {
-        if(function->status == 0)
-        {
-            function->use_line = (int*)malloc(sizeof(int));
-            function->use_line[0] = line;
-            function->use_line_size = 1;
-        }
-        else
-        {
-            function->use_line = NULL;
-            function->use_line_size = 0;
-        }
-        Symbol *func_symbol = (Symbol*)malloc(sizeof(Symbol));
-        func_symbol->name = name;
-        func_symbol->kind = 2;
-        func_symbol->type = function->return_type;
-        func_symbol->u.detail = function;
-        insertFuncIntoTable(func_symbol);
-        free(func_symbol);
-        return 1;
-    }
-    else 
-    {
-        Symbol *func_symbol = (Symbol*)symbol;
-        FuncInfo *func_in_table = (FuncInfo*)func_symbol->u.detail;
-        if(func_symbol->kind != 2 
-            || (func_in_table->status == 1 && function->status == 1))
-            return 0;
-        if(strcmp(func_in_table->return_type, function->return_type) != 0)
-            return -1;
-        int check_result = checkFuncParamMatch(func_in_table, function);
-        // 修改函数定义声明状态
-        if(check_result == 1){
-            if(function->status == 1 && func_in_table->status == 0)
-                func_in_table->status = 1;
-            else if(function->status == 0)
-            {
-                int old_size = func_in_table->use_line_size;
-                func_in_table->use_line = expandFuncUseLine(func_in_table->use_line, old_size);
-                func_in_table->use_line[old_size] = line;
-                func_in_table->use_line_size = old_size + 1;
-            }
-        }
-        return (check_result == 0 ? -1 : 1);
-    }
-}
-
-int insertFuncIntoTable(Symbol *function)
+int insertFuncIntoTable(FuncInfo *function)
 {
     int result;
     // 将function的param插入符号表
-    Symbol *param = ((FuncInfo*)(function->u.detail))->param_list;
+    Symbol *param = function->param_list;
     Symbol *first_param = param, *cur_param = param;
     if(param != NULL)
     {
         insertSymbol(globalSymbolTable, param->name, param->kind, 
-            param->type, param->dimension, param->u.next, param->p);
-        cur_param = (Symbol*)findSymbol(globalSymbolTable, param->name);
-        ((FuncInfo*)(function->u.detail))->param_list = cur_param;
-        while(param->u.next != NULL)
+            param->type, param->dimension, param->next, param->p);
+        cur_param = getSymbolFull(param->name);
+        function->param_list = cur_param;
+        while(param->next != NULL)
         {
-            param = param->u.next;
+            param = param->next;
             insertSymbol(globalSymbolTable, param->name, param->kind, 
-                param->type, param->dimension, param->u.next, param->p);
-            cur_param->u.next = (Symbol*)findSymbol(globalSymbolTable, param->name);
-            cur_param = cur_param->u.next;
+                param->type, param->dimension, param->next, param->p);
+            cur_param->next = getSymbolFull(param->name);
+            cur_param = cur_param->next;
         }
     }
 
     // 将函数信息插入符号表
-    result = jsw_rbinsert(globalFuncSymbolTable, (void *)function);
+    result = jsw_rbinsert(globalFuncSymbolTable->table, (void *)function);
     // 使function中的参数指针仍然指向临时参数列表
-    ((FuncInfo*)(function->u.detail))->param_list = first_param;
+    function->param_list = first_param;
     if (result == 0)
     {
         printf("failed to insert the function symbol with name %s\n",
-         function->name);
+            function->name);
         return -1;
     }        
     return 0;
@@ -318,7 +391,7 @@ void freeTempParamList(Symbol *param_list)
     while(param_list != NULL)
     {
         cur_param = param_list;
-        param_list = param_list->u.next;
+        param_list = param_list->next;
         free(cur_param);
     } 
 }
@@ -331,34 +404,31 @@ int checkFuncParamMatch(FuncInfo *func_exist, FuncInfo *func_uncheck)
     Symbol *unc_param = func_uncheck->param_list;
     while(exi_param != NULL)
     {
-        if(exi_param->kind != unc_param->kind 
-            || strcmp(exi_param->type, unc_param->type) != 0
+        if(strcmp(exi_param->type, unc_param->type) != 0
             || exi_param->dimension != unc_param->dimension)
             return 0;
-        exi_param = exi_param->u.next;
-        unc_param = unc_param->u.next;
+        exi_param = exi_param->next;
+        unc_param = unc_param->next;
     }
     return 1;
 }
 
-Symbol *getFuncSymbol(const char *func_name)
+FuncInfo *findFuncSymbol(const char *func_name)
 {
-    void *symbol = findSymbol(globalFuncSymbolTable, func_name);
-    if(symbol == NULL)
-        return NULL;
-    return (Symbol*)symbol;
+    FuncInfo *symbol, symbol_find;
+    symbol_find.name = func_name;
+    symbol = jsw_rbfind(globalFuncSymbolTable->table, &symbol_find);
+    return symbol;
 }
 
 void findUndefinedFunction()
 {
     jsw_rbtrav_t *rbtrav;
     rbtrav = jsw_rbtnew();
-    FuncInfo *func_info;
-    for (Symbol *symbol = jsw_rbtfirst(rbtrav, globalFuncSymbolTable);
-            symbol != NULL;
-            symbol = jsw_rbtnext(rbtrav))
+    for (FuncInfo *func_info = jsw_rbtfirst(rbtrav, globalFuncSymbolTable->table);
+            func_info != NULL;
+            func_info = jsw_rbtnext(rbtrav))
     {
-        func_info = (FuncInfo*)(symbol->u.detail);
         if(func_info->status == 0)
         {
             int n = func_info->use_line_size;
@@ -368,10 +438,10 @@ void findUndefinedFunction()
                 n--;
                 if(use_line[n] > 0)
                     printf("Error type 18 at Line %d: Function \"%s\" has been declared but not been defined.\n",
-                     use_line[n], symbol->name);
+                     use_line[n], func_info->name);
                 else
                     printf("Error type 2 at Line %d: Function \"%s\" has not been defined.\n",
-                        -(use_line[n]), symbol->name);
+                        -(use_line[n]), func_info->name);
             }
 
         }
@@ -409,7 +479,7 @@ int stackAddRegion(const char *region_name, void *type_info)
         region_info->sDimension, NULL, type_info);
     Symbol *new_region = (Symbol*)findSymbol(globalSymbolTable, region_name);
 
-    globalStructStack->stack_top->last_region->u.next = new_region;
+    globalStructStack->stack_top->last_region->next = new_region;
     globalStructStack->stack_top->last_region = new_region;
     return 1;
 }
@@ -444,9 +514,9 @@ Symbol *stackPop()
 Symbol *findRegionInStruct(const char *struct_name, const char *region_name)
 {
     Symbol *struct_region = (Symbol*)findSymbol(globalSymbolTable, struct_name);
-    while(struct_region->u.next != NULL)
+    while(struct_region->next != NULL)
     {
-        struct_region = (Symbol*)(struct_region->u.next);
+        struct_region = (Symbol*)(struct_region->next);
         if(strcmp(struct_region->name, region_name) == 0)
             return struct_region;
     }

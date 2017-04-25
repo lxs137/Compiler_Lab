@@ -218,6 +218,14 @@ SD(16)
                     child_1->str + 4);
         }
     }
+    else if(isDefineFunction())
+    {
+        if(addTempFuncParam(parent->first_child->str + 4, type_info->sType,
+            type_info->sDimension) == 0)
+            printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
+                    child_1->loc_line, 
+                    child_1->str + 4);
+    }
     else
     {
         if (getSymbol(child_1->str + 4) != NULL)
@@ -497,7 +505,8 @@ SD(54)
     parent_info->nextInfo = (void*)1;
 
     D_child_1;
-    AST_node *child = getSymbol(child_1->str + 4);
+
+    Symbol *child = getSymbolFull(child_1->str + 4);
     if (child == NULL)
     {
         printf("Error type 1 at Line %d: Undefined variable \"%s\".\n",
@@ -507,8 +516,8 @@ SD(54)
         return;
     }
 
-    parent_info->sType = ((TypeInfo *)child->other_info)->sType;
-    parent_info->sDimension = ((TypeInfo *)child->other_info)->sDimension - parent_info->iDimension;
+    parent_info->sType = child->type;
+    parent_info->sDimension = child->dimension - parent_info->iDimension;
     if (parent_info->sDimension < 0)
     {
         parent_info->sValid = 0;
