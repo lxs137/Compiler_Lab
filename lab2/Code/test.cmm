@@ -1,6 +1,20 @@
+struct A
+{
+    int a;
+    struct {
+        float b[2];
+        int c[2][4];
+    }d_struct;
+};
+
+struct A func(struct A a_struct[2][3]);
+
 int main()
 {
-    int i[1][2];
-    
-    (i[1])[2];
+    struct A temp[2][3];
+}
+
+struct A func(struct A a_struct[2][3])
+{
+    return a_struct[1][1];
 }
