@@ -157,6 +157,7 @@ ID(57)
     if(childNum == 1)
     {
         TypeInfo* exp = (TypeInfo*)malloc(sizeof(TypeInfo));
+        exp->iDimension = 0;
         child->other_info = exp;
     }
     else if(childNum == 2)
@@ -203,6 +204,7 @@ SDS(50, 51)
 {
     const char* func_name = parent->first_child->str + 4;
     FuncInfo *func_in_table = findFuncSymbol(func_name);
+    FuncInfo *func_call = (FuncInfo*)(parent->first_child->other_info);
     if(func_in_table == NULL)
     {
         if(getSymbolFull(func_name) != NULL)
@@ -211,16 +213,14 @@ SDS(50, 51)
         else
             printf("Error type 2 at Line %d: Function %s has not been defined.\n",
                 parent->loc_line, func_name);
-        TypeInfo* exp = (TypeInfo*)malloc(sizeof(TypeInfo));
+        TypeInfo* exp = (TypeInfo*)(parent->other_info);
         exp->sValid = 0;
-        /* Demons Add */
-        free(parent->other_info);
-        /* Demons End */
-        parent->other_info = exp;
+        if(func_call->param_list != NULL)
+            freeTempParamList(func_call->param_list);
+        free(func_call);
+        parent->first_child->other_info = NULL;
         return;
     }
-    // 在变量符号表中查找该ID
-    FuncInfo *func_call = (FuncInfo*)(parent->first_child->other_info);
     if(!checkFuncParamMatch(func_in_table, func_call))
         printf("Error type 9 at Line %d: Function \"%s\" call is not match its defination.\n", 
             parent->loc_line, func_name);
@@ -232,7 +232,7 @@ SDS(50, 51)
         func_in_table->use_line_size = old_size + 1;
     }
 
-    TypeInfo* exp = (TypeInfo*)malloc(sizeof(TypeInfo));
+    TypeInfo* exp = (TypeInfo*)(parent->other_info);
     exp->sType = func_in_table->return_type;
     exp->sDimension = 0;
     if(exp->sType == NULL)
@@ -240,16 +240,17 @@ SDS(50, 51)
     else
         exp->sValid = 1;
     exp->nextInfo = (void*)0;
-    /* Demons Add */
-    free(parent->other_info);
-    /* Demons End */
-    parent->other_info = exp;
 
     if(func_call->param_list != NULL)
         freeTempParamList(func_call->param_list);
     free(func_call);
+    parent->first_child->other_info = NULL;
 }
 
+SD(57)
+{
+    parent->other_info = NULL;
+}
 
 SD(58)
 {
@@ -272,6 +273,7 @@ SD(58)
             param_list->next = param;
         }
     }
+    parent->other_info = NULL;
 }
 
 
@@ -377,6 +379,16 @@ SD(28)
 /**************************************************************/
 /* 处理结构体定义和使用 */
 
+ID(10)
+{
+    if(childNum == 1)
+    {
+        TypeInfo *structSpecifier = (TypeInfo*)malloc(sizeof(TypeInfo));
+        structSpecifier->sValid = 1;
+        child->other_info = structSpecifier;
+    }
+}
+
 
 ID(11)
 {
@@ -398,8 +410,7 @@ ID(53)
 {
     if(childNum == 1)
     {
-        TypeInfo *exp_ = (TypeInfo *)malloc(sizeof(TypeInfo));
-        exp_->iDimension = 0;
+        TypeInfo *exp_ = (TypeInfo*)malloc(sizeof(TypeInfo));
         child->other_info = exp_;
     }
 
@@ -422,20 +433,16 @@ SD(10)
 SD(11)
 {
     Symbol *struct_symbol = stackPop();
-    TypeInfo *structSpecifier = (TypeInfo*)malloc(sizeof(TypeInfo));
+    TypeInfo *structSpecifier = (TypeInfo*)(parent->other_info);
     structSpecifier->sType = struct_symbol->name;
     structSpecifier->sValid = 1; 
-    /* Demons Add */
-    free(parent->other_info);
-    /* Demons End */
-    parent->other_info = structSpecifier;
 }
 
 SD(12)
 {
     const char *struct_name = parent->first_child->next_brother->first_child->str + 4;
     Symbol *struct_symbol = getSymbolFull(struct_name);
-    TypeInfo *structSpecifier = (TypeInfo*)malloc(sizeof(TypeInfo));
+    TypeInfo *structSpecifier = (TypeInfo*)(parent->other_info);
     if(struct_symbol == NULL) 
     {
         printf("Error type 17 at Line %d: Struct \"%s\" has not been defined.\n",
@@ -447,10 +454,6 @@ SD(12)
         structSpecifier->sValid = 1;
         structSpecifier->sType = struct_symbol->name; 
     }
-    /* Demons Add */
-    free(parent->other_info);
-    /* Demons End */
-    parent->other_info = structSpecifier;
 }
 
 
@@ -465,33 +468,24 @@ SD(13)
 SD(53)
 {
     TypeInfo *exp_ = (TypeInfo*)(parent->first_child->other_info);
+    TypeInfo *exp =  (TypeInfo*)(parent->other_info);
     if(exp_->sValid) 
     {
         if(strcmp(exp_->sType, "int") == 0 || strcmp(exp_->sType, "float") == 0 
             || exp_->sDimension != 0) 
         {
-            printf("Error type 13 at Line %d: Exp is not a struct.\n", parent->loc_line);
-            TypeInfo *exp =  (TypeInfo*)malloc(sizeof(TypeInfo));
-            exp->sValid = 0;
-            /* Demons Add */
-            free(parent->other_info);
-            /* Demons End */
-            parent->other_info = exp;            
+            printf("Error type 13 at Line %d: Exp is not a struct.\n", parent->loc_line);         
+            exp->sValid = 0;            
+          
             return;
         }
     }
     else {
-        TypeInfo *exp =  (TypeInfo*)malloc(sizeof(TypeInfo));
         exp->sValid = 0;
-        /* Demons Add */
-        free(parent->other_info);
-        /* Demons End */
-        parent->other_info = exp;
         return;
     }
     const char* struct_name = exp_->sType;
     const char *region_id = parent->first_child->next_brother->next_brother->str + 4;
-    TypeInfo *exp =  (TypeInfo*)malloc(sizeof(TypeInfo));
     Symbol *region_symbol = findRegionInStruct(struct_name, region_id);
     if(region_symbol == NULL) {
         printf("Error type 14 at Line %d: \"%s\" is not a region in struct \"%s\".\n",
@@ -501,11 +495,9 @@ SD(53)
     else {
         exp->sValid = 1;
         exp->sType = region_symbol->type;
-        exp->sDimension = region_symbol->dimension - ((TypeInfo *)parent->other_info)->iDimension;
+        exp->sDimension = region_symbol->dimension - exp->iDimension;
         exp->nextInfo = (void*)1;
     }
-    free(parent->other_info);
-    parent->other_info = exp;
 
 }
 
@@ -515,6 +507,6 @@ SD(53)
 
 void initTable_lxs()
 {
-    IS(6, 11, 18, 20, 22, 23, 24, 27, 28, 29, 30, 31, 50, 51, 53, 57, 58, 59);
-    SS(10, 11, 12, 13, 18, 19, 20, 21, 22, 28, 50, 51, 53, 58);
+    IS(6, 10, 11, 18, 20, 22, 23, 24, 27, 28, 29, 30, 31, 50, 51, 53, 57, 58, 59);
+    SS(10, 11, 12, 13, 18, 19, 20, 21, 22, 28, 50, 51, 53, 57, 58);
 }
