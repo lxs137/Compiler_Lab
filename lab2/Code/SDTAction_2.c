@@ -413,6 +413,9 @@ SD(10)
         specifier->sValid = 0;
     else 
         specifier->sType = structSpecifier->sType;
+    /* Demons Add */
+    free(parent->other_info);
+    /* Demons End */
     parent->other_info = specifier;
 }
 
@@ -422,6 +425,9 @@ SD(11)
     TypeInfo *structSpecifier = (TypeInfo*)malloc(sizeof(TypeInfo));
     structSpecifier->sType = struct_symbol->name;
     structSpecifier->sValid = 1; 
+    /* Demons Add */
+    free(parent->other_info);
+    /* Demons End */
     parent->other_info = structSpecifier;
 }
 
@@ -441,6 +447,9 @@ SD(12)
         structSpecifier->sValid = 1;
         structSpecifier->sType = struct_symbol->name; 
     }
+    /* Demons Add */
+    free(parent->other_info);
+    /* Demons End */
     parent->other_info = structSpecifier;
 }
 
@@ -464,6 +473,9 @@ SD(53)
             printf("Error type 13 at Line %d: Exp is not a struct.\n", parent->loc_line);
             TypeInfo *exp =  (TypeInfo*)malloc(sizeof(TypeInfo));
             exp->sValid = 0;
+            /* Demons Add */
+            free(parent->other_info);
+            /* Demons End */
             parent->other_info = exp;            
             return;
         }
