@@ -119,6 +119,7 @@ Exp''.iDimension = 0
 if (!(Exp''.sType == "int" && Exp''.sDimension = 0)) error ...
 Exp.sType = Exp'.sType
 Exp.sDimenison = Exp'.sDimension
+/* Exp.sDimension = Exp'.sDimension - 1 */
 Exp.sVaild = Exp'.sValid
 
 /* 检查错误类型1，变量未定义而使用 */
