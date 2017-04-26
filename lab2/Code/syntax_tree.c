@@ -99,6 +99,7 @@ void clean_up_syntax_tree(AST_node *parent)
         parent->other_info = NULL;
     }
     free(parent);
+    parent = NULL;
 }
 
 void print_child_node(AST_node *parent, int depth)
