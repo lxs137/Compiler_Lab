@@ -476,7 +476,7 @@ SD(53)
     else {
         exp->sValid = 1;
         exp->sType = region_symbol->type;
-        exp->sDimension = region_symbol->dimension;
+        exp->sDimension = region_symbol->dimension - ((TypeInfo *)parent->other_info)->iDimension;
         exp->nextInfo = (void*)1;
     }
     parent->other_info = exp;
