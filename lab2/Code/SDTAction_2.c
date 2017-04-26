@@ -479,6 +479,7 @@ SD(53)
         exp->sDimension = region_symbol->dimension - ((TypeInfo *)parent->other_info)->iDimension;
         exp->nextInfo = (void*)1;
     }
+    free(parent->other_info);
     parent->other_info = exp;
 
 }
