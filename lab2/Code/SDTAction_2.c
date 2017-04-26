@@ -240,6 +240,9 @@ SDS(50, 51)
     else
         exp->sValid = 1;
     exp->nextInfo = (void*)0;
+    /* Demons Add */
+    free(parent->other_info);
+    /* Demons End */
     parent->other_info = exp;
 
     if(func_call->param_list != NULL)
@@ -317,6 +320,7 @@ ID(28)
     if(childNum == 2)
     {
         TypeInfo *exp = (TypeInfo*)malloc(sizeof(TypeInfo));
+        exp->iDimension = 0;
         child->other_info = exp;
     }
 }
@@ -467,6 +471,9 @@ SD(53)
     else {
         TypeInfo *exp =  (TypeInfo*)malloc(sizeof(TypeInfo));
         exp->sValid = 0;
+        /* Demons Add */
+        free(parent->other_info);
+        /* Demons End */
         parent->other_info = exp;
         return;
     }
