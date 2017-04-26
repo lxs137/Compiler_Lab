@@ -424,6 +424,9 @@ SD(10)
         specifier->sValid = 0;
     else 
         specifier->sType = structSpecifier->sType;
+    /* Demons Add */
+    free(parent->other_info);
+    /* Demons End */
     parent->other_info = specifier;
 }
 
@@ -473,6 +476,7 @@ SD(53)
         {
             printf("Error type 13 at Line %d: Exp is not a struct.\n", parent->loc_line);         
             exp->sValid = 0;            
+          
             return;
         }
     }
