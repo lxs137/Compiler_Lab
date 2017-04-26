@@ -202,7 +202,18 @@ IDS(39, 40, 41, 42, 43, 44, 45, 46)
     }
 }
 
-IDS(47, 48, 49)
+ID(47)
+{
+    if (childNum == 2)
+    {
+        D_type_info;
+        D_parent_info;
+        type_info->iDimension = parent_info->iDimension;
+        child->other_info = type_info;
+    }
+}
+
+IDS(48, 49)
 {
     if (childNum == 2)
     {

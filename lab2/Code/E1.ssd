@@ -218,7 +218,7 @@ Exp.sDimension = 0
 
 不检查任何错误，只做内存分配等琐碎工作
 Exp -> LP Exp' RP (47)
-Exp'.iDimension = 0
+Exp'.iDimension = Exp.iDimension
 Exp.sType = Exp'.sType
 Exp.sDimension = Exp'.sDimension
 
