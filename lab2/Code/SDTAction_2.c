@@ -157,6 +157,7 @@ ID(57)
     if(childNum == 1)
     {
         TypeInfo* exp = (TypeInfo*)malloc(sizeof(TypeInfo));
+        exp->iDimension = 0;
         child->other_info = exp;
     }
     else if(childNum == 2)
@@ -192,6 +193,9 @@ ID(58)
     if(childNum == 1)
     {
         TypeInfo* exp = (TypeInfo*)malloc(sizeof(TypeInfo));
+        /* Demons Add */
+        exp->iDimension = 0;
+        /* Demons end */
         child->other_info = exp; 
     }
 }
@@ -236,7 +240,6 @@ SDS(50, 51)
     else
         exp->sValid = 1;
     exp->nextInfo = (void*)0;
-    parent->other_info = exp;
 
     if(func_call->param_list != NULL)
         freeTempParamList(func_call->param_list);
@@ -319,6 +322,7 @@ ID(28)
     if(childNum == 2)
     {
         TypeInfo *exp = (TypeInfo*)malloc(sizeof(TypeInfo));
+        exp->iDimension = 0;
         child->other_info = exp;
     }
 }
