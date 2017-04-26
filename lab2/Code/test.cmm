@@ -1,8 +1,6 @@
-struct A {
-    int a_ele[2][2];
-};
 int main()
 {
-    struct A a_;
-    a_.a_ele[1];
+    int i[1][2];
+    
+    (i[1])[2];
 }
