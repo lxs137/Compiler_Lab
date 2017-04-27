@@ -268,11 +268,18 @@ SD(16)
 
     if (!stackIsEmpty())
     {
-        if (stackAddRegion(parent->first_child->str + 4, type_info) == 0)
+        int add_result = stackAddRegion(parent->first_child->str + 4, type_info);
+        if (add_result == -1)
         {
-            printf("Error type 15 at Line: %d: Redefine field \"%s\".\n", 
+            printf("Error type 15 at Line: %d: Redefine field \"%s\" in struct.\n", 
                     child_1->loc_line,
                     child_1->str + 4);
+        }
+        else if(add_result == 0)
+        {
+            printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
+                child_1->loc_line, 
+                child_1->str + 4);
         }
     }
     else if(isDefineFunction())

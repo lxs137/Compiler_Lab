@@ -473,10 +473,14 @@ int stackIsEmpty()
 int stackAddRegion(const char *region_name, void *type_info)
 {
     if(globalStructStack->isEmpty())
-        return -1;
+        return -2;
     TypeInfo *region_info = (TypeInfo*)type_info;
-    if(findRegionInStruct(globalStructStack->stack_top->struct_symbol->name, region_name) != NULL)
+    Symbol *symbol_in_table = getSymbolFull(region_name),
+        *region_in_struct = findRegionInStruct(globalStructStack->stack_top->struct_symbol->name, region_name);
+    if(symbol_in_table != NULL && region_in_struct == NULL)
         return 0;
+    else if(symbol_in_table != NULL && region_in_struct == symbol_in_table)
+        return -1;
     insertSymbol(globalSymbolTable, region_name, 0, region_info->sType,
         region_info->sDimension, NULL, type_info);
     Symbol *new_region = (Symbol*)findSymbol(globalSymbolTable, region_name);
