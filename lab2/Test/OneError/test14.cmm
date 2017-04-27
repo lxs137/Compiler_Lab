@@ -3,9 +3,16 @@ struct Position
     float x, y;
 };
 
+struct
+{
+    int z[1][2];
+} s;
+
 int main()
 {
     struct Position p;
+    int i = s.z[0][0];
+
     if (p.n == 3.7)
         return 0;
 }
