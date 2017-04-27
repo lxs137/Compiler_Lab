@@ -25,7 +25,7 @@
 %token <type_node> LP RP LB RB LC RC
 
 %type <type_node> FuncType
-%type <type_node> FuncParamTypeHelper
+%type <type_node> FuncParamType
 %type <type_node> Program ExtDefList ExtDef ExtDecList
 %type <type_node> Specifier StructSpecifier OptTag Tag
 %type <type_node> VarDec FunDec VarList ParamDec
@@ -81,8 +81,8 @@ ExtDecList
     | VarDec COMMA ExtDecList { $$ = new_parent_node("ExtDecList", 8, 3, $1, $2, $3); }
     ;
 
-FuncParamTypeHelper
-    : Specifier DEDUCT FuncParamTypeHelper{ 
+FuncParamType
+    : Specifier DEDUCT FuncParamType{ 
         $$ = new_parent_node("FuncType", 101, 2, $1, $3); 
     }
     /* | Specifier { $$ = new_parent_node("FuncParamtypeHelper", 102, 1, $1); } */
@@ -90,8 +90,8 @@ FuncParamTypeHelper
     ;
 
 FuncType
-    : FUNC LP FuncParamTypeHelper RP { 
-        /* if (!strcmp(((AST_node *)$3)->str, "FuncParamTypeHelper")) { */
+    : FUNC LP FuncParamType RP { 
+        /* if (!strcmp(((AST_node *)$3)->str, "FuncParamType")) { */
         /*     AST_node *child_1 = (AST_node *)((AST_node *)$3)->first_child; */
         /*     AST_node *child_2 = (AST_node *)child_1->next_brother; */
         /*     AST_node *child_3 = (AST_node *)child_2->next_brother; */
@@ -111,8 +111,6 @@ FuncType
 Specifier
     : TYPE { $$ = new_parent_node("Specifier", 9, 1, $1); }
     | StructSpecifier { $$ = new_parent_node("Specifier", 10, 1, $1); }
-    /* | FUNC LP FuncParamTypeHelper RP { $$ = new_parent_node("Specifier", 100, 4, $1, $2, $3, $4); } */
-    /* | FUNC LP FuncParamTypeHelper RP { $$ = $3; } */
     | FuncType { $$ = $1; }
     ;
 StructSpecifier
