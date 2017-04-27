@@ -16,8 +16,7 @@
 
 %token <type_node> ID
 %token <type_node> DEDUCT
-%token <type_node> FUNCTION
-%type <type_node> FuncSpecifier
+%token <type_node> FUNC
 %token <type_node> ASSIGNOP RELOP AND OR NOT
 %token <type_node> PLUS MINUS STAR DIV
 %token <type_node> TYPE STRUCT INT FLOAT
@@ -25,6 +24,7 @@
 %token <type_node> SEMI COMMA DOT
 %token <type_node> LP RP LB RB LC RC
 
+%type <type_node> FuncParamTypeHelper
 %type <type_node> Program ExtDefList ExtDef ExtDecList
 %type <type_node> Specifier StructSpecifier OptTag Tag
 %type <type_node> VarDec FunDec VarList ParamDec
@@ -56,11 +56,11 @@ Program
         /* initTable(); */
         /* initTable_lxs(); */
         /* globalSymbolTable = newSymbolTable(); */
-        /* globalFuncSymbolTable = newFuncSymbolTable(); */
+        /* globalFUNCSymbolTable = newFUNCSymbolTable(); */
         /* globalStructStack = newStructStack(); */
         /* traversalTreePerformAction($$); */
         /* //printSymbolTable(globalSymbolTable); */
-        /* findUndefinedFunction(); */
+        /* findUndefinedFUNCtion(); */
         /* clean_up_syntax_tree($$); */
         /* cleanUpSymbolTable(); */
     }
@@ -80,18 +80,17 @@ ExtDecList
     | VarDec COMMA ExtDecList { $$ = new_parent_node("ExtDecList", 8, 3, $1, $2, $3); }
     ;
 
+FuncParamTypeHelper
+    : /* empty */
+    | DEDUCT Specifier
+    ;
+
 /* Specifiers */
 Specifier
     : TYPE { $$ = new_parent_node("Specifier", 9, 1, $1); }
     | StructSpecifier { $$ = new_parent_node("Specifier", 10, 1, $1); }
-    /* | FUNCTION LP RP */
-    /* | FUNCTION LP Specifier RP */
-    /* | FUNCTION LP Specifier DEDUCT Specifier RP */
-    /* | FUNCTION Specifier DEDUCT Specifier */
-    | FuncSpecifier;
+    | FUNC LP Specifier FuncParamTypeHelper RP
     ;
-FuncSpecifier
-    : FUNCTION LP RP;
 StructSpecifier
     : STRUCT OptTag LC DefList RC { $$ = new_parent_node("StructSpecifier", 11, 5, $1, $2, $3, $4, $5); }
     | STRUCT Tag { $$ = new_parent_node("StructSpecifier", 12, 2, $1, $2); }

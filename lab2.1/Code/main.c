@@ -3,7 +3,7 @@
 #include "syntax_tree.h"
 #include "lex.yy.c"
 
-extern int yydebug;
+/* extern int yydebug; */
 
 int main(int argc, char **argv)
 {
@@ -17,7 +17,7 @@ int main(int argc, char **argv)
         perror(argv[1]);
         return 1;
     }
-    yydebug = 1;
+    /* yydebug = 1; */
     yyrestart(f);
     yyparse();
     fclose(f);
