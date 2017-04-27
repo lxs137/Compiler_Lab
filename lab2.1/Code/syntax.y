@@ -24,6 +24,7 @@
 %token <type_node> SEMI COMMA DOT
 %token <type_node> LP RP LB RB LC RC
 
+%type <type_node> FuncType
 %type <type_node> FuncParamTypeHelper
 %type <type_node> Program ExtDefList ExtDef ExtDecList
 %type <type_node> Specifier StructSpecifier OptTag Tag
@@ -82,11 +83,24 @@ ExtDecList
 
 FuncParamTypeHelper
     : Specifier DEDUCT FuncParamTypeHelper{ 
-        /* $$ = new_parent_node("FuncParamTypeHelper", 101, 3, $1, $2, $3); */ 
-        $$ = new_parent_node("FUNC", 101, 3, $1, $2, $3);
+        $$ = new_parent_node("FuncType", 101, 2, $1, $3); 
     }
     /* | Specifier { $$ = new_parent_node("FuncParamtypeHelper", 102, 1, $1); } */
     | Specifier { $$ = $1; }
+    ;
+
+FuncType
+    : FUNC LP FuncParamTypeHelper RP { 
+        if (!strcmp(((AST_node *)$3)->str, "FuncParamTypeHelper")) {
+            AST_node *child_1 = (AST_node *)((AST_node *)$3)->first_child;
+            AST_node *child_2 = (AST_node *)child_1->next_brother;
+            AST_node *child_3 = (AST_node *)child_2->next_brother;
+            $$ = new_parent_node("FuncType", 101, 2, child_1, child_3);
+        }
+        else {
+            $$ = new_parent_node("FuncType", 101, 1, $3); 
+        }
+    }
     ;
 
 /* Specifiers */
@@ -94,7 +108,8 @@ Specifier
     : TYPE { $$ = new_parent_node("Specifier", 9, 1, $1); }
     | StructSpecifier { $$ = new_parent_node("Specifier", 10, 1, $1); }
     /* | FUNC LP FuncParamTypeHelper RP { $$ = new_parent_node("Specifier", 100, 4, $1, $2, $3, $4); } */
-    | FUNC LP FuncParamTypeHelper RP { $$ = $3; }
+    /* | FUNC LP FuncParamTypeHelper RP { $$ = $3; } */
+    | FuncType { $$ = $1; }
     ;
 StructSpecifier
     : STRUCT OptTag LC DefList RC { $$ = new_parent_node("StructSpecifier", 11, 5, $1, $2, $3, $4, $5); }
