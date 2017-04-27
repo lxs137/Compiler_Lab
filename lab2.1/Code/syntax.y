@@ -73,7 +73,7 @@ ExtDef
     | Specifier SEMI { $$ = new_parent_node("ExtDef", 5, 2, $1, $2); }
     /* | Specifier FuncDec CompSt { $$ = new_parent_node("ExtDef", 6, 3, $1, $2, $3); } */
     /* | Specifier FuncDec SEMI { $$ = new_parent_node("ExtDef", 59, 3, $1, $2, $3); } */
-    | FuncBody { $$ = $1; }
+    | FuncType ID ASSIGNOP FuncBody { $$ = $1; }
     ;
 ExtDecList
     : VarDec { $$ = new_parent_node("ExtDecList", 7, 1, $1); }
