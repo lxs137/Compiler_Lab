@@ -15,8 +15,7 @@
 }
 
 %token <type_node> ID
-%token <type_node> DEDUCT
-%token <type_node> FUNC
+%token <type_node> FUNC DEDUCT
 %token <type_node> ASSIGNOP RELOP AND OR NOT
 %token <type_node> PLUS MINUS STAR DIV
 %token <type_node> TYPE STRUCT INT FLOAT
@@ -24,8 +23,7 @@
 %token <type_node> SEMI COMMA DOT
 %token <type_node> LP RP LB RB LC RC
 
-%type <type_node> FuncType
-%type <type_node> FuncParamType
+%type <type_node> FuncType FuncParamType FuncBody
 %type <type_node> Program ExtDefList ExtDef ExtDecList
 %type <type_node> Specifier StructSpecifier OptTag Tag
 %type <type_node> VarDec FunDec VarList ParamDec
@@ -73,8 +71,9 @@ ExtDefList
 ExtDef
     : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 4, 3, $1, $2, $3); }
     | Specifier SEMI { $$ = new_parent_node("ExtDef", 5, 2, $1, $2); }
-    | Specifier FunDec CompSt { $$ = new_parent_node("ExtDef", 6, 3, $1, $2, $3); }
-    | Specifier FunDec SEMI { $$ = new_parent_node("ExtDef", 59, 3, $1, $2, $3); }
+    /* | Specifier FunDec CompSt { $$ = new_parent_node("ExtDef", 6, 3, $1, $2, $3); } */
+    /* | Specifier FunDec SEMI { $$ = new_parent_node("ExtDef", 59, 3, $1, $2, $3); } */
+    | FuncBody { $$ = $1; }
     ;
 ExtDecList
     : VarDec { $$ = new_parent_node("ExtDecList", 7, 1, $1); }
@@ -91,15 +90,6 @@ FuncParamType
 
 FuncType
     : FUNC LP FuncParamType RP { 
-        /* if (!strcmp(((AST_node *)$3)->str, "FuncParamType")) { */
-        /*     AST_node *child_1 = (AST_node *)((AST_node *)$3)->first_child; */
-        /*     AST_node *child_2 = (AST_node *)child_1->next_brother; */
-        /*     AST_node *child_3 = (AST_node *)child_2->next_brother; */
-        /*     $$ = new_parent_node("FuncType", 101, 2, child_1, child_3); */
-        /* } */
-        /* else { */
-        /*     $$ = new_parent_node("FuncType", 101, 1, $3); */ 
-        /* } */
         if (!strcmp(((AST_node *)$3)->str, "Specifier"))
             $$ = new_parent_node("FuncType", 102, 1, $3);
         else
@@ -131,8 +121,13 @@ VarDec
     | VarDec LB INT RB { $$ = new_parent_node("varDec", 17, 4, $1, $2, $3, $4); }
     ;
 FunDec
-    : ID LP VarList RP { $$ = new_parent_node("FunDec", 18, 4, $1, $2, $3, $4); }
-    | ID LP RP { $$ = new_parent_node("FunDec", 19, 3, $1, $2, $3); }
+    /* : ID LP VarList RP { $$ = new_parent_node("FunDec", 18, 4, $1, $2, $3, $4); } */
+    /* | ID LP RP { $$ = new_parent_node("FunDec", 19, 3, $1, $2, $3); } */
+    : LP VarList RP DEDUCT Specifier { $$ = new_parent_node("FunDec", 104, 2, $2, $5); }
+    | LP RP DEDUCT Specifier { $$ = new_parent_node("FunDec", 105, 1, $1); }
+    ;
+FuncBody
+    : FunDec CompSt SEMI { $$ = new_parent_node("FuncBody", 106, 2, $1, $2); }
     ;
 VarList
     : ParamDec COMMA VarList { $$ = new_parent_node("VarList", 20, 3, $1, $2, $3); }

@@ -1,1 +1,3 @@
-Func(int -> float -> int -> float);
+(int a, int b) -> int {
+    return a + b;
+};
