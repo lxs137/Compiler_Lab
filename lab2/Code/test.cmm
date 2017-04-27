@@ -1,12 +1,8 @@
-int func(int a, int b);
+struct {
+    int x[1][2];
+} s;
 
 int main()
 {
-    int c[2][3], d[2];
-    return func(c[1][2], d[1]);
-}
-
-int func(int a, int b)
-{
-return 1;
+    int i = (s.x)[1][2];
 }
