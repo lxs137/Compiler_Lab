@@ -1,1 +1,1 @@
-Func(int);
+Func(int -> int -> int);
