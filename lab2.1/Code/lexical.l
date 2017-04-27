@@ -125,7 +125,7 @@ ws [ \t\n]
     print_loc_info("DEDUCT");
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "DEDUCT");
 }
-func    {
+Fun    {
     print_loc_info("FUNC");
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "FUNC");
 }
