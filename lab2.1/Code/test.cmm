@@ -1,1 +1,2 @@
 Func(int -> int -> int);
+Func(int -> Func(int -> int));
