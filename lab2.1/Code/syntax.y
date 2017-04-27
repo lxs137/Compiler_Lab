@@ -81,15 +81,20 @@ ExtDecList
     ;
 
 FuncParamTypeHelper
-    : Specifier DEDUCT FuncParamTypeHelper{ $$ = new_parent_node("FuncParamTypeHelper", 101, 3, $1, $2, $3); }
-    | Specifier { $$ = new_parent_node("FuncParamtypeHelper", 102, 1, $1); }
+    : Specifier DEDUCT FuncParamTypeHelper{ 
+        /* $$ = new_parent_node("FuncParamTypeHelper", 101, 3, $1, $2, $3); */ 
+        $$ = new_parent_node("FUNC", 101, 3, $1, $2, $3);
+    }
+    /* | Specifier { $$ = new_parent_node("FuncParamtypeHelper", 102, 1, $1); } */
+    | Specifier { $$ = $1; }
     ;
 
 /* Specifiers */
 Specifier
     : TYPE { $$ = new_parent_node("Specifier", 9, 1, $1); }
     | StructSpecifier { $$ = new_parent_node("Specifier", 10, 1, $1); }
-    | FUNC LP FuncParamTypeHelper RP { $$ = new_parent_node("Specifier", 100, 4, $1, $2, $3, $4); }
+    /* | FUNC LP FuncParamTypeHelper RP { $$ = new_parent_node("Specifier", 100, 4, $1, $2, $3, $4); } */
+    | FUNC LP FuncParamTypeHelper RP { $$ = $3; }
     ;
 StructSpecifier
     : STRUCT OptTag LC DefList RC { $$ = new_parent_node("StructSpecifier", 11, 5, $1, $2, $3, $4, $5); }
