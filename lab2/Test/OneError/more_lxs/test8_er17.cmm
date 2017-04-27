@@ -1,0 +1,22 @@
+struct B
+{
+    int a[2];
+    float b;
+};
+
+int main()
+{
+    struct A a_struct;
+    return 1;
+}
+
+struct A a_struct1;
+
+struct A func1()
+{
+}
+
+int func2(struct A a_struct2)
+{
+    return 1;
+}

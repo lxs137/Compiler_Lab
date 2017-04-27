@@ -1,0 +1,8 @@
+float func(float a, int b);
+
+int func(float a, int b);
+
+float func(float a, int b)
+{
+    return a;
+}

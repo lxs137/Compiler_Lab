@@ -1,0 +1,27 @@
+struct A
+{
+    int a[2][3];
+};
+
+struct A
+{
+    int b[2];
+};
+
+float B;
+
+struct B
+{
+    float c;
+};
+
+int main()
+{
+    int C = 2;
+    return C;
+}
+
+struct C
+{
+    int d[2][3];
+};

@@ -1,0 +1,23 @@
+struct A
+{
+    struct 
+    {
+        int a[2];
+        float b[2][2];
+        struct B
+        {
+            int c;
+        } b_struct[2];
+    }c_struct;
+    float d, e;
+} a_struct;
+
+int main()
+{
+    a_struct.e;
+    a_struct.c;
+    a_struct.c_struct;
+    a_struct.b_struct;
+    a_struct.c_struct.b_struct;
+    a_struct.c_struct.b_struct[1].c;
+}

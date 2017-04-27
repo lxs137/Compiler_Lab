@@ -1,0 +1,17 @@
+struct A
+{
+    struct
+    {
+        int a_[2];
+    } a_ele;
+};
+int main()
+{
+    struct A a_struct[2][1];
+    int a[3][2], c;
+    float b[2], d;
+    a_struct[1].a_ele;
+    a.ele;
+    c.ele;
+    (b[2]).ele;
+}
