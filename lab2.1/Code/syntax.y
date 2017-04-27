@@ -26,7 +26,7 @@
 %type <type_node> FuncType FuncParamType FuncBody
 %type <type_node> Program ExtDefList ExtDef ExtDecList
 %type <type_node> Specifier StructSpecifier OptTag Tag
-%type <type_node> VarDec FunDec VarList ParamDec
+%type <type_node> VarDec FuncDec VarList ParamDec
 %type <type_node> CompSt StmtList Stmt
 %type <type_node> DefList Def DecList Dec
 %type <type_node> Exp Args
@@ -71,8 +71,8 @@ ExtDefList
 ExtDef
     : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 4, 3, $1, $2, $3); }
     | Specifier SEMI { $$ = new_parent_node("ExtDef", 5, 2, $1, $2); }
-    /* | Specifier FunDec CompSt { $$ = new_parent_node("ExtDef", 6, 3, $1, $2, $3); } */
-    /* | Specifier FunDec SEMI { $$ = new_parent_node("ExtDef", 59, 3, $1, $2, $3); } */
+    /* | Specifier FuncDec CompSt { $$ = new_parent_node("ExtDef", 6, 3, $1, $2, $3); } */
+    /* | Specifier FuncDec SEMI { $$ = new_parent_node("ExtDef", 59, 3, $1, $2, $3); } */
     | FuncBody { $$ = $1; }
     ;
 ExtDecList
@@ -120,14 +120,14 @@ VarDec
     : ID { $$ = new_parent_node("VarDec", 16, 1, $1); }
     | VarDec LB INT RB { $$ = new_parent_node("varDec", 17, 4, $1, $2, $3, $4); }
     ;
-FunDec
-    /* : ID LP VarList RP { $$ = new_parent_node("FunDec", 18, 4, $1, $2, $3, $4); } */
-    /* | ID LP RP { $$ = new_parent_node("FunDec", 19, 3, $1, $2, $3); } */
-    : LP VarList RP DEDUCT Specifier { $$ = new_parent_node("FunDec", 104, 2, $2, $5); }
-    | LP RP DEDUCT Specifier { $$ = new_parent_node("FunDec", 105, 1, $1); }
+FuncDec
+    /* : ID LP VarList RP { $$ = new_parent_node("FuncDec", 18, 4, $1, $2, $3, $4); } */
+    /* | ID LP RP { $$ = new_parent_node("FuncDec", 19, 3, $1, $2, $3); } */
+    : LP VarList RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", 104, 2, $2, $5); }
+    | LP RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", 105, 1, $1); }
     ;
 FuncBody
-    : FunDec CompSt SEMI { $$ = new_parent_node("FuncBody", 106, 2, $1, $2); }
+    : FuncDec CompSt { $$ = new_parent_node("FuncBody", 106, 2, $1, $2); }
     ;
 VarList
     : ParamDec COMMA VarList { $$ = new_parent_node("VarList", 20, 3, $1, $2, $3); }
