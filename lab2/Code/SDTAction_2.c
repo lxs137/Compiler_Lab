@@ -215,10 +215,10 @@ SDS(50, 51)
                 parent->loc_line, func_name);
         TypeInfo* exp = (TypeInfo*)(parent->other_info);
         exp->sValid = 0;
-        if(func_call->param_list != NULL)
-            freeTempParamList(func_call->param_list);
-        free(func_call);
-        parent->first_child->other_info = NULL;
+        /* if(func_call->param_list != NULL) */
+        /*     freeTempParamList(func_call->param_list); */
+        /* free(func_call); */
+        /* parent->first_child->other_info = NULL; */
         return;
     }
     if(!checkFuncParamMatch(func_in_table, func_call))

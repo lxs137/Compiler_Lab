@@ -2,6 +2,7 @@
 #include <malloc.h>
 #include <string.h>
 #include "syntax_tree.h"
+#include "symbol_table.h"
 
 AST_node *new_token_node(int line, int column, char *string)
 {
@@ -79,6 +80,15 @@ void clean_up_syntax_tree(AST_node *parent)
       return;
     if(parent->first_child != NULL)
     {
+        if (parent->proNum == 50 || parent->proNum == 51)
+        {
+            FuncInfo *func_call = (FuncInfo*)(parent->first_child->other_info);
+            if(func_call->param_list != NULL)
+                freeTempParamList(func_call->param_list);
+            free(func_call);
+            parent->first_child->other_info = NULL;
+        }
+
         AST_node *ptr_cur = parent->first_child;
         AST_node *ptr_next = ptr_cur;
         while(ptr_cur != NULL)
