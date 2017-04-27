@@ -101,7 +101,7 @@ FuncType
         /*     $$ = new_parent_node("FuncType", 101, 1, $3); */ 
         /* } */
         if (!strcmp(((AST_node *)$3)->str, "Specifier"))
-            $$ = new_parent_node("FuncType", 101, 1, $3);
+            $$ = new_parent_node("FuncType", 102, 1, $3);
         else
             $$ = $3;
     }
