@@ -124,10 +124,12 @@ ws [ \t\n]
 "->"    {
     print_loc_info("DEDUCT");
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "DEDUCT");
+    return DEDUCT;
 }
-Fun    {
-    print_loc_info("FUNC");
-    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "FUNC");
+Function    {
+    print_loc_info("FUNCTION");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "FUNCTION");
+    return FUNCTION;
 }
 int    {
     print_loc_info("TYPE-int");

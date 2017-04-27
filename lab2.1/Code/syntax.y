@@ -16,7 +16,8 @@
 
 %token <type_node> ID
 %token <type_node> DEDUCT
-%token <type_node> FUNC
+%token <type_node> FUNCTION
+%type <type_node> FuncSpecifier
 %token <type_node> ASSIGNOP RELOP AND OR NOT
 %token <type_node> PLUS MINUS STAR DIV
 %token <type_node> TYPE STRUCT INT FLOAT
@@ -83,9 +84,14 @@ ExtDecList
 Specifier
     : TYPE { $$ = new_parent_node("Specifier", 9, 1, $1); }
     | StructSpecifier { $$ = new_parent_node("Specifier", 10, 1, $1); }
-    | FUNC LP Specifier RP
-    | FUNC LP Specifier DEDUCT Specifier RP
+    /* | FUNCTION LP RP */
+    /* | FUNCTION LP Specifier RP */
+    /* | FUNCTION LP Specifier DEDUCT Specifier RP */
+    /* | FUNCTION Specifier DEDUCT Specifier */
+    | FuncSpecifier;
     ;
+FuncSpecifier
+    : FUNCTION LP RP;
 StructSpecifier
     : STRUCT OptTag LC DefList RC { $$ = new_parent_node("StructSpecifier", 11, 5, $1, $2, $3, $4, $5); }
     | STRUCT Tag { $$ = new_parent_node("StructSpecifier", 12, 2, $1, $2); }
