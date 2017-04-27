@@ -410,7 +410,10 @@ ID(53)
 {
     if(childNum == 1)
     {
+        D_parent_info;
         TypeInfo *exp_ = (TypeInfo*)malloc(sizeof(TypeInfo));
+        /* exp_->iDimension = parent_info->iDimension; */
+        exp_->iDimension = 0;
         child->other_info = exp_;
     }
 

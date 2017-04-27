@@ -2,6 +2,7 @@
 #include <malloc.h>
 #include <string.h>
 #include "syntax_tree.h"
+#include "symbol_table.h"
 
 AST_node *new_token_node(int line, int column, char *string)
 {
