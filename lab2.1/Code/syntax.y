@@ -15,6 +15,8 @@
 }
 
 %token <type_node> ID
+%token <type_node> DEDUCT
+%token <type_node> FUNC
 %token <type_node> ASSIGNOP RELOP AND OR NOT
 %token <type_node> PLUS MINUS STAR DIV
 %token <type_node> TYPE STRUCT INT FLOAT
@@ -22,6 +24,8 @@
 %token <type_node> SEMI COMMA DOT
 %token <type_node> LP RP LB RB LC RC
 
+%type <type_node> CurryFunDec
+%type <type_node> CurryParamDec
 %type <type_node> Program ExtDefList ExtDef ExtDecList
 %type <type_node> Specifier StructSpecifier OptTag Tag
 %type <type_node> VarDec FunDec VarList ParamDec
@@ -31,6 +35,9 @@
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
+
+%nonassoc LOWER_THAN_DEDUCT
+%nonassoc DEDUCT
 
 %right ASSIGNOP
 %left OR
@@ -46,17 +53,17 @@
 Program
     : ExtDefList {
         $$ = new_parent_node("Program", 1, 1, $1);
-        /* print_child_node($$, 0); */
-        initTable();
-        initTable_lxs();
-        globalSymbolTable = newSymbolTable();
-        globalFuncSymbolTable = newFuncSymbolTable();
-        globalStructStack = newStructStack();
-        traversalTreePerformAction($$);
-        //printSymbolTable(globalSymbolTable);
-        findUndefinedFunction();
-        clean_up_syntax_tree($$);
-        cleanUpSymbolTable();
+        print_child_node($$, 0);
+        /* initTable(); */
+        /* initTable_lxs(); */
+        /* globalSymbolTable = newSymbolTable(); */
+        /* globalFuncSymbolTable = newFuncSymbolTable(); */
+        /* globalStructStack = newStructStack(); */
+        /* traversalTreePerformAction($$); */
+        /* //printSymbolTable(globalSymbolTable); */
+        /* findUndefinedFunction(); */
+        /* clean_up_syntax_tree($$); */
+        /* cleanUpSymbolTable(); */
     }
     ;
 ExtDefList
@@ -77,7 +84,8 @@ ExtDecList
 /* Specifiers */
 Specifier
     : TYPE { $$ = new_parent_node("Specifier", 9, 1, $1); }
-    | StructSpecifier { $$ = new_parent_node("Specifier", 10, 1,$1); }
+    | StructSpecifier { $$ = new_parent_node("Specifier", 10, 1, $1); }
+    | CurryFunDec { $$ = new_parent_node("Specifier", 102, 1, $1); }
     ;
 StructSpecifier
     : STRUCT OptTag LC DefList RC { $$ = new_parent_node("StructSpecifier", 11, 5, $1, $2, $3, $4, $5); }
@@ -106,6 +114,17 @@ VarList
     ;
 ParamDec
     : Specifier VarDec { $$ = new_parent_node("ParamDec", 22, 2, $1, $2); }
+    ;
+
+CurryFunDec
+    : FUNC LP CurryParamDec RP { $$ = new_parent_node("CurryFunDec", 103, 4, $1, $2, $3, $4); }
+    ;
+
+/* currying function */
+/* such as int -> int -> int */
+CurryParamDec
+    : Specifier %prec LOWER_THAN_DEDUCT { $$ = new_parent_node("CurryParamDec", 100, 1, $1); }
+    | Specifier DEDUCT CurryParamDec { $$ = new_parent_node("CurryParamDec", 101, 3, $1, $2, $3); }
     ;
 
 /* Statements */

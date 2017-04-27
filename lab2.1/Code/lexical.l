@@ -1,5 +1,5 @@
 %{
-//#define flex_debug_print
+    #define flex_debug_print
     #include <stdio.h>
     #include <stdlib.h>
     #include "syntax.tab.h"
@@ -120,6 +120,14 @@ ws [ \t\n]
     print_loc_info("NOT");
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "NOT");
     return NOT;
+}
+"->"    {
+    print_loc_info("DEDUCT");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "DEDUCT");
+}
+func    {
+    print_loc_info("FUNC");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "FUNC");
 }
 int    {
     print_loc_info("TYPE-int");
