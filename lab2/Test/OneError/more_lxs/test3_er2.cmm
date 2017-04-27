@@ -1,0 +1,13 @@
+int main()
+{
+    int a;
+    f(2);
+    a = 2;
+    f(4);
+    f(1);
+}
+
+float f(int c)
+{
+    return 1.2;
+}

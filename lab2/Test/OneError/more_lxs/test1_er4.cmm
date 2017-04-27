@@ -1,0 +1,16 @@
+int func(int a, int b);
+
+int func(int a, int b)
+{
+    return 1;
+}
+
+int func(int c, int d)
+{
+    return 2;
+}
+
+int func(int c, int d)
+{
+    return 2;
+}
