@@ -91,15 +91,19 @@ FuncParamTypeHelper
 
 FuncType
     : FUNC LP FuncParamTypeHelper RP { 
-        if (!strcmp(((AST_node *)$3)->str, "FuncParamTypeHelper")) {
-            AST_node *child_1 = (AST_node *)((AST_node *)$3)->first_child;
-            AST_node *child_2 = (AST_node *)child_1->next_brother;
-            AST_node *child_3 = (AST_node *)child_2->next_brother;
-            $$ = new_parent_node("FuncType", 101, 2, child_1, child_3);
-        }
-        else {
-            $$ = new_parent_node("FuncType", 101, 1, $3); 
-        }
+        /* if (!strcmp(((AST_node *)$3)->str, "FuncParamTypeHelper")) { */
+        /*     AST_node *child_1 = (AST_node *)((AST_node *)$3)->first_child; */
+        /*     AST_node *child_2 = (AST_node *)child_1->next_brother; */
+        /*     AST_node *child_3 = (AST_node *)child_2->next_brother; */
+        /*     $$ = new_parent_node("FuncType", 101, 2, child_1, child_3); */
+        /* } */
+        /* else { */
+        /*     $$ = new_parent_node("FuncType", 101, 1, $3); */ 
+        /* } */
+        if (!strcmp(((AST_node *)$3)->str, "Specifier"))
+            $$ = new_parent_node("FuncType", 101, 1, $3);
+        else
+            $$ = $3;
     }
     ;
 
