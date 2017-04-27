@@ -1,0 +1,14 @@
+float g(int b);
+
+int main()
+{
+    g(2.5);
+    g(1, 3, 5);
+}
+
+float g(int a)
+{
+    float c = 2.3;
+    a = 2;
+    return c;
+}

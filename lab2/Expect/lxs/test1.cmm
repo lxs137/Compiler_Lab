@@ -1,0 +1,18 @@
+struct A{
+    int a;
+    struct B{
+        float c;
+        int d;
+    }b_struct;
+};
+
+struct A func() {
+    struct A a_struct;
+    return a_struct;
+}
+
+int main()
+{
+    func().a;
+}
+
