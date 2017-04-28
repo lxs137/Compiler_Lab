@@ -31,18 +31,16 @@ digit [0-9]
 letter [a-zA-Z_]
 uppercase [A-Z]
 lowercase [a-z]
-ws [ \t\n]
+ws [ \t]
 
 %%
 \n    { 
     yycolumn = 1;
-}
-{ws}+    { print_loc_info("find white space"); }
-";"    {
     print_loc_info("SEMI");
     yylval.type_node = (void *)new_token_node(yylloc.first_line, yylloc.first_column, "SEMI");
     return SEMI;
 }
+{ws}+    { print_loc_info("find white space"); }
 ","    {
     print_loc_info("COMMA");
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "COMMA");

@@ -124,6 +124,7 @@ StructDefList
     | StructDec StructDefList { $$ = new_parent_node("StructDefList", 1000, 2, $1, $2); }
     | NamedStructDef StructDefList { $$ = new_parent_node("StructDefList", 1000, 2, $1, $2); }
     | AnonymousStructDef VarDec SEMI StructDefList { $$ = new_parent_node("StructDefList", 1000, 3, $1, $2, $4); }
+    | SEMI StructDefList { $$ = $2; }
     | /* empty */ { $$ = new_parent_node("StructDefList", 1000, 0); }
 StructDef
     : Specifier StructDecList SEMI { $$ = new_parent_node("Def", 34, 3, $1, $2, $3); }
