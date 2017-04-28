@@ -80,6 +80,10 @@ ExtDecList
     | VarDec COMMA ExtDecList { $$ = new_parent_node("ExtDecList", 8, 3, $1, $2, $3); }
     ;
 
+/* 增加函数类型构造子 */
+/* 函数类型允许两种基本形式：只有一个返回值类型的函数类型；具有一个输入值类型和一个返回值类型的函数类型 */
+/* 不允许函数没有返回值 */
+/* 多参数函数用科里化变成嵌套的第二种形式的函数类型 */
 FuncParamType
     : Specifier DEDUCT FuncParamType{ 
         $$ = new_parent_node("FuncType", 101, 2, $1, $3); 
