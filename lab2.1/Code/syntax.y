@@ -68,11 +68,13 @@ Program
 ExtDefList
     : ExtDef ExtDefList { $$ = new_parent_node("ExtDefList", 2, 2, $1, $2); }
     | /* empty */ { $$ = new_parent_node("EMPTY", 3, 0); }
+    /* | DecList */
     ;
 ExtDef
-    : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 4, 3, $1, $2, $3); }
-    | Specifier SEMI { $$ = new_parent_node("ExtDef", 5, 2, $1, $2); }
-    | Specifier ID ASSIGNOP FuncBody { $$ = new_parent_node("ExtDef", 1000, 4, $1, $2, $3, $4); }
+    /* : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 4, 3, $1, $2, $3); } */
+    /* | Specifier SEMI { $$ = new_parent_node("ExtDef", 5, 2, $1, $2); } */
+    : DefList
+    /* | Specifier ID ASSIGNOP FuncBody { $$ = new_parent_node("ExtDef", 1000, 4, $1, $2, $3, $4); } */
     ;
 ExtDecList
     : VarDec { $$ = new_parent_node("ExtDecList", 7, 1, $1); }
