@@ -80,7 +80,6 @@ FuncParamType
     }
     | Specifier { $$ = $1; }
     ;
-
 FuncType
     : FUNC LP FuncParamType RP { 
         if (strcmp(((AST_node *)(((AST_node *)$3)->first_child))->str, "FuncType"))
@@ -94,6 +93,14 @@ FuncType
         }
     }
     ;
+/* 函数体的定义 */
+FuncDec
+    : LP VarList RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", 104, 2, $2, $5); }
+    | LP RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", 105, 1, $4); }
+    ;
+FuncBody
+    : FuncDec CompSt { $$ = new_parent_node("FuncBody", 106, 2, $1, $2); }
+    ;
 
 /* Specifiers */
 Specifier
@@ -102,6 +109,7 @@ Specifier
     | FuncType { $$ = $1; }
     | LET { $$ = new_parent_node("Specifier", 1000, 1, $1); }
     ;
+
 /* 结构体定义中允许出现变量定义／具名结构体的声明／嵌套具名结构体的定义／嵌套匿名结构体的定义 */
 StructDefList
     : StructDef StructDefList { $$ = new_parent_node("StructDefList", 1000, 2, $1, $2); }
@@ -138,15 +146,6 @@ VarDec
     : VALUEID { $$ = new_parent_node("VarDec", 16, 1, $1); }
     | VarDec LB INT RB { $$ = new_parent_node("varDec", 17, 4, $1, $2, $3, $4); }
     ;
-FuncDec
-    /* : VALUEID LP VarList RP { $$ = new_parent_node("FuncDec", 18, 4, $1, $2, $3, $4); } */
-    /* | VALUEID LP RP { $$ = new_parent_node("FuncDec", 19, 3, $1, $2, $3); } */
-    : LP VarList RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", 104, 2, $2, $5); }
-    | LP RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", 105, 1, $4); }
-    ;
-FuncBody
-    : FuncDec CompSt { $$ = new_parent_node("FuncBody", 106, 2, $1, $2); }
-    ;
 VarList
     : ParamDec COMMA VarList { $$ = new_parent_node("VarList", 20, 2, $1, $3); }
     | ParamDec { $$ = new_parent_node("VarList", 21, 1, $1); }
@@ -168,16 +167,6 @@ DSList
     | SEMI DSList { $$ = $2; }
     | /* empty */ { $$ = new_parent_node("DSList", 1000, 0); }
     ;
-
-/* StmtList */
-/*     : Stmt StmtList { $$ = new_parent_node("StmtList", 24, 2, $1, $2); } */
-/*     | /1* empty *1/ { $$ = new_parent_node("EMPTY", 25, 0); } */
-/*     ; */
-
-/* DefList */
-/*     : Def DefList { $$ = new_parent_node("DefList", 32, 2, $1, $2); } */
-/*     | /1* empty *1/ { $$ = new_parent_node("EMPTY", 33, 0); } */
-/*     ; */
 
 /* Statements */
 CompSt
