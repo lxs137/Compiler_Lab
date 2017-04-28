@@ -193,6 +193,7 @@ Exp
     | ID { $$ = new_parent_node("Exp", 54, 1, $1); }
     | INT { $$ = new_parent_node("Exp", 55, 1, $1); }
     | FLOAT { $$ = new_parent_node("Exp", 56, 1, $1); }
+    | FuncBody { $$ = $1; }
     ;
 
 Args

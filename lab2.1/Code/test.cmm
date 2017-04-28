@@ -1,6 +1,6 @@
-Func(int -> int -> int) f = (int a, int b) -> int {
-    return a + b;
+int main()
+{
+    Func(int -> int -> int) g = (int a, int b) -> int {
+        return a + b;
+    }
 }
-
-Func(int -> int -> int);
-Func(int);
