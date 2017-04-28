@@ -15,6 +15,7 @@
     yycolumn += yyleng;
 
     void print_loc_info(char* name);
+    void comment();
     enum RelopType
     {
         less = 0,
@@ -40,7 +41,8 @@ ws [ \t]
     yylval.type_node = (void *)new_token_node(yylloc.first_line, yylloc.first_column, "SEMI");
     return SEMI;
 }
-{ws}+    { print_loc_info("find white space"); }
+{ws}+    { print_loc_info("find white spaces"); }
+"/*"    { comment(); }
 ","    {
     print_loc_info("COMMA");
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "COMMA");
@@ -246,4 +248,30 @@ void print_loc_info(char* name)
 #ifdef flex_debug_print
     printf("%s: line--%d; column--%d\n", name, yylloc.first_line, yylloc.first_column);
 #endif
+}
+
+void comment()
+{
+    char c, c1;
+
+loop:
+    while ((c = input()) != '*' && c != 0)
+    {
+#ifdef flex_debug_print
+        putchar(c);
+#endif
+    }
+
+    if ((c1 = input()) != '/' && c != 0)
+    {
+        unput(c1);
+        goto loop;
+    }
+
+    if (c != 0)
+    {
+#ifdef flex_debug_print
+        putchar(c1);
+#endif
+    }
 }
