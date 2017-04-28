@@ -1,18 +1,18 @@
-/* let f = (int x) -> int { */
-/*     int a = 1, b = 2 */
-/*     int a, b */
-/*     return x + 1 */
+let f = (Int x) -> Int {
+    Int a = 1, b = 2
+    Int a, b
+    return x + 1
 
 
-/* } */
-/* int a */
-/* a = 1 */
-/* let g = 1 */
+}
+Int a
+a = 1
+let g = 1
 
-/* struct A { */
-/*     /1* struct B { *1/ */
-/*     /1* } *1/ */
-/* } */
+struct A {
+    /* struct B { */
+    /* } */
+}
 
-/* A */
+A
 

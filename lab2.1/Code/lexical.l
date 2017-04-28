@@ -138,15 +138,15 @@ let    {
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "LET");
     return LET;
 }
-int    {
-    print_loc_info("TYPE-int");
-    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "int");
-    return TYPE;
+Int    {
+    print_loc_info("INT");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "INT");
+    return BUILDINTYPE;
 }
-float    {
-    print_loc_info("TYPE-float");
-    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "float");
-    return TYPE;
+Float    {
+    print_loc_info("INT");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "FLOAT");
+    return BUILDINTYPE;
 }
 "("    {
     print_loc_info("LP");
@@ -264,7 +264,9 @@ loop:
 
     if ((c1 = input()) != '/' && c != 0)
     {
+#ifdef flex_debug_print
         unput(c1);
+#endif
         goto loop;
     }
 
