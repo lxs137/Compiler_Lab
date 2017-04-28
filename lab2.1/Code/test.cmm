@@ -6,3 +6,6 @@ let f = (int x) -> int {
 int a;
 a = 1;
 let g = 1;
+
+struct A {
+};

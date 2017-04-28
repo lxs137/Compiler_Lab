@@ -74,7 +74,9 @@ ExtDefList
 ExtDef
     /* : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 4, 3, $1, $2, $3); } */
     /* | Specifier SEMI { $$ = new_parent_node("ExtDef", 5, 2, $1, $2); } */
-    : DSList { $$ = $1; }
+    : DSList  { $$ = $1; }
+    | /* empty */
+    /* | Specifier SEMI { $$ = $1; } */
     /* | Specifier ID ASSIGNOP FuncBody { $$ = new_parent_node("ExtDef", 1000, 4, $1, $2, $3, $4); } */
     ;
 ExtDecList
@@ -153,8 +155,19 @@ ParamDec
 /* 不再要求变量定义与变量使用分隔 */
 /* StmtList & DefList */
 DSList
-    : StmtList { $$ = $1; }
-    | DefList { $$ = $1; }
+    : Stmt DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
+    | Def DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
+    | /* empty */ { $$ = new_parent_node("DSList", 1000, 0); }
+    ;
+
+StmtList
+    : Stmt StmtList { $$ = new_parent_node("StmtList", 24, 2, $1, $2); }
+    | /* empty */ { $$ = new_parent_node("EMPTY", 25, 0); }
+    ;
+
+DefList
+    : Def DefList { $$ = new_parent_node("DefList", 32, 2, $1, $2); }
+    | /* empty */ { $$ = new_parent_node("EMPTY", 33, 0); }
     ;
 
 /* Statements */
@@ -162,10 +175,6 @@ CompSt
     : LC DefList StmtList RC { $$ = new_parent_node("CompSt", 23, 4, $1, $2, $3, $4); }
     ;
 
-StmtList
-    : Stmt DSList { $$ = new_parent_node("StmtList", 24, 2, $1, $2); }
-    | /* empty */ { $$ = new_parent_node("EMPTY", 25, 0); }
-    ;
 Stmt
     : Exp SEMI { $$ = new_parent_node("Stmt", 26, 2, $1, $2); }
     | CompSt { $$ = new_parent_node("Stmt", 27, 1, $1); }
@@ -176,10 +185,6 @@ Stmt
     ;
 
 /* Local Definitions */
-DefList
-    : Def DSList { $$ = new_parent_node("DefList", 32, 2, $1, $2); }
-    | /* empty */ { $$ = new_parent_node("EMPTY", 33, 0); }
-    ;
 Def
     : Specifier DecList SEMI { $$ = new_parent_node("Def", 34, 3, $1, $2, $3); }
     ;
