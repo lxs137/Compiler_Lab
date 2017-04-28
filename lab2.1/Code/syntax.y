@@ -16,6 +16,7 @@
 
 %token <type_node> ID
 %token <type_node> FUNC DEDUCT
+%token <type_node> LET
 %token <type_node> ASSIGNOP RELOP AND OR NOT
 %token <type_node> PLUS MINUS STAR DIV
 %token <type_node> TYPE STRUCT INT FLOAT
@@ -71,9 +72,7 @@ ExtDefList
 ExtDef
     : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 4, 3, $1, $2, $3); }
     | Specifier SEMI { $$ = new_parent_node("ExtDef", 5, 2, $1, $2); }
-    /* | Specifier FuncDec CompSt { $$ = new_parent_node("ExtDef", 6, 3, $1, $2, $3); } */
-    /* | Specifier FuncDec SEMI { $$ = new_parent_node("ExtDef", 59, 3, $1, $2, $3); } */
-    | FuncType ID ASSIGNOP FuncBody { $$ = new_parent_node("ExtDef", 1000, 4, $1, $2, $3, $4); }
+    | Specifier ID ASSIGNOP FuncBody { $$ = new_parent_node("ExtDef", 1000, 4, $1, $2, $3, $4); }
     ;
 ExtDecList
     : VarDec { $$ = new_parent_node("ExtDecList", 7, 1, $1); }
@@ -85,11 +84,10 @@ ExtDecList
 /* 不允许函数没有返回值 */
 /* 多参数函数用科里化变成嵌套的第二种形式的函数类型 */
 FuncParamType
-    : Specifier DEDUCT FuncParamType{ 
+    : Specifier DEDUCT FuncParamType { 
         $$ = new_parent_node("FuncType", 101, 2, $1, $3); 
         $$ = new_parent_node("Specifier", 1000, 1, $$);
     }
-    /* | Specifier { $$ = new_parent_node("FuncParamtypeHelper", 102, 1, $1); } */
     | Specifier { $$ = $1; }
     ;
 
@@ -100,9 +98,10 @@ FuncType
             $$ = new_parent_node("FuncType", 102, 1, $3);
             $$ = new_parent_node("Specifier", 1000, 1, $$);
         }
-        else
+        else 
+        {
             $$ = $3;
-            /* $$ = new_parent_node("Specifier", 1000, 1, $3); */
+        }
     }
     ;
 
@@ -110,8 +109,8 @@ FuncType
 Specifier
     : TYPE { $$ = new_parent_node("Specifier", 9, 1, $1); }
     | StructSpecifier { $$ = new_parent_node("Specifier", 10, 1, $1); }
-    /* | FuncType { $$ = new_parent_node("Specifier", 1000, 1, $1); } */
     | FuncType { $$ = $1; }
+    | LET { $$ = new_parent_node("Specifier", 1000, 1, $1); }
     ;
 StructSpecifier
     : STRUCT OptTag LC DefList RC { $$ = new_parent_node("StructSpecifier", 11, 5, $1, $2, $3, $4, $5); }

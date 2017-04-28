@@ -131,6 +131,11 @@ Func    {
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "FUNC");
     return FUNC;
 }
+let    {
+    print_loc_info("LET");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "LET");
+    return LET;
+}
 int    {
     print_loc_info("TYPE-int");
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "int");

@@ -1,4 +1,3 @@
-Func(int);
-Func(int -> int);
-Func(int -> int -> int);
-Func(int -> Func(int -> int));
+let f = (int x) -> int {
+    return x + 1;
+}
