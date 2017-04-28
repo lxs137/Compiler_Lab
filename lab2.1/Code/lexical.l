@@ -29,6 +29,8 @@
 %option yylineno
 digit [0-9]
 letter [a-zA-Z_]
+uppercase [A-Z]
+lowercase [a-z]
 ws [ \t\n]
 
 %%
@@ -219,12 +221,19 @@ while    {
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, print_output);
     return FLOAT;
 }
-{letter}({letter}|{digit})*    {
+{lowercase}({letter}|{digit})*    {
     char print_output[50];
     snprintf(print_output, sizeof(print_output), "ID: %s", yytext);
     print_loc_info(print_output);
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, print_output);
-    return ID;
+    return VALUEID;
+}
+{uppercase}({letter}|{digit})*    {
+    char print_output[50];
+    snprintf(print_output, sizeof(print_output), "ID: %s", yytext);
+    print_loc_info(print_output);
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, print_output);
+    return TYPEID;
 }
 .    {
     printf("Error Type A at line %d: ", yylloc.first_line);

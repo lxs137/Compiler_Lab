@@ -14,7 +14,7 @@
     void *type_node;
 }
 
-%token <type_node> ID
+%token <type_node> VALUEID TYPEID
 %token <type_node> FUNC DEDUCT
 %token <type_node> LET
 %token <type_node> ASSIGNOP RELOP AND OR NOT
@@ -27,13 +27,13 @@
 %type <type_node> FuncType FuncParamType FuncBody
 %type <type_node> DSList
 %type <type_node> Program
-%type <type_node> Specifier StructSpecifier OptTag Tag
+%type <type_node> Specifier StructSpecifier
 %type <type_node> VarDec FuncDec VarList ParamDec
 %type <type_node> CompSt Stmt
 %type <type_node> Def DecList Dec
 %type <type_node> Exp Args
 %type <type_node> StructDefList StructDef StructDecList
-%type <type_node> StructDec
+%type <type_node> StructDec NamedStructDef AnonymousStructDef
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -79,7 +79,7 @@ Program
 /*     : DSList  { $$ = $1; } */
 /*     | /1* empty *1/ */
 /*     /1* | Specifier SEMI { $$ = $1; } *1/ */
-/*     /1* | Specifier ID ASSIGNOP FuncBody { $$ = new_parent_node("ExtDef", 1000, 4, $1, $2, $3, $4); } *1/ */
+/*     /1* | Specifier VALUEID ASSIGNOP FuncBody { $$ = new_parent_node("ExtDef", 1000, 4, $1, $2, $3, $4); } *1/ */
 /*     ; */
 /* ExtDecList */
 /*     : VarDec { $$ = new_parent_node("ExtDecList", 7, 1, $1); } */
@@ -121,6 +121,9 @@ Specifier
     ;
 StructDefList
     : StructDef StructDefList { $$ = new_parent_node("StructDefList", 1000, 2, $1, $2); }
+    | StructDec StructDefList { $$ = new_parent_node("StructDefList", 1000, 2, $1, $2); }
+    | NamedStructDef StructDefList { $$ = new_parent_node("StructDefList", 1000, 2, $1, $2); }
+    | AnonymousStructDef VarDec SEMI StructDefList { $$ = new_parent_node("StructDefList", 1000, 3, $1, $2, $4); }
     | /* empty */ { $$ = new_parent_node("StructDefList", 1000, 0); }
 StructDef
     : Specifier StructDecList SEMI { $$ = new_parent_node("Def", 34, 3, $1, $2, $3); }
@@ -130,28 +133,35 @@ StructDecList
     | VarDec COMMA StructDecList { $$ = new_parent_node("DecList", 36, 3, $1, $2, $3); }
     ;
 StructSpecifier
-    : STRUCT OptTag LC StructDefList RC { $$ = new_parent_node("StructSpecifier", 11, 5, $1, $2, $3, $4, $5); }
-    | STRUCT Tag { $$ = new_parent_node("StructSpecifier", 12, 2, $1, $2); }
+    /* : STRUCT OptTag LC StructDefList RC { $$ = new_parent_node("StructSpecifier", 11, 5, $1, $2, $3, $4, $5); } */
+    /* | STRUCT Tag { $$ = new_parent_node("StructSpecifier", 12, 2, $1, $2); } */
+    : TYPEID { $$ = new_parent_node("StructSpecifier", 12, 1, $1); }
     ;
 StructDec
-    : STRUCT Tag SEMI { $$ = new_parent_node("StructDec", 1000, 2, $1, $2); }
+    : StructSpecifier SEMI { $$ = new_parent_node("StructDec", 1000, 2, $1, $2); }
     ;
-OptTag
-    :  ID { $$ = new_parent_node("OptTag", 13, 1, $1); }
-    | /* empty */ { $$ = new_parent_node("EMPTY", 14, 0); }
+NamedStructDef
+    : STRUCT TYPEID LC StructDefList RC SEMI
     ;
-Tag
-    : ID { $$ = new_parent_node("Tag", 15, 1, $1);}
+AnonymousStructDef
+    : STRUCT LC StructDefList RC
     ;
+/* OptTag */
+/*     :  VALUEID { $$ = new_parent_node("OptTag", 13, 1, $1); } */
+/*     | /1* empty *1/ { $$ = new_parent_node("EMPTY", 14, 0); } */
+/*     ; */
+/* Tag */
+/*     : VALUEID { $$ = new_parent_node("Tag", 15, 1, $1);} */
+/*     ; */
 
 /* Declarators */
 VarDec
-    : ID { $$ = new_parent_node("VarDec", 16, 1, $1); }
+    : VALUEID { $$ = new_parent_node("VarDec", 16, 1, $1); }
     | VarDec LB INT RB { $$ = new_parent_node("varDec", 17, 4, $1, $2, $3, $4); }
     ;
 FuncDec
-    /* : ID LP VarList RP { $$ = new_parent_node("FuncDec", 18, 4, $1, $2, $3, $4); } */
-    /* | ID LP RP { $$ = new_parent_node("FuncDec", 19, 3, $1, $2, $3); } */
+    /* : VALUEID LP VarList RP { $$ = new_parent_node("FuncDec", 18, 4, $1, $2, $3, $4); } */
+    /* | VALUEID LP RP { $$ = new_parent_node("FuncDec", 19, 3, $1, $2, $3); } */
     : LP VarList RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", 104, 2, $2, $5); }
     | LP RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", 105, 1, $4); }
     ;
@@ -172,8 +182,11 @@ ParamDec
 DSList
     : Stmt DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
     | Def DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
-    | StructSpecifier DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
+    /* | StructSpecifier DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); } */
     | StructDec DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
+    | NamedStructDef DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
+    | AnonymousStructDef VarDec SEMI DSList { $$ = new_parent_node("DSList", 1000, 3, $1, $2, $4); }
+    | SEMI DSList { $$ = $2; }
     | /* empty */ { $$ = new_parent_node("DSList", 1000, 0); }
     ;
 
@@ -228,11 +241,11 @@ Exp
     | LP Exp RP { $$ = new_parent_node("Exp", 47, 3, $1, $2, $3); }
     | MINUS Exp { $$ = new_parent_node("Exp", 48, 2, $1, $2); }
     | NOT Exp { $$ = new_parent_node("Exp", 49, 2, $1, $2); }
-    | ID LP Args RP { $$ = new_parent_node("Exp", 50, 4, $1, $2, $3, $4); }
-    | ID LP RP { $$ = new_parent_node("Exp", 51, 3, $1, $2, $3); }
+    | VALUEID LP Args RP { $$ = new_parent_node("Exp", 50, 4, $1, $2, $3, $4); }
+    | VALUEID LP RP { $$ = new_parent_node("Exp", 51, 3, $1, $2, $3); }
     | Exp LB Exp RB { $$ = new_parent_node("Exp", 52, 4, $1, $2, $3, $4); }
-    | Exp DOT ID { $$ = new_parent_node("Exp", 53, 3, $1, $2, $3); }
-    | ID { $$ = new_parent_node("Exp", 54, 1, $1); }
+    | Exp DOT VALUEID { $$ = new_parent_node("Exp", 53, 3, $1, $2, $3); }
+    | VALUEID { $$ = new_parent_node("Exp", 54, 1, $1); }
     | INT { $$ = new_parent_node("Exp", 55, 1, $1); }
     | FLOAT { $$ = new_parent_node("Exp", 56, 1, $1); }
     | FuncBody { $$ = $1; }

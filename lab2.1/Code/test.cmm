@@ -8,6 +8,10 @@ a = 1;
 let g = 1;
 
 struct A {
-}
+    struct B {
+    };
+};
 
-struct A;
+A;
+
+;;
