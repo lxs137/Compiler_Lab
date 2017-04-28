@@ -1,4 +1,4 @@
-Func(int -> int -> int) main = () -> int
-{
-    main(1, 2, 3);
-}
+Func(int);
+Func(int -> int);
+Func(int -> int -> int);
+Func(int -> Func(int -> int));

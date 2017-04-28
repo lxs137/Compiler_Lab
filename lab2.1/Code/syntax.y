@@ -83,6 +83,7 @@ ExtDecList
 FuncParamType
     : Specifier DEDUCT FuncParamType{ 
         $$ = new_parent_node("FuncType", 101, 2, $1, $3); 
+        $$ = new_parent_node("Specifier", 1000, 1, $$);
     }
     /* | Specifier { $$ = new_parent_node("FuncParamtypeHelper", 102, 1, $1); } */
     | Specifier { $$ = $1; }
@@ -90,10 +91,14 @@ FuncParamType
 
 FuncType
     : FUNC LP FuncParamType RP { 
-        if (!strcmp(((AST_node *)$3)->str, "Specifier"))
+        if (strcmp(((AST_node *)(((AST_node *)$3)->first_child))->str, "FuncType"))
+        {
             $$ = new_parent_node("FuncType", 102, 1, $3);
+            $$ = new_parent_node("Specifier", 1000, 1, $$);
+        }
         else
             $$ = $3;
+            /* $$ = new_parent_node("Specifier", 1000, 1, $3); */
     }
     ;
 
