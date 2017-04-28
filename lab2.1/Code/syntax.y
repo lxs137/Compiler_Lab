@@ -25,6 +25,7 @@
 %token <type_node> LP RP LB RB LC RC
 
 %type <type_node> FuncType FuncParamType FuncBody
+%type <type_node> DSList
 %type <type_node> Program ExtDefList ExtDef ExtDecList
 %type <type_node> Specifier StructSpecifier OptTag Tag
 %type <type_node> VarDec FuncDec VarList ParamDec
@@ -73,7 +74,7 @@ ExtDefList
 ExtDef
     /* : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 4, 3, $1, $2, $3); } */
     /* | Specifier SEMI { $$ = new_parent_node("ExtDef", 5, 2, $1, $2); } */
-    : DefList
+    : DSList { $$ = $1; }
     /* | Specifier ID ASSIGNOP FuncBody { $$ = new_parent_node("ExtDef", 1000, 4, $1, $2, $3, $4); } */
     ;
 ExtDecList
@@ -148,13 +149,21 @@ ParamDec
     : Specifier VarDec { $$ = new_parent_node("ParamDec", 22, 2, $1, $2); }
     ;
 
+/* 支持变量定义和变量使用的混合 */
+/* 不再要求变量定义与变量使用分隔 */
+/* StmtList & DefList */
+DSList
+    : StmtList { $$ = $1; }
+    | DefList { $$ = $1; }
+    ;
+
 /* Statements */
 CompSt
     : LC DefList StmtList RC { $$ = new_parent_node("CompSt", 23, 4, $1, $2, $3, $4); }
     ;
 
 StmtList
-    : Stmt StmtList { $$ = new_parent_node("StmtList", 24, 2, $1, $2); }
+    : Stmt DSList { $$ = new_parent_node("StmtList", 24, 2, $1, $2); }
     | /* empty */ { $$ = new_parent_node("EMPTY", 25, 0); }
     ;
 Stmt
@@ -168,7 +177,7 @@ Stmt
 
 /* Local Definitions */
 DefList
-    : Def DefList { $$ = new_parent_node("DefList", 32, 2, $1, $2); }
+    : Def DSList { $$ = new_parent_node("DefList", 32, 2, $1, $2); }
     | /* empty */ { $$ = new_parent_node("EMPTY", 33, 0); }
     ;
 Def
