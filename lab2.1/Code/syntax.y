@@ -125,7 +125,7 @@ FuncDec
     /* : ID LP VarList RP { $$ = new_parent_node("FuncDec", 18, 4, $1, $2, $3, $4); } */
     /* | ID LP RP { $$ = new_parent_node("FuncDec", 19, 3, $1, $2, $3); } */
     : LP VarList RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", 104, 2, $2, $5); }
-    | LP RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", 105, 1, $1); }
+    | LP RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", 105, 1, $4); }
     ;
 FuncBody
     : FuncDec CompSt { $$ = new_parent_node("FuncBody", 106, 2, $1, $2); }
