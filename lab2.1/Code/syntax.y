@@ -131,7 +131,7 @@ FuncBody
     : FuncDec CompSt { $$ = new_parent_node("FuncBody", 106, 2, $1, $2); }
     ;
 VarList
-    : ParamDec COMMA VarList { $$ = new_parent_node("VarList", 20, 3, $1, $2, $3); }
+    : ParamDec COMMA VarList { $$ = new_parent_node("VarList", 20, 2, $1, $3); }
     | ParamDec { $$ = new_parent_node("VarList", 21, 1, $1); }
     ;
 ParamDec
@@ -197,6 +197,6 @@ Exp
     ;
 
 Args
-    : Exp COMMA Args { $$ = new_parent_node("Args", 57, 3, $1, $2, $3); }
+    : Exp COMMA Args { $$ = new_parent_node("Args", 57, 2, $1, $3); }
     | Exp { $$ = new_parent_node("Args", 58, 1, $1); }
     ;

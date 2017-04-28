@@ -1,7 +1,4 @@
-Func(int -> int) main = (int a) -> int
+Func(int -> int -> int) main = () -> int
 {
-    Func(int -> int) f = (int a) -> int
-    {
-        return a + 1;
-    };
+    main(1, 2, 3);
 }
