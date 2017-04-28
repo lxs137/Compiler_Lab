@@ -26,12 +26,14 @@
 
 %type <type_node> FuncType FuncParamType FuncBody
 %type <type_node> DSList
-%type <type_node> Program ExtDefList ExtDef ExtDecList
+%type <type_node> Program
 %type <type_node> Specifier StructSpecifier OptTag Tag
 %type <type_node> VarDec FuncDec VarList ParamDec
-%type <type_node> CompSt StmtList Stmt
-%type <type_node> DefList Def DecList Dec
+%type <type_node> CompSt Stmt
+%type <type_node> Def DecList Dec
 %type <type_node> Exp Args
+%type <type_node> StructDefList StructDef StructDecList
+%type <type_node> StructDec
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -51,7 +53,7 @@
 %%
 /* High-level Definitions */
 Program
-    : ExtDefList {
+    : DSList {
         $$ = new_parent_node("Program", 1, 1, $1);
         print_child_node($$, 0);
         /* initTable(); */
@@ -66,23 +68,23 @@ Program
         /* cleanUpSymbolTable(); */
     }
     ;
-ExtDefList
-    : ExtDef ExtDefList { $$ = new_parent_node("ExtDefList", 2, 2, $1, $2); }
-    | /* empty */ { $$ = new_parent_node("EMPTY", 3, 0); }
-    /* | DecList */
-    ;
-ExtDef
-    /* : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 4, 3, $1, $2, $3); } */
-    /* | Specifier SEMI { $$ = new_parent_node("ExtDef", 5, 2, $1, $2); } */
-    : DSList  { $$ = $1; }
-    | /* empty */
-    /* | Specifier SEMI { $$ = $1; } */
-    /* | Specifier ID ASSIGNOP FuncBody { $$ = new_parent_node("ExtDef", 1000, 4, $1, $2, $3, $4); } */
-    ;
-ExtDecList
-    : VarDec { $$ = new_parent_node("ExtDecList", 7, 1, $1); }
-    | VarDec COMMA ExtDecList { $$ = new_parent_node("ExtDecList", 8, 3, $1, $2, $3); }
-    ;
+/* ExtDefList */
+/*     : ExtDef ExtDefList { $$ = new_parent_node("ExtDefList", 2, 2, $1, $2); } */
+/*     | /1* empty *1/ { $$ = new_parent_node("EMPTY", 3, 0); } */
+/*     /1* | DecList *1/ */
+/*     ; */
+/* ExtDef */
+/*     /1* : Specifier ExtDecList SEMI { $$ = new_parent_node("ExtDef", 4, 3, $1, $2, $3); } *1/ */
+/*     /1* | Specifier SEMI { $$ = new_parent_node("ExtDef", 5, 2, $1, $2); } *1/ */
+/*     : DSList  { $$ = $1; } */
+/*     | /1* empty *1/ */
+/*     /1* | Specifier SEMI { $$ = $1; } *1/ */
+/*     /1* | Specifier ID ASSIGNOP FuncBody { $$ = new_parent_node("ExtDef", 1000, 4, $1, $2, $3, $4); } *1/ */
+/*     ; */
+/* ExtDecList */
+/*     : VarDec { $$ = new_parent_node("ExtDecList", 7, 1, $1); } */
+/*     | VarDec COMMA ExtDecList { $$ = new_parent_node("ExtDecList", 8, 3, $1, $2, $3); } */
+/*     ; */
 
 /* 增加函数类型构造子 */
 /* 函数类型允许两种基本形式：只有一个返回值类型的函数类型；具有一个输入值类型和一个返回值类型的函数类型 */
@@ -117,9 +119,22 @@ Specifier
     | FuncType { $$ = $1; }
     | LET { $$ = new_parent_node("Specifier", 1000, 1, $1); }
     ;
+StructDefList
+    : StructDef StructDefList { $$ = new_parent_node("StructDefList", 1000, 2, $1, $2); }
+    | /* empty */ { $$ = new_parent_node("StructDefList", 1000, 0); }
+StructDef
+    : Specifier StructDecList SEMI { $$ = new_parent_node("Def", 34, 3, $1, $2, $3); }
+    ;
+StructDecList
+    : VarDec { $$ = new_parent_node("DecList", 35, 1, $1); }
+    | VarDec COMMA StructDecList { $$ = new_parent_node("DecList", 36, 3, $1, $2, $3); }
+    ;
 StructSpecifier
-    : STRUCT OptTag LC DefList RC { $$ = new_parent_node("StructSpecifier", 11, 5, $1, $2, $3, $4, $5); }
+    : STRUCT OptTag LC StructDefList RC { $$ = new_parent_node("StructSpecifier", 11, 5, $1, $2, $3, $4, $5); }
     | STRUCT Tag { $$ = new_parent_node("StructSpecifier", 12, 2, $1, $2); }
+    ;
+StructDec
+    : STRUCT Tag SEMI { $$ = new_parent_node("StructDec", 1000, 2, $1, $2); }
     ;
 OptTag
     :  ID { $$ = new_parent_node("OptTag", 13, 1, $1); }
@@ -157,22 +172,25 @@ ParamDec
 DSList
     : Stmt DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
     | Def DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
+    | StructSpecifier DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
+    | StructDec DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
     | /* empty */ { $$ = new_parent_node("DSList", 1000, 0); }
     ;
 
-StmtList
-    : Stmt StmtList { $$ = new_parent_node("StmtList", 24, 2, $1, $2); }
-    | /* empty */ { $$ = new_parent_node("EMPTY", 25, 0); }
-    ;
+/* StmtList */
+/*     : Stmt StmtList { $$ = new_parent_node("StmtList", 24, 2, $1, $2); } */
+/*     | /1* empty *1/ { $$ = new_parent_node("EMPTY", 25, 0); } */
+/*     ; */
 
-DefList
-    : Def DefList { $$ = new_parent_node("DefList", 32, 2, $1, $2); }
-    | /* empty */ { $$ = new_parent_node("EMPTY", 33, 0); }
-    ;
+/* DefList */
+/*     : Def DefList { $$ = new_parent_node("DefList", 32, 2, $1, $2); } */
+/*     | /1* empty *1/ { $$ = new_parent_node("EMPTY", 33, 0); } */
+/*     ; */
 
 /* Statements */
 CompSt
-    : LC DefList StmtList RC { $$ = new_parent_node("CompSt", 23, 4, $1, $2, $3, $4); }
+    /* : LC DefList StmtList RC { $$ = new_parent_node("CompSt", 23, 4, $1, $2, $3, $4); } */
+    : LC DSList RC { $$ = new_parent_node("Compst", 23, 1, $2); }
     ;
 
 Stmt
