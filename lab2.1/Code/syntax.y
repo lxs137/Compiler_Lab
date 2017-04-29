@@ -102,9 +102,9 @@ Stmt
     /* 为避免不明原因引起的冲突，把ADTDef后跟的SEMI移到下层产生式 */
     | ADTDef { $$ = new_parent_node("Stmt", GROUP_3 + 3, 1, $1); }
     | CompSt { $$ = new_parent_node("Stmt", GROUP_3 + 4, 1, $1); }
-    | RETURN Exp SEMI { $$ = new_parent_node("Stmt", GROUP_3 + 5, 2, $1, $2); }
-    | IF LP Exp RP Stmt %prec LOWER_THAN_ELSE { $$ = new_parent_node("Stmt", GROUP_3 + 6, 3, $1, $3, $5); }
-    | IF LP Exp RP Stmt ELSE Stmt { $$ = new_parent_node("Stmt", GROUP_3 + 7, 5, $1, $3, $5, $6, $7); }
+    | RETURN Exp SEMI { $$ = new_parent_node("Stmt", GROUP_3 + 5, 1, $2); }
+    | IF LP Exp RP Stmt %prec LOWER_THAN_ELSE { $$ = new_parent_node("Stmt", GROUP_3 + 6, 2, $3, $5); }
+    | IF LP Exp RP Stmt ELSE Stmt { $$ = new_parent_node("Stmt", GROUP_3 + 7, 3, $3, $5, $7); }
     | WHILE LP Exp RP Stmt { $$ = new_parent_node("Stmt", GROUP_3 + 8, 3, $1, $3, $5); }
     | SEMI { $$ = new_parent_node("Stmt", GROUP_3 + 9, 0); }
     ;
@@ -117,7 +117,7 @@ CompSt
 FuncParamType
     : Specifier DEDUCT FuncParamType { 
         $$ = new_parent_node("FuncType", GROUP_4 + 1, 2, $1, $3); 
-        $$ = new_parent_node("Specifier", 1000, 1, $$);
+        $$ = new_parent_node("Specifier", GROUP_8 + 6, 1, $$);
     }
     | Specifier { $$ = $1; }
     ;
@@ -126,7 +126,7 @@ FuncType
         if (strcmp(((AST_node *)(((AST_node *)$3)->first_child))->str, "FuncType"))
         {
             $$ = new_parent_node("FuncType", GROUP_4 + 2, 1, $3);
-            $$ = new_parent_node("Specifier", 1000, 1, $$);
+            $$ = new_parent_node("Specifier", GROUP_8 + 6, 1, $$);
         }
         else 
         {
@@ -164,110 +164,117 @@ ArrayType
     : Specifier LB Exp RB { $$ = new_parent_node("ArrayType", GROUP_5 + 1, 2, $1, $3); }
     ;
 
-/* REFEVR */
+/* REFER */
 /* 指针 */
 ReferType
-    : REFER LP Specifier RP
+    : REFER LP Specifier RP { $$ = new_parent_node("ReferType", GROUP_6 + 1, 1, $3); }
     ;
 
 /* ADT */
 ADTDef
-    : ADTHeader %prec LOWER_THAN_ASSIGNOP SEMI
-    | ADTHeader ASSIGNOP ConstructorDecList
+    : ADTHeader %prec LOWER_THAN_ASSIGNOP SEMI { $$ = new_parent_node("ADTRef", GROUP_7 + 1, 1, $1); }
+    | ADTHeader ASSIGNOP ConstructorDecList { $$ = new_parent_node("ADTHeader", GROUP_7 + 2, 2, $1, $3); }
     ;
 ADTHeader
-    : DATA TypeId ADTParamList
+    : DATA TypeId ADTParamList { $$ = new_parent_node("ADTHeader", GROUP_7 + 3, 2, $2, $3); }
     ;
 ADTParamList
-    : ADTParam ADTParamList
-    | /* empty */ { }
+    : ADTParam ADTParamList { $$ = new_parent_node("ADTParamList", GROUP_7 + 4, 2, $1, $2); }
+    | /* empty */ { $$ = new_parent_node("ADTParamList", GROUP_7 + 5, 0); }
     ;
 ADTParam
-    : LOWERID
+    : LOWERID { $$ = new_paraent_node("ADTParam", GROUP_7 + 6, 0); }
     ;
 ConstructorDecList
     /* 分号不能上移，否则冲突 */
-    : ConstructorDec SEMI
-    | ConstructorDec SEMI ConstructorDecList
+    : ConstructorDec SEMI { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 7, 1, $1); }
+    | ConstructorDec SEMI ConstructorDecList { $$ = new_paraent_node("ConstructorDecList", GROUP_7 + 8, 2, $1, $3); } 
     ;
 ConstructorDec
-    : ConstructorId TypeIdList
+    : ConstructorId TypeIdList { $$ = new_parent_node("ConstructorDec", GROUP_7 + 9, 2, $1, $2); }
     ;
 ConstructorId
-    : UPPERID
+    : UPPERID { $$ = new_parent_node("ConstructorId", GROUP_7 + 10, 1, $1); }
     ;
 TypeIdList
-    : TypeId TypeIdList
-    | ADTParam TypeIdList
-    | /* empty */ { }
+    : TypeId TypeIdList { $$ = new_parent_node("TypeIdList", GROUP_7 + 11, 2, $1, $2); }
+    | ADTParam TypeIdList { $$ = new_parent_node("TypeIdList", GROUP_7 + 12, 2, $1, $2); }
+    | /* empty */ { $$ = new_parent_node("TypeIdList", GROUP_7 + 13, 0); }
     ;
 TypeId
-    : UPPERID
+    : UPPERID { $$ = new_parent_node("TypeId", GROUP_7 + 14, 1, $1); }
     ;
 /* pattern matching */
 PatternMatching
-    : LET LP ConstructorId PatternMatchingParamList RP ASSIGNOP VarDec
+    : LET LP ConstructorId PatternMatchingParamList RP ASSIGNOP VarDec { 
+        $$ = new_parent_node("PatternMatching", GROUP_7 + 15, 3, $3, $4, $7); 
+    }
     ;
 PatternMatchingParamList
-    : LOWERID PatternMatchingParamList
-    | PLACEHOLDER PatternMatchingParamList
-    | /* empty */ { }
+    : LOWERID PatternMatchingParamList { 
+        $$ = new_parent_node("PatternMatchingParamList", GROUP_7 + 16, 2, $1, $2);
+    }
+    | PLACEHOLDER PatternMatchingParamList { 
+        $$ = new_parent_node("PatternMatchingParamList", GROUP_7 + 17, 2, $1, $2); 
+    }
+    | /* empty */ { $$ = new_parent_node("PatternMatchingParamList", GROUP_7 + 18, 0); }
     ;
 
 /* Specifiers */
 Specifier
-    : BUILDINTYPE { $$ = new_parent_node("Specifier", 9, 1, $1); }
-    | LET { $$ = new_parent_node("Specifier", 1000, 1, $1); }
-    | TypeId { $$ = new_parent_node("Specifier", 10, 1, $1); }
-    | ArrayType
-    | ReferType
+    : BUILDINTYPE { $$ = new_parent_node("Specifier", GROUP_8 + 1, 1, $1); }
+    | LET { $$ = new_parent_node("Specifier", GROUP_8 + 2, 1, $1); }
+    | TypeId { $$ = new_parent_node("Specifier", GROUP_8 + 3, 1, $1); }
+    | ArrayType { $$ = new_parent_node("Specifier", GROUP_8 + 4, 1, $1); }
+    | ReferType { $$ = new_parent_node("Specifier", GROUP_8 + 5, 1, $1); }
+    /* 为了照顾函数类型定义的一种语法糖，不得不这样写 */
     | FuncType { $$ = $1; }
     ;
 
 /* Local Definitions */
 VarDef
-    : Specifier DecList { $$ = new_parent_node("VarDef", 34, 2, $1, $2); }
+    : Specifier DecList { $$ = new_parent_node("VarDef", GROUP_9 + 1, 2, $1, $2); }
     /* 模式匹配也可看成是一种特殊的变量定义 */
-    | PatternMatching
+    | PatternMatching { $$ = new_parent_node("VarDef", GROUP_9 + 2, 1, $1); }
     ;
 DecList
-    : Dec { $$ = new_parent_node("DecList", 35, 1, $1); }
-    | Dec COMMA DecList { $$ = new_parent_node("DecList", 36, 3, $1, $2, $3); }
+    : Dec { $$ = new_parent_node("DecList", GROUP_9 + 3, 1, $1); }
+    | Dec COMMA DecList { $$ = new_parent_node("DecList", GROUP_9 + 4, 2, $1, $3); }
     ;
 Dec
-    : VarDec { $$ = new_parent_node("Dec", 37, 1, $1); }
-    | VarDec ASSIGNOP Exp { $$ = new_parent_node("Dec", 38, 3, $1, $2, $3); }
+    : VarDec { $$ = new_parent_node("Dec", GROUP_9 + 4, 1, $1); }
+    | VarDec ASSIGNOP Exp { $$ = new_parent_node("Dec", GROUP_9 + 5, 2, $1, $3); }
     ;
 /* Declarators */
 VarDec
-    : LOWERID { $$ = new_parent_node("VarDec", 16, 1, $1); }
+    : LOWERID { $$ = new_parent_node("VarDec", GROUP_9 + 5, 1, $1); }
     ;
 
 /* Expressions */
 Exp
-    : Exp ASSIGNOP Exp {$$ = new_parent_node("Exp", 39, 3, $1, $2, $3); }
+    : Exp ASSIGNOP Exp {$$ = new_parent_node("Exp", GROUP_10 + 1, 2, $1, $3); }
     /* 关系运算表达式／逻辑表达式／算数表达式 */
-    | Exp RELOP Exp { $$ = new_parent_node("Exp", 42, 3, $1, $2, $3); }
-    | Exp AND Exp { $$ = new_parent_node("Exp", 40, 3, $1, $2, $3); }
-    | Exp OR Exp { $$ = new_parent_node("Exp", 41, 3, $1, $2, $3); }
-    | NOT Exp { $$ = new_parent_node("Exp", 49, 2, $1, $2); }
-    | Exp PLUS Exp { $$ = new_parent_node("Exp", 43, 3, $1, $2, $3); }
-    | Exp MINUS Exp { $$ = new_parent_node("Exp", 44, 3, $1, $2, $3); }
-    | Exp STAR Exp { $$ = new_parent_node("Exp", 45, 3, $1, $2, $3); }
-    | Exp DIV Exp { $$ = new_parent_node("Exp", 46, 3, $1, $2, $3); }
-    | MINUS Exp { $$ = new_parent_node("Exp", 48, 2, $1, $2); }
+    | Exp RELOP Exp { $$ = new_parent_node("Exp", GROUP_10 + 2, 3, $1, $2, $3); }
+    | Exp AND Exp { $$ = new_parent_node("Exp", GROUP_10 + 3, 2, $1, $3); }
+    | Exp OR Exp { $$ = new_parent_node("Exp", GROUP_10 + 4, 2, $1, $3); }
+    | NOT Exp { $$ = new_parent_node("Exp", GROUP_10 + 5, 1, $2); }
+    | Exp PLUS Exp { $$ = new_parent_node("Exp", GROUP_10 + 6, 2, $1, $3); }
+    | Exp MINUS Exp { $$ = new_parent_node("Exp", GROUP_10 + 7, 2, $1, $3); }
+    | Exp STAR Exp { $$ = new_parent_node("Exp", GROUP_10 + 8, 2, $1, $3); }
+    | Exp DIV Exp { $$ = new_parent_node("Exp", GROUP_10 + 9, 2, $1, $3); }
+    | MINUS Exp { $$ = new_parent_node("Exp", GROUP_10 + 10, 1, $2); }
     /* 加上括号改变优先级 */
-    | LP Exp RP { $$ = new_parent_node("Exp", 47, 3, $1, $2, $3); }
+    | LP Exp RP { $$ = new_parent_node("Exp", GROUP_10 + 11, 1, $2); }
     /* 函数调用 */
-    | FuncCall
+    | FuncCall { $$ = new_parent_node("Exp", GROUP_10 + 12, 1, $1); }
     /* DEFER相关表达式 */
-    | REFER LP Exp RP
-    | DEFER LP Exp RP
+    | REFER LP Exp RP { $$ = new_parent_node("Exp", GROUP_10 + 13, 2, $1, $3); }
+    | DEFER LP Exp RP { $$ = new_parent_node("Exp", GROUP_10 + 14, 2, $1, $3); }
     /* 从ADT中取数据 */
-    | Exp DOT INT { $$ = new_parent_node("Exp", 53, 3, $1, $2, $3); }
+    | Exp DOT INT { $$ = new_parent_node("Exp", GROUP_10 + 15, 2, $1, $3); }
     /* Exp building block */
-    | VarDec { $$ = new_parent_node("Exp", 54, 1, $1); }
-    | INT { $$ = new_parent_node("Exp", 55, 1, $1); }
-    | FLOAT { $$ = new_parent_node("Exp", 56, 1, $1); }
-    | FuncBody { $$ = $1; }
+    | VarDec { $$ = new_parent_node("Exp", GROUP_10 + 16, 1, $1); }
+    | INT { $$ = new_parent_node("Exp", GROUP_10 + 17, 1, $1); }
+    | FLOAT { $$ = new_parent_node("Exp", GROUP_10 + 18, 1, $1); }
+    | FuncBody { $$ = new_parent_node("Exp", GROUP_10 + 19, 1, $1); }
     ;
