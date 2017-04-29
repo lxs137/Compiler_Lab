@@ -1,5 +1,5 @@
 %{
-    /* #define flex_debug_print */
+    #define flex_debug_print
     #include <stdio.h>
     #include <stdlib.h>
     #include "syntax.tab.h"
@@ -108,6 +108,11 @@ ws [ \t]
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "AND");
     return AND;
 }
+"|"    {
+    print_loc_info("SINGLEOR");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "SINGLEOR");
+    return SINGLEOR;
+}
 "||"    {
     print_loc_info("OR");
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "OR");
@@ -127,6 +132,11 @@ ws [ \t]
     print_loc_info("DEDUCT");
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "DEDUCT");
     return DEDUCT;
+}
+data    {
+    print_loc_info("DATA");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "DATA");
+    return DATA;
 }
 Func    {
     print_loc_info("FUNC");
@@ -233,7 +243,7 @@ while    {
     snprintf(print_output, sizeof(print_output), "ID: %s", yytext);
     print_loc_info(print_output);
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, print_output);
-    return TYPEID;
+    return NVALUEID;
 }
 .    {
     printf("Error Type A at line %d: ", yylloc.first_line);

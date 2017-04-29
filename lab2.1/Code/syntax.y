@@ -14,7 +14,8 @@
     void *type_node;
 }
 
-%token <type_node> VALUEID TYPEID
+%token <type_node> SINGLEOR DATA
+%token <type_node> VALUEID NVALUEID
 %token <type_node> FUNC DEDUCT
 %token <type_node> LET
 %token <type_node> ASSIGNOP RELOP AND OR NOT
@@ -24,6 +25,8 @@
 %token <type_node> SEMI COMMA DOT
 %token <type_node> LP RP LB RB LC RC
 
+%type <type_node> ADTHeader ADTParamList ADTParam
+%type <type_node> ConstructorId TypeId TypeIdList ConstructorDec ConstructorDecList ADTDef
 %type <type_node> FuncType FuncParamType FuncBody
 %type <type_node> DSList
 %type <type_node> Program
@@ -33,7 +36,7 @@
 %type <type_node> Def DecList Dec
 %type <type_node> Exp Args
 %type <type_node> StructDefList StructDef StructDecList
-%type <type_node> StructDec NamedStructDef AnonymousStructDef
+%type <type_node> NamedStructDef AnonymousStructDef
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -102,10 +105,52 @@ FuncBody
     : FuncDec CompSt { $$ = new_parent_node("FuncBody", 106, 2, $1, $2); }
     ;
 
+/* ADT */
+ADTDef
+    : ADTHeader ASSIGNOP  ConstructorDecList
+    | ADTHeader
+    ;
+
+ADTHeader
+    : DATA TypeId ADTParamList
+    ;
+
+ADTParamList
+    : ADTParam ADTParamList
+    | /* empty */ { }
+    ;
+
+ADTParam
+    : VALUEID
+    ;
+
+ConstructorDecList
+    : ConstructorDec SEMI
+    | ConstructorDec SEMI ConstructorDecList
+    ;
+
+ConstructorDec
+    : ConstructorId TypeIdList
+    ;
+
+TypeIdList
+    : TypeId TypeIdList
+    | ADTParam TypeIdList
+    | /* empty */ { }
+    ;
+
+TypeId
+    : NVALUEID
+    ;
+
+ConstructorId
+    : NVALUEID
+    ;
+
 /* Specifiers */
 Specifier
     : BUILDINTYPE { $$ = new_parent_node("Specifier", 9, 1, $1); }
-    | TYPEID { $$ = new_parent_node("Specifier", 10, 1, $1); }
+    | NVALUEID { $$ = new_parent_node("Specifier", 10, 1, $1); }
     | FuncType { $$ = $1; }
     | LET { $$ = new_parent_node("Specifier", 1000, 1, $1); }
     ;
@@ -113,7 +158,6 @@ Specifier
 /* 结构体定义中允许出现变量定义／具名结构体的声明／嵌套具名结构体的定义／嵌套匿名结构体的定义 */
 StructDefList
     : StructDef StructDefList { $$ = new_parent_node("StructDefList", 1000, 2, $1, $2); }
-    | StructDec StructDefList { $$ = new_parent_node("StructDefList", 1000, 2, $1, $2); }
     | NamedStructDef StructDefList { $$ = new_parent_node("StructDefList", 1000, 2, $1, $2); }
     | AnonymousStructDef VarDec SEMI StructDefList { $$ = new_parent_node("StructDefList", 1000, 3, $1, $2, $4); }
     | SEMI StructDefList { $$ = $2; }
@@ -126,14 +170,10 @@ StructDecList
     : VarDec { $$ = new_parent_node("DecList", 35, 1, $1); }
     | VarDec COMMA StructDecList { $$ = new_parent_node("DecList", 36, 3, $1, $2, $3); }
     ;
-/* 具名结构体的声明 */
-StructDec
-    : TYPEID SEMI { $$ = new_parent_node("StructDec", 1000, 2, $1, $2); }
-    ;
 /* 具名结构体的定义 */
 /* 具名结构体后一定不跟变量的定义 */
 NamedStructDef
-    : STRUCT TYPEID LC StructDefList RC SEMI
+    : STRUCT NVALUEID LC StructDefList RC SEMI
     ;
 /* 匿名结构体的定义 */
 /* 匿名结构体后一定要跟变量的定义 */
@@ -161,9 +201,9 @@ DSList
     : Stmt DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
     | Def DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
     /* | StructSpecifier DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); } */
-    | StructDec DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
     | NamedStructDef DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
     | AnonymousStructDef VarDec SEMI DSList { $$ = new_parent_node("DSList", 1000, 3, $1, $2, $4); }
+    | ADTDef DSList
     | SEMI DSList { $$ = $2; }
     | /* empty */ { $$ = new_parent_node("DSList", 1000, 0); }
     ;
