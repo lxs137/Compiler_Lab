@@ -26,6 +26,7 @@
 %token <type_node> SEMI COMMA DOT
 %token <type_node> LP RP LB RB LC RC
 
+%type <type_node> ArrayType ReferType
 %type <type_node> ADTHeader ADTParamList ADTParam PatternMatching PatternMatchingParamList
 %type <type_node> ConstructorId TypeId TypeIdList ConstructorDec ConstructorDecList ADTDef
 %type <type_node> FuncType FuncParamType FuncBody
@@ -141,6 +142,17 @@ FuncBody
     : FuncDec CompSt { $$ = new_parent_node("FuncBody", 106, 2, $1, $2); }
     ;
 
+/* Array */
+ArrayType
+    : Specifier LB Exp RB
+    ;
+
+/* REFEVR */
+/* 指针 */
+ReferType
+    : REFER LP Specifier RP
+    ;
+
 /* ADT */
 ADTDef
     : ADTHeader %prec LOWER_THAN_ASSIGNOP SEMI
@@ -188,7 +200,9 @@ PatternMatchingParamList
 /* Specifiers */
 Specifier
     : BUILDINTYPE { $$ = new_parent_node("Specifier", 9, 1, $1); }
-    | UPPERID { $$ = new_parent_node("Specifier", 10, 1, $1); }
+    | TypeId { $$ = new_parent_node("Specifier", 10, 1, $1); }
+    | ArrayType
+    | ReferType
     | FuncType { $$ = $1; }
     | LET { $$ = new_parent_node("Specifier", 1000, 1, $1); }
     ;
@@ -227,7 +241,9 @@ Exp
     | NOT Exp { $$ = new_parent_node("Exp", 49, 2, $1, $2); }
     | LOWERID LP Args RP { $$ = new_parent_node("Exp", 50, 4, $1, $2, $3, $4); }
     | LOWERID LP RP { $$ = new_parent_node("Exp", 51, 3, $1, $2, $3); }
-    | Exp LB Exp RB { $$ = new_parent_node("Exp", 52, 4, $1, $2, $3, $4); }
+    /* | Exp LB Exp RB { $$ = new_parent_node("Exp", 52, 4, $1, $2, $3, $4); } */
+    | REFER LP Exp RP
+    | DEFER LP Exp RP
     | Exp DOT LOWERID { $$ = new_parent_node("Exp", 53, 3, $1, $2, $3); }
     | LOWERID { $$ = new_parent_node("Exp", 54, 1, $1); }
     | INT { $$ = new_parent_node("Exp", 55, 1, $1); }
