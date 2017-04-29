@@ -1,23 +1,69 @@
+Program (1)
 Program
+DSList (1)
 DSList
+Stmt (1)
 Stmt
+VarDef (1)
 VarDef
+Specifier (1)
 Specifier
+FuncType (1)
 FuncType
+Specifier (1)
 Specifier
+INT (1)
 INT
+0 production end
+801 production end
+Specifier (1)
 Specifier
+FuncType (1)
 FuncType
+Specifier (1)
 Specifier
+INT (1)
 INT
+0 production end
+801 production end
+Specifier (1)
 Specifier
+INT (1)
 INT
+0 production end
+801 production end
+401 production end
+806 production end
+401 production end
+806 production end
+DecList (1)
 DecList
+Dec (1)
 Dec
+VarDec (1)
 VarDec
+ID: a (1)
 ID: a
+0 production end
+905 production end
+904 production end
+903 production end
+901 production end
+302 production end
+DSList (0)
 DSList
+Stmt (0)
 Stmt
+309 production end
+DSList (0)
 DSList
+Stmt (0)
 Stmt
+309 production end
+DSList (0)
 DSList
+202 production end
+201 production end
+201 production end
+201 production end
+101 production end
