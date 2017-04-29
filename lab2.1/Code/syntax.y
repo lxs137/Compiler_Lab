@@ -25,7 +25,7 @@
 %token <type_node> SEMI COMMA DOT
 %token <type_node> LP RP LB RB LC RC
 
-%type <type_node> ADTHeader ADTParamList ADTParam GetFieldInADT GetFieldParamList
+%type <type_node> ADTHeader ADTParamList ADTParam PatternMatching PatternMatchingParamList
 %type <type_node> ConstructorId TypeId TypeIdList ConstructorDec ConstructorDecList ADTDef
 %type <type_node> FuncType FuncParamType FuncBody
 %type <type_node> DSList
@@ -35,8 +35,8 @@
 %type <type_node> CompSt Stmt
 %type <type_node> Def DecList Dec
 %type <type_node> Exp Args
-%type <type_node> StructDefList StructDef StructDecList
-%type <type_node> NamedStructDef AnonymousStructDef
+/* %type <type_node> StructDefList StructDef StructDecList */
+/* %type <type_node> NamedStructDef AnonymousStructDef */
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -72,10 +72,37 @@ Program
     }
     ;
 
-/* 增加函数类型构造子 */
-/* 函数类型允许两种基本形式：只有一个返回值类型的函数类型；具有一个输入值类型和一个返回值类型的函数类型 */
-/* 不允许函数没有返回值 */
-/* 多参数函数用科里化变成嵌套的第二种形式的函数类型 */
+/* 支持变量定义和变量使用的混合 */
+/* 不再要求变量定义与变量使用分隔 */
+/* StmtList & DefList */
+DSList
+    : Stmt DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
+    /* | Def DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); } */
+    /* | ADTDef DSList */
+    /* | PatternMatching DSList */
+    /* | SEMI DSList { $$ = $2; } */
+    | /* empty */ { $$ = new_parent_node("DSList", 1000, 0); }
+    ;
+
+Stmt
+    : Exp SEMI { $$ = new_parent_node("Stmt", 26, 2, $1, $2); }
+    | Def
+    | ADTDef
+    | PatternMatching
+    | SEMI
+    | CompSt { $$ = new_parent_node("Stmt", 27, 1, $1); }
+    | RETURN Exp SEMI { $$ = new_parent_node("Stmt", 28, 3, $1, $2, $3); }
+    | IF LP Exp RP Stmt %prec LOWER_THAN_ELSE { $$ = new_parent_node("Stmt", 29, 5, $1, $2, $3, $4, $5); }
+    | IF LP Exp RP Stmt ELSE Stmt { $$ = new_parent_node("Stmt", 30, 7, $1, $2, $3, $4, $5, $6, $7); }
+    | WHILE LP Exp RP Stmt { $$ = new_parent_node("Stmt", 31, 5, $1, $2, $3, $4, $5); }
+    ;
+
+/* Statements */
+CompSt
+    : LC DSList RC { $$ = new_parent_node("Compst", 23, 1, $2); }
+    ;
+
+/* Function */
 FuncParamType
     : Specifier DEDUCT FuncParamType { 
         $$ = new_parent_node("FuncType", 101, 2, $1, $3); 
@@ -138,12 +165,13 @@ TypeIdList
 TypeId
     : UPPERID
     ;
-GetFieldInADT
-    : LET LP ConstructorId GetFieldParamList RP ASSIGNOP LOWERID SEMI
+/* pattern matching */
+PatternMatching
+    : LET LP ConstructorId PatternMatchingParamList RP ASSIGNOP LOWERID SEMI
     ;
-GetFieldParamList
-    : LOWERID GetFieldParamList
-    | PLACEHOLDER GetFieldParamList
+PatternMatchingParamList
+    : LOWERID PatternMatchingParamList
+    | PLACEHOLDER PatternMatchingParamList
     | /* empty */ { }
     ;
 
@@ -153,32 +181,6 @@ Specifier
     | UPPERID { $$ = new_parent_node("Specifier", 10, 1, $1); }
     | FuncType { $$ = $1; }
     | LET { $$ = new_parent_node("Specifier", 1000, 1, $1); }
-    ;
-
-/* 结构体定义中允许出现变量定义／具名结构体的声明／嵌套具名结构体的定义／嵌套匿名结构体的定义 */
-StructDefList
-    : StructDef StructDefList { $$ = new_parent_node("StructDefList", 1000, 2, $1, $2); }
-    | NamedStructDef StructDefList { $$ = new_parent_node("StructDefList", 1000, 2, $1, $2); }
-    | AnonymousStructDef VarDec SEMI StructDefList { $$ = new_parent_node("StructDefList", 1000, 3, $1, $2, $4); }
-    | SEMI StructDefList { $$ = $2; }
-    | /* empty */ { $$ = new_parent_node("StructDefList", 1000, 0); }
-/* 结构体定义中不允许出现巨头初始化的变量定义 */
-StructDef
-    : Specifier StructDecList SEMI { $$ = new_parent_node("Def", 34, 3, $1, $2, $3); }
-    ;
-StructDecList
-    : VarDec { $$ = new_parent_node("DecList", 35, 1, $1); }
-    | VarDec COMMA StructDecList { $$ = new_parent_node("DecList", 36, 3, $1, $2, $3); }
-    ;
-/* 具名结构体的定义 */
-/* 具名结构体后一定不跟变量的定义 */
-NamedStructDef
-    : STRUCT UPPERID LC StructDefList RC SEMI
-    ;
-/* 匿名结构体的定义 */
-/* 匿名结构体后一定要跟变量的定义 */
-AnonymousStructDef
-    : STRUCT LC StructDefList RC
     ;
 
 /* Declarators */
@@ -192,36 +194,6 @@ VarList
     ;
 ParamDec
     : Specifier VarDec { $$ = new_parent_node("ParamDec", 22, 2, $1, $2); }
-    ;
-
-/* 支持变量定义和变量使用的混合 */
-/* 不再要求变量定义与变量使用分隔 */
-/* StmtList & DefList */
-DSList
-    : Stmt DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
-    | Def DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
-    /* | StructSpecifier DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); } */
-    | NamedStructDef DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
-    | AnonymousStructDef VarDec SEMI DSList { $$ = new_parent_node("DSList", 1000, 3, $1, $2, $4); }
-    | ADTDef DSList
-    | GetFieldInADT DSList
-    | SEMI DSList { $$ = $2; }
-    | /* empty */ { $$ = new_parent_node("DSList", 1000, 0); }
-    ;
-
-/* Statements */
-CompSt
-    /* : LC DefList StmtList RC { $$ = new_parent_node("CompSt", 23, 4, $1, $2, $3, $4); } */
-    : LC DSList RC { $$ = new_parent_node("Compst", 23, 1, $2); }
-    ;
-
-Stmt
-    : Exp SEMI { $$ = new_parent_node("Stmt", 26, 2, $1, $2); }
-    | CompSt { $$ = new_parent_node("Stmt", 27, 1, $1); }
-    | RETURN Exp SEMI { $$ = new_parent_node("Stmt", 28, 3, $1, $2, $3); }
-    | IF LP Exp RP Stmt %prec LOWER_THAN_ELSE { $$ = new_parent_node("Stmt", 29, 5, $1, $2, $3, $4, $5); }
-    | IF LP Exp RP Stmt ELSE Stmt { $$ = new_parent_node("Stmt", 30, 7, $1, $2, $3, $4, $5, $6, $7); }
-    | WHILE LP Exp RP Stmt { $$ = new_parent_node("Stmt", 31, 5, $1, $2, $3, $4, $5); }
     ;
 
 /* Local Definitions */
