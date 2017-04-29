@@ -236,14 +236,14 @@ while    {
     snprintf(print_output, sizeof(print_output), "ID: %s", yytext);
     print_loc_info(print_output);
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, print_output);
-    return VALUEID;
+    return LOWERID;
 }
 {uppercase}({letter}|{digit})*    {
     char print_output[50];
     snprintf(print_output, sizeof(print_output), "ID: %s", yytext);
     print_loc_info(print_output);
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, print_output);
-    return NVALUEID;
+    return UPPERID;
 }
 .    {
     printf("Error Type A at line %d: ", yylloc.first_line);

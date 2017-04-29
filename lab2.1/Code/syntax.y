@@ -15,7 +15,7 @@
 }
 
 %token <type_node> SINGLEOR DATA
-%token <type_node> VALUEID NVALUEID
+%token <type_node> LOWERID UPPERID
 %token <type_node> FUNC DEDUCT
 %token <type_node> LET
 %token <type_node> ASSIGNOP RELOP AND OR NOT
@@ -107,8 +107,8 @@ FuncBody
 
 /* ADT */
 ADTDef
-    : ADTHeader ASSIGNOP  ConstructorDecList
-    | ADTHeader
+    : ADTHeader ASSIGNOP ConstructorDecList SEMI
+    | ADTHeader SEMI
     ;
 
 ADTHeader
@@ -121,7 +121,7 @@ ADTParamList
     ;
 
 ADTParam
-    : VALUEID
+    : LOWERID
     ;
 
 ConstructorDecList
@@ -140,17 +140,17 @@ TypeIdList
     ;
 
 TypeId
-    : NVALUEID
+    : UPPERID
     ;
 
 ConstructorId
-    : NVALUEID
+    : UPPERID
     ;
 
 /* Specifiers */
 Specifier
     : BUILDINTYPE { $$ = new_parent_node("Specifier", 9, 1, $1); }
-    | NVALUEID { $$ = new_parent_node("Specifier", 10, 1, $1); }
+    | UPPERID { $$ = new_parent_node("Specifier", 10, 1, $1); }
     | FuncType { $$ = $1; }
     | LET { $$ = new_parent_node("Specifier", 1000, 1, $1); }
     ;
@@ -173,7 +173,7 @@ StructDecList
 /* 具名结构体的定义 */
 /* 具名结构体后一定不跟变量的定义 */
 NamedStructDef
-    : STRUCT NVALUEID LC StructDefList RC SEMI
+    : STRUCT UPPERID LC StructDefList RC SEMI
     ;
 /* 匿名结构体的定义 */
 /* 匿名结构体后一定要跟变量的定义 */
@@ -183,7 +183,7 @@ AnonymousStructDef
 
 /* Declarators */
 VarDec
-    : VALUEID { $$ = new_parent_node("VarDec", 16, 1, $1); }
+    : LOWERID { $$ = new_parent_node("VarDec", 16, 1, $1); }
     | VarDec LB INT RB { $$ = new_parent_node("varDec", 17, 4, $1, $2, $3, $4); }
     ;
 VarList
@@ -249,11 +249,11 @@ Exp
     | LP Exp RP { $$ = new_parent_node("Exp", 47, 3, $1, $2, $3); }
     | MINUS Exp { $$ = new_parent_node("Exp", 48, 2, $1, $2); }
     | NOT Exp { $$ = new_parent_node("Exp", 49, 2, $1, $2); }
-    | VALUEID LP Args RP { $$ = new_parent_node("Exp", 50, 4, $1, $2, $3, $4); }
-    | VALUEID LP RP { $$ = new_parent_node("Exp", 51, 3, $1, $2, $3); }
+    | LOWERID LP Args RP { $$ = new_parent_node("Exp", 50, 4, $1, $2, $3, $4); }
+    | LOWERID LP RP { $$ = new_parent_node("Exp", 51, 3, $1, $2, $3); }
     | Exp LB Exp RB { $$ = new_parent_node("Exp", 52, 4, $1, $2, $3, $4); }
-    | Exp DOT VALUEID { $$ = new_parent_node("Exp", 53, 3, $1, $2, $3); }
-    | VALUEID { $$ = new_parent_node("Exp", 54, 1, $1); }
+    | Exp DOT LOWERID { $$ = new_parent_node("Exp", 53, 3, $1, $2, $3); }
+    | LOWERID { $$ = new_parent_node("Exp", 54, 1, $1); }
     | INT { $$ = new_parent_node("Exp", 55, 1, $1); }
     | FLOAT { $$ = new_parent_node("Exp", 56, 1, $1); }
     | FuncBody { $$ = $1; }
