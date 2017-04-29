@@ -14,6 +14,7 @@
     void *type_node;
 }
 
+%token <type_node> DEFER REFER
 %token <type_node> SINGLEOR DATA PLACEHOLDER
 %token <type_node> LOWERID UPPERID
 %token <type_node> FUNC DEDUCT
@@ -43,6 +44,9 @@
 
 %nonassoc LOWER_THAN_DEDUCT
 %nonassoc DEDUCT
+
+%nonassoc LOWER_THAN_SEMI
+%nonassoc SEMI
 
 %nonassoc LOWER_THAN_ASSIGNOP
 %right ASSIGNOP
@@ -86,7 +90,8 @@ DSList
 Stmt
     : Exp SEMI { $$ = new_parent_node("Stmt", 26, 2, $1, $2); }
     | Def SEMI
-    | ADTDef SEMI
+    /* 为避免不明原因引起的冲突，把ADTDef后跟的SEMI移到下层产生式 */
+    | ADTDef
     | PatternMatching SEMI
     | SEMI
     | CompSt { $$ = new_parent_node("Stmt", 27, 1, $1); }
@@ -138,7 +143,7 @@ FuncBody
 
 /* ADT */
 ADTDef
-    : ADTHeader %prec LOWER_THAN_ASSIGNOP
+    : ADTHeader %prec LOWER_THAN_ASSIGNOP SEMI
     | ADTHeader ASSIGNOP ConstructorDecList
     ;
 ADTHeader
@@ -152,6 +157,7 @@ ADTParam
     : LOWERID
     ;
 ConstructorDecList
+    /* 分号不能上移，否则冲突 */
     : ConstructorDec SEMI
     | ConstructorDec SEMI ConstructorDecList
     ;

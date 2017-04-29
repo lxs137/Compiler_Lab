@@ -158,6 +158,16 @@ Float    {
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "FLOAT");
     return BUILDINTYPE;
 }
+defer    {
+    print_loc_info("DEFER");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "DEFER");
+    return DEFER;
+}
+refer    {
+    print_loc_info("REFER");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "REFER");
+    return REFER;
+}
 "("    {
     print_loc_info("LP");
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "LP");

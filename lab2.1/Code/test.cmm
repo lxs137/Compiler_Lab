@@ -1,8 +1,12 @@
 data Maybe a = Nothing
                Just a
-
+data Maybe
 let (Person a) = c
 
 Int a, b
 Int c, d, e
+
+data Maybe a = Nothing
+data Maybe a = Just a
+data Maybe a = Nothing
 
