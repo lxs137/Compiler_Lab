@@ -14,7 +14,7 @@
     void *type_node;
 }
 
-%token <type_node> SINGLEOR DATA
+%token <type_node> SINGLEOR DATA PLACEHOLDER
 %token <type_node> LOWERID UPPERID
 %token <type_node> FUNC DEDUCT
 %token <type_node> LET
@@ -25,7 +25,7 @@
 %token <type_node> SEMI COMMA DOT
 %token <type_node> LP RP LB RB LC RC
 
-%type <type_node> ADTHeader ADTParamList ADTParam
+%type <type_node> ADTHeader ADTParamList ADTParam GetFieldInADT GetFieldParamList
 %type <type_node> ConstructorId TypeId TypeIdList ConstructorDec ConstructorDecList ADTDef
 %type <type_node> FuncType FuncParamType FuncBody
 %type <type_node> DSList
@@ -110,41 +110,41 @@ ADTDef
     : ADTHeader ASSIGNOP ConstructorDecList SEMI
     | ADTHeader SEMI
     ;
-
 ADTHeader
     : DATA TypeId ADTParamList
     ;
-
 ADTParamList
     : ADTParam ADTParamList
     | /* empty */ { }
     ;
-
 ADTParam
     : LOWERID
     ;
-
 ConstructorDecList
     : ConstructorDec SEMI
     | ConstructorDec SEMI ConstructorDecList
     ;
-
 ConstructorDec
     : ConstructorId TypeIdList
     ;
-
+ConstructorId
+    : UPPERID
+    ;
 TypeIdList
     : TypeId TypeIdList
     | ADTParam TypeIdList
     | /* empty */ { }
     ;
-
 TypeId
     : UPPERID
     ;
-
-ConstructorId
-    : UPPERID
+GetFieldInADT
+    : LET LP ConstructorId GetFieldParamList RP ASSIGNOP LOWERID SEMI
+    ;
+GetFieldParamList
+    : LOWERID GetFieldParamList
+    | PLACEHOLDER GetFieldParamList
+    | /* empty */ { }
     ;
 
 /* Specifiers */
@@ -204,6 +204,7 @@ DSList
     | NamedStructDef DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
     | AnonymousStructDef VarDec SEMI DSList { $$ = new_parent_node("DSList", 1000, 3, $1, $2, $4); }
     | ADTDef DSList
+    | GetFieldInADT DSList
     | SEMI DSList { $$ = $2; }
     | /* empty */ { $$ = new_parent_node("DSList", 1000, 0); }
     ;
