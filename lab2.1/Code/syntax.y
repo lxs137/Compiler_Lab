@@ -84,7 +84,7 @@ Program
         /* traversalTreePerformAction($$); */
         /* //printSymbolTable(globalSymbolTable); */
         /* findUndefinedFUNCtion(); */
-        /* clean_up_syntax_tree($$); */
+        clean_up_syntax_tree($$);
         /* cleanUpSymbolTable(); */
     }
     ;

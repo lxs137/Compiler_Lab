@@ -105,32 +105,18 @@ void clean_up_syntax_tree(AST_node *parent)
 
 void print_child_node(AST_node *parent, int depth)
 {
-    /* if (parent->first_child == NULL && strcmp(parent->str, "EMPTY") == 0) */
-    /* { */
-    /*     return; */
-    /* } */
-    //实现缩进
-    int i = 0;
+    int i;
     for (i = 0; i < depth; i++)
     {
         printf("* ");
-        /* printf("%d production begin\n", parent->proNum); */
     }
-    /* if (parent->first_child == NULL) */
-    /* { */
-    /*     printf("%s\n", parent->str); */
-    /*     return; */
-    /* } */
-    /* else */
-    /* { */
-        /* printf("%s (%d)\n", parent->str, parent->loc_line); */
-        printf("%s (%d)\n", parent->str, parent->proNum);
-        AST_node *ptr = parent->first_child;
-        while (ptr != NULL)
-        {
-            print_child_node(ptr, depth + 1);
-            ptr = ptr->next_brother;
-        }
-        /* printf("%d production end\n", parent->proNum); */
-    /* } */
+
+    printf("%s (%d)\n", parent->str, parent->proNum);
+
+    AST_node *ptr = parent->first_child;
+    while (ptr != NULL)
+    {
+        print_child_node(ptr, depth + 1);
+        ptr = ptr->next_brother;
+    }
 }
