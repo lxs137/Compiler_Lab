@@ -13,6 +13,8 @@
     #define GROUP_6 600
     #define GROUP_7 700
     #define GROUP_8 800
+    #define GROUP_9 900
+    #define GROUP_10 1000
 
     int has_error = 0;
     void yyerror(const char *msg);
@@ -183,12 +185,12 @@ ADTParamList
     | /* empty */ { $$ = new_parent_node("ADTParamList", GROUP_7 + 5, 0); }
     ;
 ADTParam
-    : LOWERID { $$ = new_paraent_node("ADTParam", GROUP_7 + 6, 0); }
+    : LOWERID { $$ = new_parent_node("ADTParam", GROUP_7 + 6, 0); }
     ;
 ConstructorDecList
     /* 分号不能上移，否则冲突 */
     : ConstructorDec SEMI { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 7, 1, $1); }
-    | ConstructorDec SEMI ConstructorDecList { $$ = new_paraent_node("ConstructorDecList", GROUP_7 + 8, 2, $1, $3); } 
+    | ConstructorDec SEMI ConstructorDecList { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 8, 2, $1, $3); } 
     ;
 ConstructorDec
     : ConstructorId TypeIdList { $$ = new_parent_node("ConstructorDec", GROUP_7 + 9, 2, $1, $2); }

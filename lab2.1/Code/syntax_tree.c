@@ -105,10 +105,10 @@ void clean_up_syntax_tree(AST_node *parent)
 
 void print_child_node(AST_node *parent, int depth)
 {
-    if (parent->first_child == NULL && strcmp(parent->str, "EMPTY") == 0)
-    {
-        return;
-    }
+    /* if (parent->first_child == NULL && strcmp(parent->str, "EMPTY") == 0) */
+    /* { */
+    /*     return; */
+    /* } */
     //实现缩进
     int i = 0;
     for (i = 0; i < depth; i++)
