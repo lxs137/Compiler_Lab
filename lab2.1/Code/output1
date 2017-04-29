@@ -1,0 +1,23 @@
+Program
+DSList
+Stmt
+VarDef
+Specifier
+FuncType
+Specifier
+INT
+Specifier
+FuncType
+Specifier
+INT
+Specifier
+INT
+DecList
+Dec
+VarDec
+ID: a
+DSList
+Stmt
+DSList
+Stmt
+DSList

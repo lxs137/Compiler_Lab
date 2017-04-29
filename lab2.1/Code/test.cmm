@@ -1,16 +1,3 @@
-data Maybe a = Nothing
-               Just a
-data Maybe
-let (Person a) = c
-
-Int a, b
-Int c, d, e
-Int[2][3][4] f
-refer(Int) c
-defer(c)
-refer(c)
-
-data Maybe a = Nothing
-data Maybe a = Just a
-data Maybe a = Nothing
+Func(Int -> Func(Int -> Int))
+/* Func(Int -> Int -> Int) a */
 

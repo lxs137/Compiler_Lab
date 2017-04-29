@@ -111,17 +111,18 @@ void print_child_node(AST_node *parent, int depth)
     /* } */
     //实现缩进
     int i = 0;
-    for (i = 0; i < depth; i++)
-    {
-        printf("* ");
-    }
-    if (parent->first_child == NULL)
-    {
-        printf("%s\n", parent->str);
-        return;
-    }
-    else
-    {
+    /* for (i = 0; i < depth; i++) */
+    /* { */
+        /* printf("* "); */
+        /* printf("%d production begin\n", parent->proNum); */
+    /* } */
+    /* if (parent->first_child == NULL) */
+    /* { */
+    /*     printf("%s\n", parent->str); */
+    /*     return; */
+    /* } */
+    /* else */
+    /* { */
         /* printf("%s (%d)\n", parent->str, parent->loc_line); */
         printf("%s\n",parent->str);
         AST_node *ptr = parent->first_child;
@@ -130,5 +131,6 @@ void print_child_node(AST_node *parent, int depth)
             print_child_node(ptr, depth + 1);
             ptr = ptr->next_brother;
         }
-    }
+        /* printf("%d production end\n", parent->proNum); */
+    /* } */
 }
