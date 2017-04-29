@@ -61,18 +61,18 @@ extern SDTIAction sdtIActionTable[ProCount + 1];
 typedef void(*SDTSAction)(AST_node *);
 extern SDTSAction sdtSActionTable[ProCount + 1];
 
-typedef struct
-{
-    const char *iType;
-    const char *sType;
-    int iDimension;
-    int sDimension;
-    int sValid;
+/* typedef struct */
+/* { */
+/*     const char *iType; */
+/*     const char *sType; */
+/*     int iDimension; */
+/*     int sDimension; */
+/*     int sValid; */
 
-    /* 留有指向下一个结构体的域 */
-    /* 有些时候，除了TypeInfo还需要其它的信息 */
-    void *nextInfo;
-} TypeInfo;
+/*     /1* 留有指向下一个结构体的域 *1/ */
+/*     /1* 有些时候，除了TypeInfo还需要其它的信息 *1/ */
+/*     void *nextInfo; */
+/* } TypeInfo; */
 
 void initTable();
 
