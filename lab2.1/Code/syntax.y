@@ -44,7 +44,9 @@
 %nonassoc LOWER_THAN_DEDUCT
 %nonassoc DEDUCT
 
+%nonassoc LOWER_THAN_ASSIGNOP
 %right ASSIGNOP
+
 %left OR
 %left AND
 %left RELOP
@@ -77,18 +79,15 @@ Program
 /* StmtList & DefList */
 DSList
     : Stmt DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); }
-    /* | Def DSList { $$ = new_parent_node("DSList", 1000, 2, $1, $2); } */
-    /* | ADTDef DSList */
-    /* | PatternMatching DSList */
-    /* | SEMI DSList { $$ = $2; } */
     | /* empty */ { $$ = new_parent_node("DSList", 1000, 0); }
     ;
 
+/* Statements */
 Stmt
     : Exp SEMI { $$ = new_parent_node("Stmt", 26, 2, $1, $2); }
-    | Def
-    | ADTDef
-    | PatternMatching
+    | Def SEMI
+    | ADTDef SEMI
+    | PatternMatching SEMI
     | SEMI
     | CompSt { $$ = new_parent_node("Stmt", 27, 1, $1); }
     | RETURN Exp SEMI { $$ = new_parent_node("Stmt", 28, 3, $1, $2, $3); }
@@ -96,8 +95,6 @@ Stmt
     | IF LP Exp RP Stmt ELSE Stmt { $$ = new_parent_node("Stmt", 30, 7, $1, $2, $3, $4, $5, $6, $7); }
     | WHILE LP Exp RP Stmt { $$ = new_parent_node("Stmt", 31, 5, $1, $2, $3, $4, $5); }
     ;
-
-/* Statements */
 CompSt
     : LC DSList RC { $$ = new_parent_node("Compst", 23, 1, $2); }
     ;
@@ -128,14 +125,21 @@ FuncDec
     : LP VarList RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", 104, 2, $2, $5); }
     | LP RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", 105, 1, $4); }
     ;
+VarList
+    : ParamDec COMMA VarList { $$ = new_parent_node("VarList", 20, 2, $1, $3); }
+    | ParamDec { $$ = new_parent_node("VarList", 21, 1, $1); }
+    ;
+ParamDec
+    : Specifier VarDec { $$ = new_parent_node("ParamDec", 22, 2, $1, $2); }
+    ;
 FuncBody
     : FuncDec CompSt { $$ = new_parent_node("FuncBody", 106, 2, $1, $2); }
     ;
 
 /* ADT */
 ADTDef
-    : ADTHeader ASSIGNOP ConstructorDecList SEMI
-    | ADTHeader SEMI
+    : ADTHeader %prec LOWER_THAN_ASSIGNOP
+    | ADTHeader ASSIGNOP ConstructorDecList
     ;
 ADTHeader
     : DATA TypeId ADTParamList
@@ -167,7 +171,7 @@ TypeId
     ;
 /* pattern matching */
 PatternMatching
-    : LET LP ConstructorId PatternMatchingParamList RP ASSIGNOP LOWERID SEMI
+    : LET LP ConstructorId PatternMatchingParamList RP ASSIGNOP LOWERID
     ;
 PatternMatchingParamList
     : LOWERID PatternMatchingParamList
@@ -188,17 +192,10 @@ VarDec
     : LOWERID { $$ = new_parent_node("VarDec", 16, 1, $1); }
     | VarDec LB INT RB { $$ = new_parent_node("varDec", 17, 4, $1, $2, $3, $4); }
     ;
-VarList
-    : ParamDec COMMA VarList { $$ = new_parent_node("VarList", 20, 2, $1, $3); }
-    | ParamDec { $$ = new_parent_node("VarList", 21, 1, $1); }
-    ;
-ParamDec
-    : Specifier VarDec { $$ = new_parent_node("ParamDec", 22, 2, $1, $2); }
-    ;
 
 /* Local Definitions */
 Def
-    : Specifier DecList SEMI { $$ = new_parent_node("Def", 34, 3, $1, $2, $3); }
+    : Specifier DecList { $$ = new_parent_node("Def", 34, 2, $1, $2); }
     ;
 DecList
     : Dec { $$ = new_parent_node("DecList", 35, 1, $1); }

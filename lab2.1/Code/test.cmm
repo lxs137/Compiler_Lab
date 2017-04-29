@@ -3,3 +3,6 @@ data Maybe a = Nothing
 
 let (Person a) = c
 
+Int a, b
+Int c, d, e
+
