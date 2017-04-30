@@ -61,21 +61,56 @@ extern SDTIAction sdtIActionTable[ProCount + 1];
 typedef void(*SDTSAction)(AST_node *);
 extern SDTSAction sdtSActionTable[ProCount + 1];
 
-/* typedef struct */
-/* { */
-/*     const char *iType; */
-/*     const char *sType; */
-/*     int iDimension; */
-/*     int sDimension; */
-/*     int sValid; */
-
-/*     /1* 留有指向下一个结构体的域 *1/ */
-/*     /1* 有些时候，除了TypeInfo还需要其它的信息 *1/ */
-/*     void *nextInfo; */
-/* } TypeInfo; */
-
 void initTable();
 
-void initTable_lxs();
+
+enum TypeKindEnum { BuildInType, ArrayType, ReferType, FunctionType, AlgebraicDataType };
+
+typedef struct
+{
+    enum TypeKindEnum typeKind;
+    void *node;
+    void *nextInfo;
+} TypeInfo;
+
+/* 节点中的域除特别说明者，均为继承属性 */
+
+enum BuildInTypeKindEnum { Int, Float, Let };
+/* 内建类型的node域填充BuildInTypeKindEnum */
+
+typedef struct
+{
+    TypeInfo *arrayTo;
+    int width;
+} ArrayNode;
+
+typedef struct
+{
+    TypeInfo *referTo;
+} ReferNode;
+
+typedef struct
+{
+    TypeInfo *paramTypeInfo;
+    TypeInfo *returnTypeInfo;
+} FunctionNode;
+
+typedef struct LN
+{
+    struct LN *lastBrother, *nextBrother;
+    void *data;
+} ListNode;
+
+typedef struct
+{
+    char *constructorIdName;
+    ListNode *fields;
+} ConstructorNode;
+
+typedef struct
+{
+    char *typeIdName;
+    ListNode *constructors;
+} AlgebraicDataTypeNode;
 
 #endif

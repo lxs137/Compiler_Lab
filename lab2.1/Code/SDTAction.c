@@ -2,55 +2,6 @@
 #include <assert.h>
 #include <malloc.h>
 
-enum TypeKindEnum { BuildInType, ArrayType, ReferType, FunctionType, AlgebraicDataType };
-
-typedef struct
-{
-    enum TypeKindEnum typeKind;
-    void *node;
-    void *nextInfo;
-} TypeInfo;
-
-/* 节点中的域除特别说明者，均为继承属性 */
-
-enum BuildInTypeKindEnum { Int, Float, Let };
-/* 内建类型的node域填充BuildInTypeKindEnum */
-
-typedef struct
-{
-    TypeInfo *arrayTo;
-    int width;
-} ArrayNode;
-
-typedef struct
-{
-    TypeInfo *referTo;
-} ReferNode;
-
-typedef struct
-{
-    TypeInfo *paramTypeInfo;
-    TypeInfo *returnTypeInfo;
-} FunctionNode;
-
-typedef struct LN
-{
-    struct LN *lastBrother, *nextBrother;
-    void *data;
-} ListNode;
-
-typedef struct
-{
-    char *constructorIdName;
-    ListNode *fields;
-} ConstructorNode;
-
-typedef struct
-{
-    char *typeIdName;
-    ListNode *constructors;
-} AlgebraicDataTypeNode;
-
 /* FuncParamType */
 /*     : Specifier DEDUCT FuncParamType { */ 
 /*         $$ = new_parent_node("FuncType", GROUP_4 + 1, 2, $1, $3); */ 
@@ -60,6 +11,24 @@ typedef struct
 /*     ; */
 ID(401)
 {
+    if (childNum == 2)
+    {
+        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+        type_info->typeKind = FunctionType;
+        type_info->node = (void *)malloc(sizeof(FunctionNode));
+        child->other_info = type_info;
+    }
+}
+SD(401)
+{
+    D_parent_info;
+    D_child_1_info;
+    D_child_2_info;
+
+    assert(parent_info->typeKind == FunctionType);
+    assert(child_2_info->typeKind == FunctionType);
+    ((FunctionNode *)parent_info->node)->paramTypeInfo = child_1_info;
+    ((FunctionNode *)parent_info->node)->returnTypeInfo = child_2_info;
 }
 
 /* FuncType */
@@ -77,6 +46,21 @@ ID(401)
 /*     ; */
 ID(402)
 {
+    if (childNum == 1)
+    {
+        /* 402号产生式只有一个子节点：Specifier */
+        /* 不需要为它分配空间 */
+    }
+}
+SD(402)
+{
+    D_parent_info;
+    D_child_1_info;
+
+    assert(parent_info->typeKind == FunctionType);
+    assert(parent_info->nextInfo == NULL);
+    ((FunctionNode *)parent_info->node)->paramTypeInfo = NULL;
+    ((FunctionNode *)parent_info->node)->returnTypeInfo = child_1_info;
 }
 
 /* FuncDec */
@@ -202,7 +186,62 @@ SD(408)
 /*     | ReferType { $$ = new_parent_node("Specifier", GROUP_8 + 5, 1, $1); } */
 /*     | FuncType { $$ = $1; } */
 /*     ; */
-SDS(801, 802, 803, 804, 805)
+IDS(801, 802)
+{
+    if (childNum == 1)
+    {
+        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+        type_info->typeKind = BuildInType;
+        /* 内建类型没有对应的节点类型，直接用node域标记 */
+        /* 故不需要分配空间 */
+        type_info->nextInfo = NULL;
+    }
+}
+ID(803)
+{
+    if (childNum == 1)
+    {
+        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+        type_info->typeKind = AlgebraicDataType;
+        type_info->node = (void *)malloc(sizeof(AlgebraicDataTypeNode));
+        type_info->nextInfo = NULL;
+        child->other_info = type_info;
+    }
+}
+ID(804)
+{
+    if (childNum == 1)
+    {
+        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+        type_info->typeKind = ArrayType;
+        type_info->node = (void *)malloc(sizeof(ArrayNode));
+        type_info->nextInfo = NULL;
+        child->other_info = type_info;
+    }
+}
+ID(805)
+{
+    if (childNum == 1)
+    {
+        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+        type_info->typeKind = ReferType;
+        type_info->node = (void *)malloc(sizeof(ReferNode));
+        type_info->nextInfo = NULL;
+        child->other_info = type_info;
+    }
+}
+ID(806)
+{
+    if (childNum == 1)
+    {
+        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+        type_info->typeKind = FunctionType;
+        type_info->node = (void *)malloc(sizeof(FunctionNode));
+        type_info->nextInfo = NULL;
+        child->other_info = type_info;
+    }
+}
+SDS(801, 802, 803, 804, 805, 806)
 {
     D_parent_info;
     D_child_1_info;
