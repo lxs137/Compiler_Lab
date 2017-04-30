@@ -1,616 +1,219 @@
-#include "syntax_tree.h"
 #include "SDTAction.h"
-#include <stdarg.h>
+#include <assert.h>
 #include <malloc.h>
-#include <inttypes.h>
-// #define SDT_DEBUG_PRINT
 
-void traversalTreePerformAction(AST_node *parent)
+enum TypeKindEnum { BuildInType, ArrayType, ReferType, FunctionType, AlgebraicDataType };
+
+typedef struct
 {
-    int proNum = parent->proNum;
-    
-    SDTIAction f = sdtIActionTable[proNum];
-    if (f != NULL)
-    {
-        f(parent, parent, 0);
-    }
-// #ifdef SDT_DEBUG_PRINT
-//     print_child_node(parent, 0);
-// #endif
-    int i = 1;
-#ifdef SDT_DEBUG_PRINT
-    printf("Line %d: %s childNum(%d) (%d) I Action start.\n",
-        parent->loc_line, parent->str, i, proNum);
-#endif
-    for (AST_node *child = parent->first_child;
-            child != NULL;
-            child = child->next_brother)
-    {
-        if (f != NULL)
-        {
-            f(parent, child, i);
-        }
-        traversalTreePerformAction(child);
-        i++;
-    }
-#ifdef SDT_DEBUG_PRINT
-    printf("Line %d: %s (%d) I Action end.\n", parent->loc_line, parent->str, proNum);
-#endif
-    
-    SDTSAction g = sdtSActionTable[proNum];
-    if (g != NULL)
-    {
-        g(parent);
-    }
-#ifdef SDT_DEBUG_PRINT
-    printf("Line %d: %s (%d) S Action end.\n", parent->loc_line, parent->str, proNum);
-#endif
+    enum TypeKindEnum typeKind;
+    void *node;
+    void *nextInfo;
+} TypeInfo;
+
+/* 节点中的域除特别说明者，均为继承属性 */
+
+enum BuildInTypeKindEnum { Int, Float, Let };
+/* 内建类型的node域填充BuildInTypeKindEnum */
+
+typedef struct
+{
+    TypeInfo *arrayTo;
+    int width;
+} ArrayNode;
+
+typedef struct
+{
+    TypeInfo *referTo;
+} ReferNode;
+
+typedef struct
+{
+    TypeInfo *paramTypeInfo;
+    TypeInfo *returnTypeInfo;
+} FunctionNode;
+
+typedef struct LN
+{
+    struct LN *lastBrother, *nextBrother;
+    void *data;
+} ListNode;
+
+typedef struct
+{
+    char *constructorIdName;
+    ListNode *fields;
+} ConstructorNode;
+
+typedef struct
+{
+    char *typeIdName;
+    ListNode *constructors;
+} AlgebraicDataTypeNode;
+
+/* FuncParamType */
+/*     : Specifier DEDUCT FuncParamType { */ 
+/*         $$ = new_parent_node("FuncType", GROUP_4 + 1, 2, $1, $3); */ 
+/*         $$ = new_parent_node("Specifier", GROUP_8 + 6, 1, $$); */
+/*     } */
+/*     | Specifier { $$ = $1; } */
+/*     ; */
+ID(401)
+{
 }
 
-SDTIAction sdtIActionTable[ProCount + 1] = { NULL };
-SDTSAction sdtSActionTable[ProCount + 1] = { NULL };
-
-// typedef struct
-// {
-//     const char *iType;
-//     const char *sType;
-//     int iDimension;
-//     int sDimension;
-//     int sValid;
-// } TypeInfo;
-
-ID(4)
+/* FuncType */
+/*     : FUNC LP FuncParamType RP { */ 
+/*         if (strcmp(((AST_node *)(((AST_node *)$3)->first_child))->str, "FuncType")) */
+/*         { */
+/*             $$ = new_parent_node("FuncType", GROUP_4 + 2, 1, $3); */
+/*             $$ = new_parent_node("Specifier", GROUP_8 + 6, 1, $$); */
+/*         } */
+/*         else */ 
+/*         { */
+/*             $$ = $3; */
+/*         } */
+/*     } */
+/*     ; */
+ID(402)
 {
-    if (childNum == 2)
-    {
-        D_child_1_info;
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iType = child_1_info->sType;
-        /* type_info->iDimension = 0; */
-        child->other_info = type_info;
-    }
 }
 
-ID(7)
-{
-    if (childNum == 1)
-    {
-        D_parent_info;
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iType = parent_info->iType;
-        type_info->iDimension = 0;
-
-        child->other_info = type_info;
-    }
-}
-
-ID(8)
-{
-    if (childNum == 1)
-    {
-        D_parent_info;
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iType = parent_info->iType;
-        type_info->iDimension = 0;
-
-        child->other_info = type_info;
-    }
-    else if (childNum == 3)
-    {
-        D_parent_info;
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iType = parent_info->iType;
-
-        child->other_info = type_info;
-    }
-}
-
-ID(17)
-{
-    if (childNum == 1)
-    {
-        TypeInfo *parent_info = (TypeInfo *)parent->other_info;
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iType = parent_info->iType;
-        type_info->iDimension = parent_info->iDimension + 1;
-        child->other_info = type_info;
-    }
-}
-
-ID(26)
+/* FuncDec */
+/*     : LP VarList RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", GROUP_4 + 3, 2, $2, $5); } */
+/*     | LP RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", GROUP_4 + 4, 1, $4); } */
+/*     ; */
+ID(403)
 {
     if (childNum == 1)
     {
         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iDimension = 0;
+        type_info->typeKind = FunctionType;
+        type_info->node = (void *)malloc(sizeof(FunctionNode));
         child->other_info = type_info;
     }
-}
-
-ID(34)
-{
-    if (childNum == 2)
+    else if (childNum == 2)
     {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iType = ((TypeInfo *)parent->first_child->other_info)->sType;
-        child->other_info = type_info;
-        /* printf("%s\n", type_info->iType); */
+        /* 不需要额外的内存空间 */
     }
 }
-
-ID(35)
-{
-    if (childNum == 1)
-    {
-        TypeInfo *decListInfo = (TypeInfo *)malloc(sizeof(TypeInfo));
-        decListInfo->iType = ((TypeInfo *)parent->other_info)->iType;
-        child->other_info = decListInfo;
-    }
-}
-
-ID(36)
-{
-    if (childNum == 1)
-    {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iType = ((TypeInfo *)parent->other_info)->iType;
-        child->other_info = type_info;
-    }
-    else if (childNum == 3)
-    {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iType = ((TypeInfo *)parent->other_info)->iType;
-        child->other_info = type_info;
-    }
-}
-
-ID(37)
-{
-    if (childNum == 1)
-    {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iType = ((TypeInfo *)parent->other_info)->iType;
-        type_info->iDimension = 0;
-        child->other_info = type_info;
-    }
-}
-
-ID(38)
-{
-    if (childNum == 1)
-    {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iType = ((TypeInfo *)parent->other_info)->iType;
-        type_info->iDimension = 0;
-        child->other_info = type_info;
-    }
-    else if (childNum == 3)
-    {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iDimension = 0;
-        child->other_info = type_info;
-    }
-}
-
-IDS(39, 40, 41, 42, 43, 44, 45, 46)
-{
-    if (childNum == 1 || childNum == 3)
-    {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iDimension = 0;
-        child->other_info = type_info;
-    }
-}
-
-ID(47)
-{
-    if (childNum == 2)
-    {
-        D_type_info;
-        D_parent_info;
-        type_info->iDimension = parent_info->iDimension;
-        child->other_info = type_info;
-    }
-}
-
-IDS(48, 49)
-{
-    if (childNum == 2)
-    {
-        D_type_info;
-        type_info->iDimension = 0;
-        child->other_info = type_info;
-    }
-}
-
-ID(52)
-{
-    if (childNum == 1)
-    {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iDimension = ((TypeInfo *)parent->other_info)->iDimension + 1;
-        child->other_info = type_info;
-    }
-    else if (childNum == 3)
-    {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->iDimension = 0;
-        child->other_info = type_info;
-    }
-}
-
-SD(9)
-{
-    TypeInfo *parent_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-    parent_info->sType = parent->first_child->str;
-    parent_info->sValid = 1;
-    /* D_type_info; */
-    /* type_info->sType = parent->first_child->str + 6; */
-    /* D_parent_info; */
-    parent_info = parent_info;
-    parent->other_info = parent_info;
-    /* printf("%s\n", parent_info->sType); */
-}
-
-SD(16)
-{
-    D_child_1;
-
-    D_parent_info;
-    parent_info->sType = parent_info->iType;
-    parent_info->sDimension = parent_info->iDimension;
-    D_type_info;
-    type_info->sType = parent_info->sType;
-    type_info->sDimension = parent_info->sDimension;
-    /* D_child_1_info; */
-    /* child_1_info = type_info; */
-    parent->first_child->other_info = type_info;
-
-    if (!stackIsEmpty())
-    {
-        int add_result = stackAddRegion(parent->first_child->str + 4, type_info);
-        if (add_result == -1)
-        {
-            printf("Error type 15 at Line: %d: Redefine field \"%s\" in struct.\n", 
-                    child_1->loc_line,
-                    child_1->str + 4);
-        }
-        else if(add_result == 0)
-        {
-            printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
-                child_1->loc_line, 
-                child_1->str + 4);
-        }
-    }
-    else if(isDefineFunction())
-    {
-        if(addTempFuncParam(parent->first_child->str + 4, type_info->sType,
-            type_info->sDimension) == 0)
-            printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
-                    child_1->loc_line, 
-                    child_1->str + 4);
-    }
-    else
-    {
-        if (getSymbol(child_1->str + 4) != NULL)
-        {
-            printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
-                    child_1->loc_line, 
-                    child_1->str + 4);
-            return;
-        }
-        addSymbol(parent->first_child->str + 4, parent->first_child);
-    }
-}
-
-SD(17)
+SD(403)
 {
     D_parent_info;
     D_child_1_info;
-    parent_info->sType = child_1_info->iType;
-    parent_info->sDimension = child_1_info->sDimension;
-}
-
-SD(26)
-{
-    TypeInfo *child_info = (TypeInfo *)parent->first_child->other_info;
-}
-
-SD(37)
-{
-    
-}
-
-SD(38)
-{
-    D_child_1_info;
-    D_child_3_info;
-    if (!child_3_info->sValid || 
-         child_1_info->sDimension != child_3_info->sDimension || 
-         strcmp(child_1_info->sType, child_3_info->sType))
-    {
-        printf("Error type 5 at Line %d: Type mismatched for assignment.\n", parent->first_child->loc_line);
-    }
-    if (!stackIsEmpty())
-    {
-        printf("Error type 15 at line %d: initialize in struct.\n", parent->first_child->loc_line);
-    }
-}
-
-SD(39)
-{
-    D_parent_info;
-    /* 直接用nextInfo表征Exp是否是左值表达式 */
-    /* 因为也只用0／1，所以不另外用一个结构体 */
-    parent_info->nextInfo = (void*)0;
-    /* (intptr_t)parent_info->nextInfo; */
-
-    D_child_1_info;
-    D_child_3_info;
-
-    /* 检查赋值号左边不是左值 */
-    if ((intptr_t)child_1_info->nextInfo == 0)
-    {
-        D_child_1;
-        printf("Error type 6 at Line %d: The left-hand side of an assignment must be a variable.\n",
-                child_1->loc_line);
-    }
-
-    if (child_1_info->sValid && child_3_info->sValid)
-    {
-        parent_info->sValid = 1;
-        parent_info->sType = child_1_info->sType;
-        parent_info->sDimension = child_1_info->sDimension;
-        if (strcmp(child_1_info->sType, child_3_info->sType) || child_1_info->sDimension != child_3_info->sDimension)
-        {
-            D_child_1;
-            printf("Error type 5 at Line %d: Type mismatched for assignment.\n", 
-                    child_1->loc_line);
-        }
-    }
-    else if (child_1_info->sValid)
-    {
-        parent_info->sValid = 1;
-        parent_info->sType = child_1_info->sType;
-        parent_info->sDimension = child_1_info->sDimension;
-
-        D_child_3;
-        printf("Error type 5 at Line %d: Type mismatched for assignment.\n", 
-                child_3->loc_line);
-    }
-    else if (child_3_info->sValid)
-    {
-        parent_info->sValid = 1;
-        parent_info->sType = child_3_info->sType;
-        parent_info->sDimension = child_3_info->sDimension;
-
-        D_child_1;
-        printf("Error type 5 at Line %d: Type mismatched for assignment.\n", 
-                child_1->loc_line);
-    }
-    else
-    {
-        parent_info->sValid = 0;
-
-        D_child_1;
-        printf("Error type 5 at Line %d: Type mismatched for assignment.\n", 
-                child_1->loc_line);
-    }
-}
-
-SDS(40, 41)
-{
-    D_parent_info;
-    parent_info->nextInfo = (void*)0;
-    parent_info->sValid = 1;
-    parent_info->sType = "int";
-    parent_info->sDimension = 0;
-
-    D_child_1_info;
-    D_child_3_info;
-    int v = child_1_info->sValid && child_3_info->sValid;
-    if (v)
-    {
-        v &= strcmp(child_1_info->sType, "int");
-        v &= strcmp(child_3_info->sType, "int");
-        v &= child_1_info->sDimension == 0;
-        v &= child_3_info->sDimension == 0;
-    }
-    if (!v)
-    {
-        D_child_1;
-        printf("Error type 7 at Line %d: Type mismatched for operands.\n",
-                child_1->loc_line);
-    }
-}
-
-SD(42)
-{
-    D_parent_info;
-    parent_info->nextInfo = (void*)0;
-
-    D_child_1_info;
-    D_child_3_info;
-    int v1 = child_1_info->sValid && 
-    /* int v1 = */
-             (!strcmp(child_1_info->sType, "int") || !strcmp(child_1_info->sType, "float")) && 
-             child_1_info->sDimension == 0;
-    int v3 = child_3_info->sValid && 
-    /* int v3 = */
-             (!strcmp(child_3_info->sType, "int") || !strcmp(child_3_info->sType, "float")) && 
-             child_3_info->sDimension == 0;
-    int v = v1 && v3 && !strcmp(child_1_info->sType, child_3_info->sType);
-    parent_info->sValid = 1;
-    parent_info->sType = "int";
-    parent_info->sDimension = 0;
-    if (!v)
-    {
-        D_child_1;
-        printf("Error type 7 at Line %d: Type mismatched for operands.\n",
-                child_1->loc_line);
-    }
-}
-
-SDS(43, 44, 45, 46)
-{
-    D_parent_info;
-    parent_info->nextInfo = (void*)0;
-
-    D_child_1_info;
-    D_child_3_info;
-    int v1 = child_1_info->sValid && 
-             (!strcmp(child_1_info->sType, "int") || !strcmp(child_1_info->sType, "float")) && 
-             child_1_info->sDimension == 0;
-    int v3 = child_3_info->sValid && 
-             (!strcmp(child_3_info->sType, "int") || !strcmp(child_3_info->sType, "float")) && 
-             child_3_info->sDimension == 0;
-    if (v1 && v3)
-    {
-        parent_info->sValid = 1;
-        parent_info->sType = child_1_info->sType;
-        parent_info->sDimension = child_1_info->sDimension;
-
-        if (strcmp(child_1_info->sType, child_3_info->sType) ||
-            child_1_info->sDimension != child_3_info->sDimension)
-        {
-            D_child_1;
-            printf("Error type 7 at Line %d: Type mismatched for operands.\n", child_1->loc_line);
-        }
-    }
-    else if(v1)
-    {
-        parent_info->sValid = 1;
-        parent_info->sType = child_1_info->sType;
-        parent_info->sDimension = child_1_info->sDimension;
-
-        D_child_3;
-        printf("Error type 7 at Line %d: Type mismatched for operands.\n", child_3->loc_line);
-    }
-    else if(v3)
-    {
-        parent_info->sValid = 1;
-        parent_info->sType = child_3_info->sType;
-        parent_info->sDimension = child_3_info->sDimension;
-
-        D_child_1;
-        printf("Error type 7 at Line %d: Type mismatched for operands.\n", child_1->loc_line);
-    }
-    else
-    {
-        parent_info->sValid = 0;
-
-        D_child_1;
-        printf("Error type 7 at Line %d: Type mismatched for operands.\n", child_1->loc_line);
-    }
-}
-
-SD(47)
-{
-    D_parent_info;
-    parent_info->nextInfo = (void*)1;
-
     D_child_2_info;
-    parent_info->sValid = child_2_info->sValid;
-    if (parent_info->sValid)
+
+    TypeInfo *returnTypeInfo;
+    for (returnTypeInfo = child_1_info; 
+         returnTypeInfo != NULL; 
+         returnTypeInfo = (TypeInfo *)((FunctionNode *)returnTypeInfo->node)->returnTypeInfo)
     {
-        parent_info->sType = child_2_info->sType;
-        parent_info->sDimension = child_2_info->sDimension;
+        assert(returnTypeInfo->typeKind == FunctionType);
+    }
+    returnTypeInfo = child_2_info;
+
+    parent_info = child_1_info;
+}
+
+ID(404)
+{
+    if (childNum == 1)
+    {
+        /* 不需要额外的内存空间 */
     }
 }
-
-SD(48)
-{
-    TypeInfo* exp = (TypeInfo*)(parent->other_info);
-    TypeInfo* exp_ = (TypeInfo*)(parent->first_child->next_brother->other_info);
-    exp->sValid = 1;
-    exp->nextInfo = (void*)0;
-    exp->sType = exp_->sType;
-    exp->sDimension = exp_->sDimension;
-}
-
-SD(49)
+SD(404)
 {
     D_parent_info;
-    parent_info->nextInfo = (void*)0;
-    parent_info->sValid = 1;
-    parent_info->sType = "int";
-    parent_info->sDimension = 0;
-
-    D_child_2_info;
-    if (strcmp(child_2_info->sType, "int") || !(child_2_info->sDimension == 0))
-    {
-        D_child_2;
-        printf("Error type 7 at Line %d: Type mismatched for operands.\n", child_2->loc_line);
-    }
-}
-
-SD(52)
-{
-    D_parent_info;
-    parent_info->nextInfo = (void*)1;
-
     D_child_1_info;
-    D_child_3_info;
-    if (!(child_3_info->sDimension == 0 && !strcmp(child_3_info->sType, "int")))
-    {
-        D_child_3;
-        printf("Error type 12 at Line %d: \"%s\" is not an integer.\n", 
-                child_3->loc_line, 
-                child_3->str);
-    }
-    parent_info->sValid = child_1_info->sValid;
-    parent_info->sType = child_1_info->sType;
-    parent_info->sDimension = child_1_info->sDimension;
+    parent_info = child_1_info;
 }
 
-SD(54)
+/* VarList */
+/*     : ParamDec COMMA VarList { $$ = new_parent_node("VarList", GROUP_4 + 5, 2, $1, $3); } */
+/*     | ParamDec { $$ = new_parent_node("VarList", GROUP_4 + 6, 1, $1); } */
+/*     ; */
+ID(405)
+{
+    if (childNum == 1)
+    {
+        /* ParamDec直接用其子节点的other_info就可以 */
+        /* 不需要额外分配空间 */
+    }
+    else if (childNum == 2)
+    {
+        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+        type_info->typeKind = FunctionType;
+        type_info->nextInfo = NULL;
+        type_info->node = (void *)malloc(sizeof(FunctionNode));
+        child->other_info = type_info;
+    }
+}
+SD(405)
 {
     D_parent_info;
-    parent_info->nextInfo = (void*)1;
+    D_child_1_info;
+    D_child_2_info;
 
-    D_child_1;
-
-    Symbol *child = getSymbolFull(child_1->str + 4);
-    if (child == NULL)
-    {
-        printf("Error type 1 at Line %d: Undefined variable \"%s\".\n",
-               child_1->loc_line,
-               child_1->str + 4);
-        parent_info->sValid = 0;
-        return;
-    }
-
-    parent_info->sType = child->type;
-    parent_info->sDimension = child->dimension - parent_info->iDimension;
-    if (parent_info->sDimension < 0)
-    {
-        parent_info->sValid = 0;
-        printf("Error type 10 at Line %d: \"%s\" is not an array.\n", 
-                child_1->loc_line, 
-                child_1->str + 4);
-        return;
-    }
-    parent_info->sValid = 1;
+    assert(parent_info->typeKind == FunctionType);
+    /* 不能确定传入参数的类型，也就是不能确定child_2_info->typeKind */
+    assert(child_2_info->typeKind == FunctionType);
+    ((FunctionNode *)parent_info->node)->paramTypeInfo = child_1_info;
+    ((FunctionNode *)parent_info->node)->returnTypeInfo = child_2_info;
 }
 
-SDS(55, 56)
+SD(406)
 {
     D_parent_info;
-    parent_info->nextInfo = (void*)0;
-    parent_info->sValid = 1;
-    if (parent->first_child->str[0] == 'I')
-    {
-        parent_info->sType = "int";
-    }
-    else
-    {
-        parent_info->sType = "float";
-    }
-    parent_info->sDimension = 0;
+    D_child_1_info;
+
+    assert(parent_info->typeKind == FunctionType);
+    ((FunctionNode *)parent_info->node)->paramTypeInfo = child_1_info;
+    /* returnTypeInfo是整个函数的返回值，交给上层产生式填写 */
+    /* 至此，形参列表的递归推导结束 */
+    ((FunctionNode *)parent_info->node)->returnTypeInfo = NULL;
 }
 
-void initTable()
+/* ParamDec */
+/*     : Specifier VarDec { $$ = new_parent_node("ParamDec", GROUP_4 + 7, 2, $1, $2); } */
+/*     ; */
+SD(407)
 {
-    IS(4, 7, 8, 17, 26, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 52);
-    SS(9, 16, 17, 26, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 49, 48, 52, 54, 55, 56);
+    D_parent_info;
+    D_child_1_info;
+    parent_info = child_1_info;
 }
+
+/* FuncBody */
+/*     : FuncDec CompSt { $$ = new_parent_node("FuncBody", GROUP_4 + 8, 2, $1, $2); } */
+/*     ; */
+SD(408)
+{
+    D_parent_info;
+    D_child_1_info;
+    parent_info = child_1_info;
+}
+
+/* Specifier */
+/*     : BUILDINTYPE { $$ = new_parent_node("Specifier", GROUP_8 + 1, 1, $1); } */
+/*     | LET { $$ = new_parent_node("Specifier", GROUP_8 + 2, 1, $1); } */
+/*     | TypeId { $$ = new_parent_node("Specifier", GROUP_8 + 3, 1, $1); } */
+/*     | ArrayType { $$ = new_parent_node("Specifier", GROUP_8 + 4, 1, $1); } */
+/*     | ReferType { $$ = new_parent_node("Specifier", GROUP_8 + 5, 1, $1); } */
+/*     | FuncType { $$ = $1; } */
+/*     ; */
+SDS(801, 802, 803, 804, 805)
+{
+    D_parent_info;
+    D_child_1_info;
+    parent_info = child_1_info;
+}
+
+/* FuncCall */
+/*     : Exp LP Args RP { $$ = new_parent_node("FuncCall", GROUP_4 + 9, 2, $1, $3); } */
+/*     ; */
+/* Args */
+/*     : Exp COMMA Args { $$ = new_parent_node("Args", GROUP_4 + 10, 2, $1, $3); } */
+/*     | PLACEHOLDER COMMA Args { $$ = new_parent_node("Args", GROUP_4 + 11, 2, $1, $3); } */
+/*     | /1* empty *1/ { $$ = new_parent_node("Args", GROUP_4 + 12, 0); } */
+/*     ; */
