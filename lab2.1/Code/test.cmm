@@ -1,3 +1,4 @@
 let f = (Int a, Int b) -> Int {
-    return 1
+    Int a
+    Int c
 }

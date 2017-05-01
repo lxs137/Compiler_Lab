@@ -93,12 +93,20 @@ static Symbol *findSymbol(SymbolTable *st, char *name)
 
 /* 封装二：符号表栈 */
 
-static SymbolTable *globalSymbolTable;
-static SymbolTableStack *symbolTableStack;
+static SymbolTable *globalSymbolTable = NULL;
+static SymbolTableStack *symbolTableStack = NULL;
 
 void initSymbolTableStack()
 {
+    assert(globalSymbolTable == NULL);
     globalSymbolTable = newSymbolTable();
+    assert(globalSymbolTable != NULL);
+    assert(globalSymbolTable->symbols != NULL);
+    assert(globalSymbolTable->outerSymbolTable == NULL);
+    assert(globalSymbolTable->firstInnerSymbolTable == NULL);
+    assert(globalSymbolTable->nextSymbolTable == NULL);
+
+    assert(symbolTableStack == NULL);
     symbolTableStack = (SymbolTableStack *)malloc(sizeof(SymbolTableStack));
     symbolTableStack->symbolTable = globalSymbolTable;
     symbolTableStack->last = NULL;
@@ -107,21 +115,49 @@ void initSymbolTableStack()
 
 static SymbolTable *currentSymbolTable()
 {
+    assert(symbolTableStack != NULL);
+    assert(symbolTableStack->symbolTable != NULL);
     return symbolTableStack->symbolTable;
 }
 
 static void pushSymbolTable(SymbolTable *st)
 {
+    assert(symbolTableStack != NULL);
+    assert(symbolTableStack->symbolTable != NULL);
+    SymbolTable *t = symbolTableStack->symbolTable->firstInnerSymbolTable;
+    if (t == NULL)
+    {
+        symbolTableStack->symbolTable->firstInnerSymbolTable = st;
+    }
+    else
+    {
+        while (t->nextSymbolTable != NULL)
+        {
+            t = t->nextSymbolTable;
+        }
+        t->nextSymbolTable = st;
+    }
+
+    assert(st != NULL);
+    assert(st->symbols != NULL);
+    assert(st->outerSymbolTable == NULL);
+    st->outerSymbolTable = symbolTableStack->symbolTable;
+    assert(st->firstInnerSymbolTable == NULL);
+    assert(st->nextSymbolTable == NULL);
+
     SymbolTableStack *stack = (SymbolTableStack *)malloc(sizeof(SymbolTableStack));
     stack->symbolTable = st;
     stack->last = symbolTableStack;
     stack->next = NULL;
+
     symbolTableStack->next = stack;
+    symbolTableStack = stack;
 }
 
 static void popSymbolTable()
 {
     symbolTableStack = symbolTableStack->last;
+    assert(symbolTableStack != NULL);
     free(symbolTableStack->next);
     symbolTableStack->next = NULL;
 }
@@ -148,10 +184,14 @@ static void printSymbolTable(SymbolTable *st, int depth, int order)
         printf("name: %s, pointer: %p\n", symbol->name, symbol->node);
     }
     free(rbtrav);
+
     SymbolTable *inner = st->firstInnerSymbolTable;
+    int i = 0;
     while (inner != NULL)
     {
-        printSymbolTable(inner, depth + 1, 1);
+        i++;
+        printSymbolTable(inner, depth + 1, i);
+        inner = inner->nextSymbolTable;
     }
     printf("symbol table %d.%d end.\n", depth, order);
 
@@ -172,11 +212,6 @@ void printGlobalSymbolTable()
 int addSymbol(char *name, AST_node *node)
 {
     return insertSymbol(currentSymbolTable(), name, node);
-}
-
-int delSymbol(char *name)
-{
-    return eraseSymbol(currentSymbolTable(), name);
 }
 
 AST_node *getASTNode(char *name)
