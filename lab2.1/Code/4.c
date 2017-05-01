@@ -179,7 +179,10 @@ SD(407)
 /*     ; */
 ID(408)
 {
-    createInnerSymbolTable();
+    if (childNum == 0)
+    {
+        createInnerSymbolTable();
+    }
 }
 SD(408)
 {

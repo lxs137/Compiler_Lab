@@ -31,6 +31,8 @@ void initActionTable()
 
 static int proNum2TableIndex(int proNum)
 {
+    assert(proNum > 0);
+
     int group = proNum / 100;
     int sum = proNum % 100 - 1;
 
