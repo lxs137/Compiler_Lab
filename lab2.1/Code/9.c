@@ -1,4 +1,5 @@
 #include "SDTAction.h"
+#include "symbol_table.h"
 #include "9.h"
 
 /* Local Definitions */
@@ -22,7 +23,8 @@
 SD(905)
 {
     D_child_1;
-    printf("%s\n", child_1->str);
+    /* printf("%s\n", child_1->str + 4); */
+    addSymbol(child_1->str + 4, parent);
 }
 
 void initActionTable9()
