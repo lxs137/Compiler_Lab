@@ -1,5 +1,5 @@
 %{
-    /* #define flex_debug_print */
+    #define flex_debug_print
     #include <stdio.h>
     #include <stdlib.h>
     #include "syntax.tab.h"
