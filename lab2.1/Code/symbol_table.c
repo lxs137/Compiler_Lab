@@ -150,6 +150,7 @@ static void pushSymbolTable(SymbolTable *st)
     stack->last = symbolTableStack;
     stack->next = NULL;
 
+    assert(symbolTableStack->symbolTable == globalSymbolTable || symbolTableStack->last != NULL);
     symbolTableStack->next = stack;
     symbolTableStack = stack;
 }
