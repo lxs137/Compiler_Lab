@@ -132,7 +132,8 @@ void cleanSymbolTableStack()
     {
         popSymbolTable();
     }
-    free(globalSymbolTable);
+    free(symbolTableStack);
+    symbolTableStack = NULL;
 }
 
 static void printSymbolTable(SymbolTable *st, int depth, int order)
@@ -196,7 +197,7 @@ AST_node *getASTNode(char *name)
 
 void createInnerSymbolTable()
 {
-    SymbolTable *st = (SymbolTable *)malloc(sizeof(SymbolTable));
+    SymbolTable *st = newSymbolTable();
     pushSymbolTable(st);
 }
 
