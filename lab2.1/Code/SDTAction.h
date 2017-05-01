@@ -4,6 +4,8 @@
 #include "syntax_tree.h"
 #include "symbol_table.h"
 #include "for_each.h"
+#include <malloc.h>
+#include <assert.h>
 
 #define I(proNum) sdtIActionTable[proNum2TableIndex(proNum)] = pro##proNum##IAction;
 #define IS(...) FOR_EACH(I, __VA_ARGS__)
@@ -59,6 +61,8 @@ typedef void(*SDTSAction)(AST_node *);
 
 void initActionTable();
 void cleanActionTable();
+void registerIAction(int proNum, SDTIAction action);
+void registerSAction(int proNum, SDTSAction action);
 int proNum2TableIndex(int proNum);
 void traversalTreePerformAction(AST_node *parent);
 

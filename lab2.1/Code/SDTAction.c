@@ -1,6 +1,5 @@
 #include "SDTAction.h"
-#include <assert.h>
-#include <malloc.h>
+#include "9.h"
 
 /* 产生式数目 */
 static const int ProCount[10] = { 1, 2, 10, 12, 1, 1, 18, 6, 5, 19};
@@ -22,6 +21,8 @@ void initActionTable()
     assert(sdtSActionTable == NULL);
     sdtIActionTable = (SDTIAction *)calloc(sum, sizeof(SDTIAction));
     sdtSActionTable = (SDTSAction *)calloc(sum, sizeof(SDTIAction));
+
+    initActionTable9();
 }
 
 void cleanActionTable()
@@ -33,6 +34,20 @@ void cleanActionTable()
     assert(sdtSActionTable != NULL);
     free(sdtSActionTable);
     sdtSActionTable = NULL;
+}
+
+void registerIAction(int proNum, SDTIAction action)
+{
+    int tableIndex = proNum2TableIndex(proNum);
+    assert(sdtIActionTable[tableIndex] == NULL);
+    sdtIActionTable[tableIndex] = action;
+}
+
+void registerSAction(int proNum, SDTSAction action)
+{
+    int tableIndex = proNum2TableIndex(proNum);
+    assert(sdtIActionTable[tableIndex] == NULL);
+    sdtSActionTable[tableIndex] = action;
 }
 
 int proNum2TableIndex(int proNum)
