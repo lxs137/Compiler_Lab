@@ -77,9 +77,10 @@ Program
         $$ = new_parent_node("Program", GROUP_1 + 1, 1, $1);
         print_child_node($$, 0);
         initActionTable();
+        initSymbolTableStack();
         traversalTreePerformAction($$);
         cleanActionTable();
-        /* //printSymbolTable(globalSymbolTable); */
+        printGlobalSymbolTable();
         /* clean_up_syntax_tree($$); */
         /* cleanUpSymbolTable(); */
     }

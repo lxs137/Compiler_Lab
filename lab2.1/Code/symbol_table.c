@@ -99,6 +99,7 @@ static SymbolTableStack *symbolTableStack;
 void initSymbolTableStack()
 {
     globalSymbolTable = (SymbolTable *)malloc(sizeof(SymbolTable));
+    symbolTableStack = (SymbolTableStack *)malloc(sizeof(SymbolTableStack));
     symbolTableStack->symbolTable = globalSymbolTable;
     symbolTableStack->last = NULL;
     symbolTableStack->next = NULL;
@@ -134,19 +135,34 @@ void cleanSymbolTableStack()
     free(globalSymbolTable);
 }
 
-void printSymbolTable(SymbolTable *st)
+static void printSymbolTable(SymbolTable *st, int depth, int order)
 {
+    printf("symbol table %d.%d begin.\n", depth, order);
     jsw_rbtrav_t *rbtrav;
     rbtrav = jsw_rbtnew();
-    
     for (Symbol *symbol = jsw_rbtfirst(rbtrav, st->symbols);
          symbol != NULL;
          symbol = jsw_rbtnext(rbtrav))
     {
         printf("name: %s, pointer: %p\n", symbol->name, symbol->node);
     }
-    
     free(rbtrav);
+    SymbolTable *inner = st->firstInnerSymbolTable;
+    while (inner != NULL)
+    {
+        printSymbolTable(inner, depth + 1, 1);
+    }
+    printf("symbol table %d.%d end.\n", depth, order);
+
+    while ((st = st->nextSymbolTable) != NULL)
+    {
+        printSymbolTable(st, depth, order + 1);
+    }
+}
+
+void printGlobalSymbolTable()
+{
+    printSymbolTable(globalSymbolTable, 1, 1);
 }
 
 /* 封装三：联合使用符号表和符号表栈 */
@@ -189,7 +205,7 @@ void gotoOuterSymbolTable()
     popSymbolTable();
 }
 
-void cleanUpSymbolTable()
+void cleanSymbolTable()
 {
     delSymbolTable(globalSymbolTable);
 }

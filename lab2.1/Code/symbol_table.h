@@ -36,6 +36,7 @@ int delSymbol(char *name);
 AST_node *getASTNode(char *name);
 void createInnerSymbolTable();
 void gotoOuterSymbolTable();
-void cleanUpSymbolTable();
+void printGlobalSymbolTable();
+void cleanSymbolTable();
 
 #endif
