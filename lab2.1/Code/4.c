@@ -71,7 +71,7 @@ ID(403)
 {
     if (childNum == 0)
     {
-        createInnerSymbolTable();
+        /* createInnerSymbolTable(); */
     }
     else if (childNum == 1)
     {
@@ -87,7 +87,7 @@ ID(403)
 }
 SD(403)
 {
-    gotoOuterSymbolTable();
+    /* gotoOuterSymbolTable(); */
 
     D_parent_info;
     D_child_1_info;
@@ -177,8 +177,13 @@ SD(407)
 /* FuncBody */
 /*     : FuncDec CompSt { $$ = new_parent_node("FuncBody", GROUP_4 + 8, 2, $1, $2); } */
 /*     ; */
+ID(408)
+{
+    createInnerSymbolTable();
+}
 SD(408)
 {
+    gotoOuterSymbolTable();
     D_parent_info;
     D_child_1_info;
     parent_info = child_1_info;
@@ -265,6 +270,6 @@ ID(806)
 
 void initActionTable4()
 {
-    registerIAction(403, pro403IAction);
-    registerSAction(403, pro403SAction);
+    registerIAction(408, pro408IAction);
+    registerSAction(408, pro408SAction);
 }

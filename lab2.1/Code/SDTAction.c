@@ -1,6 +1,6 @@
 #include "SDTAction.h"
 #include "3.h"
-#include "4.c"
+#include "4.h"
 #include "9.h"
 
 /* 产生式数目 */
