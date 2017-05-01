@@ -1,5 +1,6 @@
 #include "SDTAction.h"
 #include "3.h"
+#include "4.c"
 #include "9.h"
 
 /* 产生式数目 */
@@ -24,6 +25,7 @@ void initActionTable()
     sdtSActionTable = (SDTSAction *)calloc(sum, sizeof(SDTIAction));
 
     initActionTable3();
+    initActionTable4();
     initActionTable9();
 }
 
