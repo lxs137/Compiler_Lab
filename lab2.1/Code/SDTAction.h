@@ -63,7 +63,6 @@ void initActionTable();
 void cleanActionTable();
 void registerIAction(int proNum, SDTIAction action);
 void registerSAction(int proNum, SDTSAction action);
-int proNum2TableIndex(int proNum);
 void traversalTreePerformAction(AST_node *parent);
 
 enum TypeKindEnum { BuildInType, ArrayType, ReferType, FunctionType, AlgebraicDataType };

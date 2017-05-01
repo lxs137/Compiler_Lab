@@ -5,28 +5,42 @@
 
 /* 产生式数目 */
 static const int ProCount[10] = { 1, 2, 10, 12, 1, 1, 18, 6, 5, 19};
+static int ProSum = 0;
 
 static SDTIAction *sdtIActionTable = NULL;
 static SDTSAction *sdtSActionTable = NULL;
 
 void initActionTable()
 {
-    int sum  = 0;
     int i;
     for (i = 0; i < 10; i++)
     {
-        sum += ProCount[i];
+        ProSum += ProCount[i];
     }
 
     /* calloc() zero-initializes the buffer, while malloc() leaves the memory uninitialized. */
     assert(sdtIActionTable == NULL);
     assert(sdtSActionTable == NULL);
-    sdtIActionTable = (SDTIAction *)calloc(sum, sizeof(SDTIAction));
-    sdtSActionTable = (SDTSAction *)calloc(sum, sizeof(SDTIAction));
+    sdtIActionTable = (SDTIAction *)calloc(ProSum, sizeof(SDTIAction));
+    sdtSActionTable = (SDTSAction *)calloc(ProSum, sizeof(SDTIAction));
 
     initActionTable3();
     initActionTable4();
     initActionTable9();
+}
+
+static int proNum2TableIndex(int proNum)
+{
+    int group = proNum / 100;
+    int sum = proNum % 100 - 1;
+
+    int i;
+    for (i = 0; i < group - 1; i++)
+    {
+        sum += ProCount[i];
+    }
+
+    return sum;
 }
 
 void cleanActionTable()
@@ -43,6 +57,7 @@ void cleanActionTable()
 void registerIAction(int proNum, SDTIAction action)
 {
     int tableIndex = proNum2TableIndex(proNum);
+    assert(tableIndex >= 0 && tableIndex < ProSum);
     assert(sdtIActionTable[tableIndex] == NULL);
     sdtIActionTable[tableIndex] = action;
 }
@@ -50,28 +65,16 @@ void registerIAction(int proNum, SDTIAction action)
 void registerSAction(int proNum, SDTSAction action)
 {
     int tableIndex = proNum2TableIndex(proNum);
+    assert(tableIndex >= 0 && tableIndex < ProSum);
     assert(sdtSActionTable[tableIndex] == NULL);
     sdtSActionTable[tableIndex] = action;
-}
-
-int proNum2TableIndex(int proNum)
-{
-    int group = proNum / 100;
-    int sum = proNum % 100;
-
-    int i;
-    for (i = 0; i < group; i++)
-    {
-        sum += ProCount[i];
-    }
-
-    return sum;
 }
 
 void traversalTreePerformAction(AST_node *parent)
 {
     int proNum = parent->proNum;
     int tableIndex = proNum2TableIndex(proNum);
+    assert(tableIndex >= 0 && tableIndex < ProSum);
     
     SDTIAction f = sdtIActionTable[tableIndex];
     if (f != NULL)
