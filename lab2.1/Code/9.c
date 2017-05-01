@@ -22,6 +22,7 @@
 /*     ; */
 SD(905)
 {
+    assert(parent->proNum == 905);
     D_child_1;
     /* printf("%s\n", child_1->str + 4); */
     addSymbol(child_1->str + 4, child_1);
