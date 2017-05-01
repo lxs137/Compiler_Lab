@@ -76,10 +76,11 @@ Program
     : DSList {
         $$ = new_parent_node("Program", GROUP_1 + 1, 1, $1);
         print_child_node($$, 0);
-        /* initTable(); */
-        /* traversalTreePerformAction($$); */
+        initActionTable();
+        traversalTreePerformAction($$);
+        cleanActionTable();
         /* //printSymbolTable(globalSymbolTable); */
-        clean_up_syntax_tree($$);
+        /* clean_up_syntax_tree($$); */
         /* cleanUpSymbolTable(); */
     }
     ;
