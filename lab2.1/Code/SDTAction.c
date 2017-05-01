@@ -73,6 +73,10 @@ void registerSAction(int proNum, SDTSAction action)
 void traversalTreePerformAction(AST_node *parent)
 {
     int proNum = parent->proNum;
+    if (proNum == 0)
+    {
+        return;
+    }
     int tableIndex = proNum2TableIndex(proNum);
     assert(tableIndex >= 0 && tableIndex < ProSum);
     

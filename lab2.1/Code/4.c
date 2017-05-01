@@ -184,9 +184,9 @@ ID(408)
 SD(408)
 {
     gotoOuterSymbolTable();
-    /* D_parent_info; */
-    /* D_child_1_info; */
-    /* parent_info = child_1_info; */
+    D_parent_info;
+    D_child_1_info;
+    parent_info = child_1_info;
 }
 
 /* Specifier */

@@ -42,3 +42,4 @@ clean:
 	- rm -f *~
 	- rm mem_log_*
 	- rm test_result_*.output
+	- rm core
