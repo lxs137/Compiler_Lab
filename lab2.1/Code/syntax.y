@@ -77,13 +77,8 @@ Program
         $$ = new_parent_node("Program", GROUP_1 + 1, 1, $1);
         print_child_node($$, 0);
         /* initTable(); */
-        /* initTable_lxs(); */
-        /* globalSymbolTable = newSymbolTable(); */
-        /* globalFUNCSymbolTable = newFUNCSymbolTable(); */
-        /* globalStructStack = newStructStack(); */
         /* traversalTreePerformAction($$); */
         /* //printSymbolTable(globalSymbolTable); */
-        /* findUndefinedFUNCtion(); */
         clean_up_syntax_tree($$);
         /* cleanUpSymbolTable(); */
     }
@@ -111,7 +106,7 @@ Stmt
     | SEMI { $$ = new_parent_node("Stmt", GROUP_3 + 9, 0); }
     ;
 CompSt
-    : LC DSList RC { $$ = new_parent_node("Compst", GROUP_3 + 9, 1, $2); }
+    : LC DSList RC { $$ = new_parent_node("Compst", GROUP_3 + 10, 1, $2); }
     ;
 
 /* Function */

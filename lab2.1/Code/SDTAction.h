@@ -5,10 +5,10 @@
 #include "symbol_table.h"
 #include "for_each.h"
 
-#define I(proNum) sdtIActionTable[proNum] = pro##proNum##IAction;
+#define I(proNum) sdtIActionTable[proNum2TableIndex(proNum)] = pro##proNum##IAction;
 #define IS(...) FOR_EACH(I, __VA_ARGS__)
 
-#define S(proNum) sdtSActionTable[proNum] = pro##proNum##SAction;
+#define S(proNum) sdtSActionTable[proNum2TableIndex(proNum)] = pro##proNum##SAction;
 #define SS(...) FOR_EACH(S, __VA_ARGS__)
 
 #define ID(proNum) \
@@ -49,20 +49,18 @@
 #define D_child_3 \
     AST_node *child_3 = parent->first_child->next_brother->next_brother;
 
-/* 产生式总数目 */
-#define ProCount 59
 /* 第一个参数是父亲节点，第二个参数是需要准备继承属性的儿子节点 */
 /* 第三个参数是需要准备继承属性的节点的编号 */
 /* 0代表父节点 */
 /* 1-n代表子节点 */
 typedef void(*SDTIAction)(AST_node *, AST_node *, int childNum);
-extern SDTIAction sdtIActionTable[ProCount + 1];
 /* 在所有儿子节点的继承属性+综合属性算完之后，可以算本节点的综合属性（本节点的继承属性也已经准备好） */
 typedef void(*SDTSAction)(AST_node *);
-extern SDTSAction sdtSActionTable[ProCount + 1];
 
-void initTable();
-
+void initActionTable();
+void cleanActionTable();
+int proNum2TableIndex(int proNum);
+void traversalTreePerformAction(AST_node *parent);
 
 enum TypeKindEnum { BuildInType, ArrayType, ReferType, FunctionType, AlgebraicDataType };
 
