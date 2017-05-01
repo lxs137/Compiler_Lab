@@ -98,7 +98,7 @@ static SymbolTableStack *symbolTableStack;
 
 void initSymbolTableStack()
 {
-    globalSymbolTable = (SymbolTable *)malloc(sizeof(SymbolTable));
+    globalSymbolTable = newSymbolTable();
     symbolTableStack = (SymbolTableStack *)malloc(sizeof(SymbolTableStack));
     symbolTableStack->symbolTable = globalSymbolTable;
     symbolTableStack->last = NULL;

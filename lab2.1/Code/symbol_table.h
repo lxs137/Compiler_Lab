@@ -7,9 +7,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+typedef struct jsw_rbtree Tree;
+
 typedef struct ST
 {
-    struct jsw_rbtree *symbols;
+    Tree *symbols;
     struct ST *outerSymbolTable;
     struct ST *firstInnerSymbolTable;
     struct ST *nextSymbolTable;
