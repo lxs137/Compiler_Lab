@@ -12,9 +12,14 @@ ID(702)
     if (childNum == 2)
     {
         D_child_1_info;
+        /* 断言类型ID已经综合 */
         assert(child_1_info != NULL);
+
+        /* 赋值other_info之前都需要断言它为空 */
+        /* 以防覆盖有用信息 */
         assert(child->other_info == NULL);
         /* child->oter_info充当继承属性 */
+        /* 分配的资源都SD(702)回收 */
         child->other_info = child_1_info;
     }
 }
@@ -22,8 +27,11 @@ SD(702)
 {
     D_child_1;
     D_child_2;
+    /* 回收SD(703)分配的资源 */
+    assert(child_1->other_info != NULL);
     child_1->other_info = NULL;
-    /* “回收”继承属性对应的域 */
+    /* 回收ID(702)分配的资源 */
+    assert(child_2->other_info != NULL);
     child_2->other_info = NULL;
 }
 
@@ -37,15 +45,24 @@ ID(703)
         D_child_1_info;
         assert(child_1_info != NULL);
         assert(child->other_info == NULL);
+        /* 分配的资源由SD(703)回收 */
         child->other_info = child_1_info;
     }
 }
 SD(703)
 {
+    D_child_1;
     D_child_1_info;
     assert(child_1_info != NULL);
+    addSymbol((char *)child_1_info, child_1);
+
     assert(parent->other_info == NULL);
     parent->other_info = child_1_info;
+
+    D_child_2;
+    /* 回收ID(703)分配的资源 */
+    assert(child_2->other_info != NULL);
+    child_2->other_info = NULL;
 }
 
 /* ADTParamList */
@@ -56,6 +73,9 @@ ID(704)
 {
     if (childNum ==  1 || childNum == 2)
     {
+        assert(parent->other_info != NULL);
+        assert(child->other_info == NULL);
+        /* 分配的资源由SD(704)回收 */
         child->other_info = parent->other_info;
     }
 }
@@ -66,7 +86,9 @@ SD(704)
     addSymbol((char *)child_1_info, child_1);
 
     D_child_2;
+    /* 回收ID(704)分配的资源 */
     child_1->other_info = NULL;
+    /* 回收ID(704)分配的资源 */
     child_2->other_info = NULL;
 }
 
@@ -98,12 +120,16 @@ ID(707)
     if (childNum == 1)
     {
         D_parent_info;
+        assert(parent_info != NULL);
+        assert(child->other_info == NULL);
+        /* 分配的资源由SD(707)回收 */
         child->other_info = parent_info;
     }
 }
 SD(707)
 {
     D_child_1;
+    /* 回收ID(707)分配的资源 */
     child_1->other_info = NULL;
 }
 
@@ -112,6 +138,9 @@ ID(708)
     if (childNum == 1 || childNum == 2)
     {
         D_parent_info;
+        assert(parent_info != NULL);
+        assert(child->other_info == NULL);
+        /* 分配的资源由SD(708)回收 */
         child->other_info = parent_info;
     }
 }
@@ -119,7 +148,11 @@ SD(708)
 {
     D_child_1;
     D_child_2;
+    assert(child_1->other_info != NULL);
+    /* 回收ID(708)分配的资源 */
     child_1->other_info = NULL;
+    assert(child_2->other_info != NULL);
+    /* 回收ID(708)分配的资源 */
     child_2->other_info = NULL;
 }
 
@@ -131,12 +164,24 @@ ID(709)
     if (childNum == 2)
     {
         D_parent_info;
+        assert(parent_info != NULL);
+        assert(child->other_info == NULL);
+        /* 分配的资源由SD(709)回收 */
         child->other_info = parent_info;
     }
 }
 SD(709)
 {
+    D_child_1;
+    D_child_1_info;
+    assert(child_1_info != NULL);
+    addSymbol((char *)child_1_info, child_1);
+    /* 回收SD(710)分配的资源 */
+    child_1->other_info = NULL;
+
     D_child_2;
+    assert(child_2->other_info != NULL);
+    /* 回收ID(709)分配的资源 */
     child_2->other_info = NULL;
 }
 
@@ -146,7 +191,9 @@ SD(709)
 SD(710)
 {
     D_child_1;
-    addSymbol(child_1->str + 4, parent);
+    assert(parent->other_info == NULL);
+    /* 分配的资源由SD(709)回收 */
+    parent->other_info = (void *)(child_1->str + 4);
 }
 
 /* TypeIdList */
@@ -159,12 +206,17 @@ ID(711)
     if (childNum == 2)
     {
         D_parent_info;
+        assert(parent_info != NULL);
+        assert(child->other_info == NULL);
+        /* 分配的资源由SD(711)回收 */
         child->other_info = parent_info;
     }
 }
 SD(711)
 {
     D_child_2;
+    assert(child_2->other_info != NULL);
+    /* 回收ID(711)分配的资源 */
     child_2->other_info = NULL;
 }
 
@@ -173,6 +225,9 @@ ID(712)
     if (childNum == 1 || childNum == 2)
     {
         D_parent_info;
+        assert(parent_info != NULL);
+        assert(child->other_info == NULL);
+        /* 分配的资源由SD(712)回收 */
         child->other_info = parent_info;
     }
 }
@@ -180,7 +235,11 @@ SD(712)
 {
     D_child_1;
     D_child_2;
+    assert(child_1->other_info != NULL);
+    /* 回收ID(712)分配的资源 */
     child_1->other_info = NULL;
+    assert(child_2->other_info != NULL);
+    /* 回收ID(712)分配的资源 */
     child_2->other_info = NULL;
 }
 
@@ -190,8 +249,8 @@ SD(712)
 SD(714)
 {
     D_child_1;
-    addSymbol(child_1->str + 4, parent);
     /* 把名字继承到父亲 */
+    assert(parent->other_info == NULL);
     parent->other_info = (void *)child_1->str + 4;
 }
 
