@@ -75,7 +75,7 @@
 Program
     : DSList {
         $$ = new_parent_node("Program", GROUP_1 + 1, 1, $1);
-        /* print_child_node($$, 0); */
+        print_child_node($$, 0);
         initActionTable();
         initSymbolTableStack();
         traversalTreePerformAction($$);

@@ -1,0 +1,7 @@
+let f = (Int a, Int b) -> Func(Int -> Int) {
+    Int c = 1
+    let g = (Int d) -> Int {
+        return a + b + c + d
+    }
+    return g
+}

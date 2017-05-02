@@ -170,8 +170,10 @@ SD(406)
 SD(407)
 {
     D_parent_info;
+    D_child_1;
     D_child_1_info;
     parent_info = child_1_info;
+    addSymbol((char *)child_1_info, child_1);
 }
 
 /* FuncBody */
@@ -275,4 +277,5 @@ void initActionTable4()
 {
     registerIAction(408, pro408IAction);
     registerSAction(408, pro408SAction);
+    SD(407);
 }
