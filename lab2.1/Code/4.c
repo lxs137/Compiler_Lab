@@ -16,6 +16,8 @@ ID(401)
         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
         type_info->typeKind = FunctionType;
         type_info->node = (void *)malloc(sizeof(FunctionNode));
+
+        assert(child->other_info == NULL);
         child->other_info = type_info;
     }
 }
