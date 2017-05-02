@@ -90,7 +90,7 @@ void traversalTreePerformAction(AST_node *parent)
         f(parent, parent, 0);
     }
     int i = 1;
-#ifdef DEBUG
+#ifdef action_debug_print
     printf("Line %d: %s childNum(%d) (%d) I Action start.\n",
         parent->loc_line, parent->str, i, proNum);
 #endif
@@ -105,7 +105,7 @@ void traversalTreePerformAction(AST_node *parent)
         traversalTreePerformAction(child);
         i++;
     }
-#ifdef DEBUG
+#ifdef action_debug_print
     printf("Line %d: %s (%d) I Action end.\n", parent->loc_line, parent->str, proNum);
 #endif
     
@@ -114,7 +114,7 @@ void traversalTreePerformAction(AST_node *parent)
     {
         g(parent);
     }
-#ifdef DEBUG
+#ifdef action_debug_print
     printf("Line %d: %s (%d) S Action end.\n", parent->loc_line, parent->str, proNum);
 #endif
 }
