@@ -10,6 +10,12 @@
 /* ADTHeader */
 /*     : DATA TypeId ADTParamList { $$ = new_parent_node("ADTHeader", GROUP_7 + 3, 2, $2, $3); } */
 /*     ; */
+ID(703)
+{
+    if (childNum == 0)
+    {
+    }
+}
 /* ADTParamList */
 /*     : ADTParam ADTParamList { $$ = new_parent_node("ADTParamList", GROUP_7 + 4, 2, $1, $2); } */
 /*     | /1* empty *1/ { $$ = new_parent_node("ADTParamList", GROUP_7 + 5, 0); } */
