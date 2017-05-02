@@ -172,8 +172,10 @@ SD(407)
     D_parent_info;
     D_child_1;
     D_child_1_info;
+    D_child_2;
+    D_child_2_info;
     parent_info = child_1_info;
-    addSymbol((char *)child_1_info, child_1);
+    addSymbol((char *)child_2_info, child_2);
 }
 
 /* FuncBody */
