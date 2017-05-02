@@ -12,17 +12,42 @@
 /*     ; */
 ID(703)
 {
-    if (childNum == 0)
+    if (childNum == 2)
     {
+        D_child_1_info;
+        /* child->oter_info充当继承属性 */
+        child->other_info = child_1_info;
     }
 }
 /* ADTParamList */
 /*     : ADTParam ADTParamList { $$ = new_parent_node("ADTParamList", GROUP_7 + 4, 2, $1, $2); } */
 /*     | /1* empty *1/ { $$ = new_parent_node("ADTParamList", GROUP_7 + 5, 0); } */
 /*     ; */
+ID(704)
+{
+    if (childNum ==  1 || childNum == 2)
+    {
+        child->other_info = parent->other_info;
+    }
+}
 /* ADTParam */
 /*     : LOWERID { $$ = new_parent_node("ADTParam", GROUP_7 + 6, 0); } */
 /*     ; */
+SD(706)
+{
+    D_parent_info;
+    D_child_1;
+    /* TypeId-ADTParam\0 */
+    int part1 = strlen((char *)parent_info);
+    int part2 = strlen(child_1->str + 4);
+    char *name = malloc((part1 + 1 + part2 + 1) * sizeof(char));
+    strcpy(name, (char *)parent_info);
+    name[part1] = '-';
+    strcpy(name + part1 + 1, child_1->str + 4);
+    parent->other_info = name;
+    addSymbol(name, parent);
+}
+
 /* ConstructorDecList */
 /*     : ConstructorDec SEMI { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 7, 1, $1); } */
 /*     | ConstructorDec SEMI ConstructorDecList { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 8, 2, $1, $3); } */ 
@@ -50,6 +75,8 @@ SD(714)
 {
     D_child_1;
     addSymbol(child_1->str + 4, parent);
+    /* 把名字继承到父亲 */
+    parent->other_info = (void *)child_1->str + 4;
 }
 
 /* pattern matching */
@@ -70,5 +97,6 @@ SD(714)
 
 void initActionTable7()
 {
-    SS(710, 714);
+    IS(703);
+    SS(706, 710, 714);
 }
