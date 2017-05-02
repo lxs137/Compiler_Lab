@@ -267,12 +267,13 @@ ID(806)
 /* } */
 
 /* FuncCall */
-/*     : Exp LP Args RP { $$ = new_parent_node("FuncCall", GROUP_4 + 9, 2, $1, $3); } */
+/*     : Exp LP RP { $$ = new_parent_node("FuncCall", GROUP_4 + 9, 1, $1); } */
+/*     | Exp LP Args RP { $$ = new_parent_node("FuncCall", GROUP_4 + 10, 2, $1, $3); } */
 /*     ; */
 /* Args */
-/*     : Exp COMMA Args { $$ = new_parent_node("Args", GROUP_4 + 10, 2, $1, $3); } */
-/*     | PLACEHOLDER COMMA Args { $$ = new_parent_node("Args", GROUP_4 + 11, 2, $1, $3); } */
-/*     | /1* empty *1/ { $$ = new_parent_node("Args", GROUP_4 + 12, 0); } */
+/*     : Exp COMMA Args { $$ = new_parent_node("Args", GROUP_4 + 11, 2, $1, $3); } */
+/*     | PLACEHOLDER COMMA Args { $$ = new_parent_node("Args", GROUP_4 + 12, 2, $1, $3); } */
+/*     | Exp { $$ = new_parent_node("Args", GROUP_4 + 13, 0); } */
 /*     ; */
 
 void initActionTable4()

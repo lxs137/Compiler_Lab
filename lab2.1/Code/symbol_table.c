@@ -196,10 +196,10 @@ static void printSymbolTable(SymbolTable *st, int depth, int order)
     }
     printf("symbol table %d.%d end.\n", depth, order);
 
-    while ((st = st->nextSymbolTable) != NULL)
-    {
-        printSymbolTable(st, depth, order + 1);
-    }
+    /* while ((st = st->nextSymbolTable) != NULL) */
+    /* { */
+    /*     printSymbolTable(st, depth, order + 1); */
+    /* } */
 }
 
 void printGlobalSymbolTable()
