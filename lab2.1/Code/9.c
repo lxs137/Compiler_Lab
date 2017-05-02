@@ -44,7 +44,7 @@ SD(906)
 {
     D_child_1;
     assert(parent->other_info == NULL);
-    /* 分配的资源有SD(904)回收 */
+    /* 分配的资源由SD(904)回收 */
     parent->other_info = child_1->str + 4;
 }
 

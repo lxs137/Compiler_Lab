@@ -16,8 +16,12 @@ ID(401)
         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
         type_info->typeKind = FunctionType;
         type_info->node = (void *)malloc(sizeof(FunctionNode));
+        ((FunctionNode *)type_info->node)->paramTypeInfo = NULL;
+        ((FunctionNode *)type_info->node)->returnTypeInfo = NULL;
+        type_info->nextInfo = NULL;
 
         assert(child->other_info == NULL);
+        /* 分配的资源由SD(401)回收 */
         child->other_info = type_info;
     }
 }
@@ -31,12 +35,15 @@ SD(401)
 
     assert(parent_info != NULL);
     assert(parent_info->typeKind == FunctionType);
+
     assert(child_1_info != NULL);
     assert(child_2_info != NULL);
     assert(child_2_info->typeKind == FunctionType);
+
     ((FunctionNode *)parent_info->node)->paramTypeInfo = child_1_info;
     ((FunctionNode *)parent_info->node)->returnTypeInfo = child_2_info;
-    child_1->other_info = NULL;
+
+    /* 回收ID(401)释放的资源 */
     child_2->other_info = NULL;
 }
 
