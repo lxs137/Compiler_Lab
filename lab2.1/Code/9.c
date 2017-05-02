@@ -18,11 +18,10 @@
 
 /* Declarators */
 /* VarDec */
-/*     : LOWERID { $$ = new_parent_node("VarDec", GROUP_9 + 5, 1, $1); } */
+/*     : LOWERID { $$ = new_parent_node("VarDec", GROUP_9 + 6, 1, $1); } */
 /*     ; */
-SD(905)
+SD(906)
 {
-    assert(parent->proNum == 905);
     D_child_1;
     /* printf("%s\n", child_1->str + 4); */
     addSymbol(child_1->str + 4, child_1);
@@ -30,5 +29,5 @@ SD(905)
 
 void initActionTable9()
 {
-    registerSAction(905, pro905SAction);
+    registerSAction(906, pro906SAction);
 }

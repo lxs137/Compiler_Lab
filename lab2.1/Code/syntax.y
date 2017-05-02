@@ -246,7 +246,7 @@ Dec
     ;
 /* Declarators */
 VarDec
-    : LOWERID { $$ = new_parent_node("VarDec", GROUP_9 + 5, 1, $1); }
+    : LOWERID { $$ = new_parent_node("VarDec", GROUP_9 + 6, 1, $1); }
     ;
 
 /* Expressions */
