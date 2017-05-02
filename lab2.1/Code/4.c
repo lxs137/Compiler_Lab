@@ -277,5 +277,5 @@ void initActionTable4()
 {
     registerIAction(408, pro408IAction);
     registerSAction(408, pro408SAction);
-    SD(407);
+    registerSAction(407, pro407SAction);
 }
