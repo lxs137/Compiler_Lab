@@ -4,7 +4,8 @@ let f = (Int a, Int b) -> Func(Int -> Int) {
         return a + 1
     }
     let g = (Int d) -> Int {
-        return a + b + c + h(d)
+        Int e = 1
+        return a + b + c + h(d) + e
     }
     return g
 }
