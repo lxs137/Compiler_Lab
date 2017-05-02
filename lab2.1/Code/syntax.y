@@ -182,7 +182,7 @@ ADTParamList
     | /* empty */ { $$ = new_parent_node("ADTParamList", GROUP_7 + 5, 0); }
     ;
 ADTParam
-    : LOWERID { $$ = new_parent_node("ADTParam", GROUP_7 + 6, 0); }
+    : LOWERID { $$ = new_parent_node("ADTParam", GROUP_7 + 6, 1, $1); }
     ;
 ConstructorDecList
     /* 分号不能上移，否则冲突 */

@@ -31,7 +31,7 @@ ID(704)
     }
 }
 /* ADTParam */
-/*     : LOWERID { $$ = new_parent_node("ADTParam", GROUP_7 + 6, 0); } */
+/*     : LOWERID { $$ = new_parent_node("ADTParam", GROUP_7 + 6, 1, $1); } */
 /*     ; */
 SD(706)
 {
@@ -97,6 +97,6 @@ SD(714)
 
 void initActionTable7()
 {
-    IS(703);
+    IS(703, 704);
     SS(706, 710, 714);
 }
