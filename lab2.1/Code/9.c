@@ -23,11 +23,11 @@
 SD(906)
 {
     D_child_1;
-    /* printf("%s\n", child_1->str + 4); */
     addSymbol(child_1->str + 4, child_1);
 }
 
 void initActionTable9()
 {
-    registerSAction(906, pro906SAction);
+    /* registerSAction(906, pro906SAction); */
+    S(906);
 }

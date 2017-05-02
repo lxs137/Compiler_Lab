@@ -7,10 +7,10 @@
 #include <malloc.h>
 #include <assert.h>
 
-#define I(proNum) sdtIActionTable[proNum2TableIndex(proNum)] = pro##proNum##IAction;
+#define I(proNum) registerIAction(proNum, pro##proNum##IAction);
 #define IS(...) FOR_EACH(I, __VA_ARGS__)
 
-#define S(proNum) sdtSActionTable[proNum2TableIndex(proNum)] = pro##proNum##SAction;
+#define S(proNum) registerSAction(proNum, pro##proNum##SAction);
 #define SS(...) FOR_EACH(S, __VA_ARGS__)
 
 #define ID(proNum) \
