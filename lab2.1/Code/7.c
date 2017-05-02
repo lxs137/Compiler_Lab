@@ -55,6 +55,8 @@ SD(703)
     D_child_1_info;
     assert(child_1_info != NULL);
     addSymbol((char *)child_1_info, child_1);
+    /* 回收SD(714)分配的资源 */
+    child_1->other_info = NULL;
 
     assert(parent->other_info == NULL);
     parent->other_info = child_1_info;
@@ -214,6 +216,11 @@ ID(711)
 }
 SD(711)
 {
+    D_child_1;
+    assert(child_1->other_info != NULL);
+    /* 回收SD(714)分配的资源 */
+    child_1->other_info = NULL;
+
     D_child_2;
     assert(child_2->other_info != NULL);
     /* 回收ID(711)分配的资源 */
