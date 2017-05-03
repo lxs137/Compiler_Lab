@@ -64,11 +64,12 @@ SD(803)
 SD(804)
 {
     D_child_1_info;
-    assert(child_1_info->typeKind = ArrayType);
+    assert(child_1_info->typeKind == ArrayType);
     ArrayNode *node = (ArrayNode *)child_1_info->node;
     assert(node != NULL);
     assert(node->arrayTo != NULL);
     assert(node->width > 0);
+    assert(child_1_info->nextInfo == NULL);
     
     assert(parent->other_info == NULL);
     parent->other_info = child_1_info;
@@ -77,17 +78,30 @@ SD(804)
 SD(805)
 {
     D_child_1_info;
-    assert(child_1_info->typeKind = ArrayType);
+    assert(child_1_info->typeKind == ReferType);
     ReferNode *node = (ReferNode *)child_1_info->node;
     assert(node != NULL);
     assert(node->referTo != NULL);
+    assert(child_1_info->nextInfo == NULL);
     
+    assert(parent->other_info == NULL);
+    parent->other_info = child_1_info;
+}
+
+SD(806)
+{
+    D_child_1_info;
+    assert(child_1_info->typeKind == FunctionType);
+    FunctionNode *node = (FunctionNode *)child_1_info->node;
+    assert(node != NULL);
+    assert(node->returnTypeInfo!= NULL);
+    assert(child_1_info->nextInfo == NULL);
+
     assert(parent->other_info == NULL);
     parent->other_info = child_1_info;
 }
 
 void initActionTable8()
 {
-    SS(801, 802, 803, 804, 805);
+    SS(801, 802, 803, 804, 805, 806);
 }
-
