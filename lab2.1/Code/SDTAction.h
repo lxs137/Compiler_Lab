@@ -4,6 +4,7 @@
 #include "syntax_tree.h"
 #include "symbol_table.h"
 #include "for_each.h"
+#include "DebugMacro.h"
 #include "3.h"
 #include "4.h"
 #include "7.h"

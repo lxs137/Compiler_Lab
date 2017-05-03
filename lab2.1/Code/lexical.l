@@ -1,9 +1,9 @@
 %{
-    /* #define flex_debug_print */
     #include <stdio.h>
     #include <stdlib.h>
     #include "syntax.tab.h"
     #include "syntax_tree.h"
+    #include "DebugMacro.h"
 
     
     // 维护词法单元的位置信息

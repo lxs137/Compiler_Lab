@@ -3,6 +3,7 @@
 
 #include "jsw_rbtree.h"
 #include "syntax_tree.h"
+#include "DebugMacro.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>

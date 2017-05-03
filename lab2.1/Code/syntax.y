@@ -4,6 +4,7 @@
     #include "syntax_tree.h"
     #include "SDTAction.h"
     #include "symbol_table.h"
+    #include "DebugMacro.h"
 
     #define GROUP_1 100
     #define GROUP_2 200
