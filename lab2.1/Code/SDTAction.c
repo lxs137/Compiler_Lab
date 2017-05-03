@@ -118,3 +118,44 @@ void traversalTreePerformAction(AST_node *parent)
     printf("Line %d: %s (%d) S Action end.\n", parent->loc_line, parent->str, proNum);
 #endif
 }
+
+void printTypeInfo(TypeInfo *typeInfo)
+{
+    switch (typeInfo->typeKind)
+    {
+        case BuildInType:
+            printf("BuildInType %d", (intptr_t)(typeInfo->node));
+            break;
+        case ArrayType:
+            printf("Array[%d](", ((ArrayNode *)(typeInfo->node))->width);
+            printTypeInfo(((ArrayNode *)(typeInfo->node))->arrayTo);
+            printf(")");
+            break;
+        case ReferType:
+            printf("Refer(");
+            printTypeInfo(((ReferNode *)(typeInfo->node))->referTo);
+            printf(")");
+            break;
+        case FunctionType:
+            if (((FunctionNode *)(typeInfo->node))->paramTypeInfo == NULL)
+            {
+                printf("nullary(");
+                printTypeInfo(((FunctionNode *)(typeInfo->node))->returnTypeInfo);
+                printf(")");
+            }
+            else
+            {
+                printf("unary(");
+                printTypeInfo(((FunctionNode *)(typeInfo->node))->paramTypeInfo);
+                printf("->");
+                printTypeInfo(((FunctionNode *)(typeInfo->node))->returnTypeInfo);
+                printf(")");
+            }
+            break;
+        case AlgebraicDataType:
+            printf("%s", ((AlgebraicDataTypeNode *)(typeInfo->node))->typeIdName);
+            break;
+        default:
+            assert(0);
+    }
+}

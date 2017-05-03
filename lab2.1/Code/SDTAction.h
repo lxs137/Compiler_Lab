@@ -6,6 +6,7 @@
 #include "for_each.h"
 #include <malloc.h>
 #include <assert.h>
+#include <inttypes.h>
 
 #define I(proNum) registerIAction(proNum, pro##proNum##IAction);
 #define IS(...) FOR_EACH(I, __VA_ARGS__)
@@ -113,5 +114,7 @@ typedef struct
     char *typeIdName;
     ListNode *constructors;
 } AlgebraicDataTypeNode;
+
+void printTypeInfo(TypeInfo *typeInfo);
 
 #endif
