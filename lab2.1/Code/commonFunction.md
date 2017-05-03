@@ -15,6 +15,7 @@ define cleanTemplate
     - @ rm core
 endef
 
-define changeDebugMacro
+define compileTemplate
     @ cp $1/DebugMacro.h ../DebugMacro.h
+    cd .. && make
 endef

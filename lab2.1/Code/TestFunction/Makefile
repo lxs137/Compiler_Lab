@@ -5,7 +5,7 @@ include ../commonFunction.md
 all: syntax type
 
 syntax: 
-	@ $(call changeDebugMacro, 'syntax')
+	@ $(call compileTemplate, 'syntax')
 	@ $(call testTemplate, 1 2 3 4 5 6 7 8, 'syntax')
 
 type:
