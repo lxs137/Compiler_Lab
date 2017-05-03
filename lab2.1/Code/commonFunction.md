@@ -17,5 +17,5 @@ endef
 
 define compileTemplate
     @ cp $1/DebugMacro.h ../DebugMacro.h
-    cd .. && make
+    @ cd .. && make
 endef
