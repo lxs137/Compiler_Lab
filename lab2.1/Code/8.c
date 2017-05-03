@@ -16,7 +16,8 @@ SD(801)
     D_child_1;
 
     assert(parent->other_info == NULL);
-    parent->other_info = (void *)malloc(sizeof(TypeInfo));
+    D_type_info;
+    parent->other_info = type_info;
     D_parent_info;
 
     parent_info->typeKind = BuildInType;
@@ -34,7 +35,8 @@ SD(801)
 SD(802)
 {
     assert(parent->other_info == NULL);
-    parent->other_info = (void *)malloc(sizeof(TypeInfo));
+    D_type_info;
+    parent->other_info = type_info;
     D_parent_info;
 
     parent_info->typeKind = BuildInType;
@@ -45,17 +47,16 @@ SD(802)
 SD(803)
 {
     D_child_1;
-    D_parent_info;
 
-    assert(parent_info == NULL);
+    assert(parent->other_info == NULL);
     D_type_info;
-    parent_info = type_info;
+    parent->other_info = type_info;
+    D_parent_info;
 
     parent_info->typeKind = AlgebraicDataType;
     AlgebraicDataTypeNode *node = (AlgebraicDataTypeNode *)malloc(sizeof(AlgebraicDataTypeNode));
     node->typeIdName = child_1 ->str + 4;
     node->constructors = NULL;
-    /* 回收 */
     parent_info->node = node;
     parent_info->nextInfo = NULL;
 }
