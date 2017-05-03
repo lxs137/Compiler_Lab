@@ -102,17 +102,6 @@ ID(403)
     {
         createInnerSymbolTable();
     }
-    else if (childNum == 1)
-    {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->typeKind = FunctionType;
-        type_info->node = (void *)malloc(sizeof(FunctionNode));
-        child->other_info = type_info;
-    }
-    else if (childNum == 2)
-    {
-        /* 不需要额外的内存空间 */
-    }
 }
 SD(403)
 {
@@ -122,12 +111,17 @@ SD(403)
     D_child_1_info;
     D_child_2_info;
 
-    TypeInfo *returnTypeInfo;
-    for (returnTypeInfo = child_1_info; 
+    TypeInfo *returnTypeInfo = child_1_info;
+    assert(returnTypeInfo != NULL);
+    assert(re
+    TypeInfo *n;
+    for (returnTypeInfo = child_1_info, n = (TypeInfo *)((FunctionNode *)returnTypeInfo->node)->returnTypeInfo;
          returnTypeInfo != NULL; 
          returnTypeInfo = (TypeInfo *)((FunctionNode *)returnTypeInfo->node)->returnTypeInfo)
     {
         assert(returnTypeInfo->typeKind == FunctionType);
+        assert(returnTypeInfo->node != NULL);
+        assert(returnTypeInfo->nextInfo == NULL);
     }
     returnTypeInfo = child_2_info;
 
