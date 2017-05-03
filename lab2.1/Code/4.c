@@ -70,14 +70,16 @@ SD(402)
     parent->other_info = type_info;
     D_parent_info;
 
-    ((FunctionNode *)parent_info->node)->paramTypeInfo = NULL;
+    FunctionNode *node = (FunctionNode *)malloc(sizeof(FunctionNode));
+    node->paramTypeInfo = NULL;
     D_child_1_info;
     assert(child_1_info != NULL);
     assert(child_1_info->typeKind = FunctionType);
-    FunctionNode *node = (FunctionNode *)child_1_info->node;
-    assert(node != NULL);
-    ((FunctionNode *)parent_info->node)->returnTypeInfo = child_1_info;
     assert(child_1_info->nextInfo == NULL);
+    FunctionNode *cnode = (FunctionNode *)child_1_info->node;
+    assert(cnode != NULL);
+    node->returnTypeInfo = child_1_info;
+    parent_info->node = node;
 }
 
 /* FuncDec */
@@ -295,9 +297,10 @@ ID(806)
 
 void initActionTable4()
 {
-    IS(408);
+    /* IS(408); */
     /* registerIAction(408, pro408IAction); */
-    SS(401, 407, 408);
+    /* SS(401, 407, 408); */
+    SS(401, 402);
     /* registerSAction(408, pro408SAction); */
     /* registerSAction(407, pro407SAction); */
 }
