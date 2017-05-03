@@ -21,11 +21,11 @@ void initActionTable()
     sdtIActionTable = (SDTIAction *)calloc(ProSum, sizeof(SDTIAction));
     sdtSActionTable = (SDTSAction *)calloc(ProSum, sizeof(SDTIAction));
 
-    /* initActionTable3(); */
+    initActionTable3();
     initActionTable4();
-    /* initActionTable7(); */
+    initActionTable7();
     initActionTable8();
-    /* initActionTable9(); */
+    initActionTable9();
 }
 
 static int proNum2TableIndex(int proNum)
