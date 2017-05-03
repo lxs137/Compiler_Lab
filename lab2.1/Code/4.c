@@ -128,8 +128,10 @@ SD(403)
     ((FunctionNode *)(returnTypeInfo->node))->returnTypeInfo = child_2_info;
 
     assert(parent->other_info == NULL);
+    /* 分配的资源不回收直到语法树销毁 */
     parent->other_info = child_1_info;
 
+    /* 回收SD(405) / SD(406)释放的资源 */
     child_1_info = NULL;
 
 #ifdef function_type_debug_print
@@ -159,6 +161,7 @@ SD(404)
     /* type end */
 
     assert(parent->other_info == NULL);
+    /* 分配的资源不回收直到语法树销毁 */
     parent->other_info = type_info;
 
 #ifdef function_type_debug_print
@@ -201,7 +204,12 @@ SD(405)
     type_info->nextInfo = NULL;
     /* type end */
     assert(parent->other_info == NULL);
+    /* 分配的资源由SD(403)回收 */
     parent->other_info = type_info;
+
+    D_child_1;
+    /* 回收SD(407)释放的资源 */
+    child_1->other_info == NULL;
 }
 
 SD(406)
@@ -228,7 +236,12 @@ SD(406)
     type_info->nextInfo = NULL;
     /* type end */
     assert(parent->other_info == NULL);
+    /* 分配的资源由SD(403)回收 */
     parent->other_info = type_info;
+
+    D_child_1;
+    /* 回收SD(407)释放的资源 */
+    child_1->other_info == NULL;
 }
 
 /* ParamDec */
@@ -242,6 +255,7 @@ SD(407)
     assert(child_1_info->node !=  NULL);
     assert(child_1_info->nextInfo == NULL);
     assert(parent->other_info == NULL);
+    /* 分配的资源由SD(405) / SD(406)回收 */
     parent->other_info = child_1_info;
 
     D_child_2;
