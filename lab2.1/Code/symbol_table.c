@@ -95,6 +95,7 @@ static Symbol *findSymbol(SymbolTable *st, char *name)
 
 static SymbolTable *globalSymbolTable = NULL;
 static SymbolTableStack *symbolTableStack = NULL;
+static int stackDepth = 1;
 
 void initSymbolTableStack()
 {
@@ -153,6 +154,11 @@ static void pushSymbolTable(SymbolTable *st)
     assert(symbolTableStack->symbolTable == globalSymbolTable || symbolTableStack->last != NULL);
     symbolTableStack->next = stack;
     symbolTableStack = stack;
+
+    stackDepth++;
+#ifdef st_stack_debug_print
+    printf("symbol table stack depth: %d\n", stackDepth);
+#endif
 }
 
 static void popSymbolTable()
@@ -161,6 +167,11 @@ static void popSymbolTable()
     assert(symbolTableStack != NULL);
     free(symbolTableStack->next);
     symbolTableStack->next = NULL;
+
+    stackDepth--;
+#ifdef st_stack_debug_print
+    printf("symbol table stack depth: %d\n", stackDepth);
+#endif
 }
 
 void cleanSymbolTableStack()

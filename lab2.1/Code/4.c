@@ -98,14 +98,14 @@ SD(402)
 /*     ; */
 ID(403)
 {
-    if (childNum == 0)
-    {
-        createInnerSymbolTable();
-    }
+    /* if (childNum == 0) */
+    /* { */
+    /*     createInnerSymbolTable(); */
+    /* } */
 }
 SD(403)
 {
-    gotoOuterSymbolTable();
+    /* gotoOuterSymbolTable(); */
 
     D_child_1_info;
 
@@ -271,12 +271,12 @@ ID(408)
 {
     if (childNum == 0)
     {
-        /* createInnerSymbolTable(); */
+        createInnerSymbolTable();
     }
 }
 SD(408)
 {
-    /* gotoOuterSymbolTable(); */
+    gotoOuterSymbolTable();
     D_parent_info;
     D_child_1_info;
     parent_info = child_1_info;

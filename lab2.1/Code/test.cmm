@@ -1,13 +1,5 @@
-let f = (Int a, Int b) -> Func(Int -> Int) {
-    Int c = 1
-    let h = (Int a) -> Int {
-        return a + 1
+let f = () -> Int {
+    let g = (Int a) -> Int {
+        Int c
     }
-    let g = (Int d) -> Int {
-        return a + b + c + h(d)
-    }
-    let k = () -> Int {
-        return 1
-    }
-    return g
 }
