@@ -1,8 +1,4 @@
 #include "SDTAction.h"
-#include "3.h"
-#include "4.h"
-#include "7.h"
-#include "9.h"
 
 /* 产生式数目 */
 static const int ProCount[10] = { 1, 2, 10, 13, 1, 1, 18, 6, 5, 19};
@@ -28,6 +24,7 @@ void initActionTable()
     initActionTable3();
     initActionTable4();
     initActionTable7();
+    initActionTable8();
     initActionTable9();
 }
 
@@ -121,6 +118,9 @@ void traversalTreePerformAction(AST_node *parent)
 
 void printTypeInfo(TypeInfo *typeInfo)
 {
+    TypeInfo *t1 = NULL;
+    TypeInfo *t2 = NULL;
+
     switch (typeInfo->typeKind)
     {
         case BuildInType:
@@ -137,18 +137,21 @@ void printTypeInfo(TypeInfo *typeInfo)
             printf(")");
             break;
         case FunctionType:
-            if (((FunctionNode *)(typeInfo->node))->paramTypeInfo == NULL)
+            t1 = ((FunctionNode *)(typeInfo->node))->paramTypeInfo;
+            t2 = ((FunctionNode *)(typeInfo->node))->returnTypeInfo;
+            assert(t2 != NULL);
+            if (t1 == NULL)
             {
                 printf("nullary(");
-                printTypeInfo(((FunctionNode *)(typeInfo->node))->returnTypeInfo);
+                printTypeInfo(t2);
                 printf(")");
             }
             else
             {
                 printf("unary(");
-                printTypeInfo(((FunctionNode *)(typeInfo->node))->paramTypeInfo);
+                printTypeInfo(t1);
                 printf("->");
-                printTypeInfo(((FunctionNode *)(typeInfo->node))->returnTypeInfo);
+                printTypeInfo(t2);
                 printf(")");
             }
             break;

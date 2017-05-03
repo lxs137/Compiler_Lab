@@ -1,5 +1,4 @@
 #include "SDTAction.h"
-#include "symbol_table.h"
 #include "7.h"
 
 /* ADT */
