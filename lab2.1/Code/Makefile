@@ -48,7 +48,6 @@ clean:
 	- rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output
 	- rm -f $(OBJS) $(OBJS:.o=.d)
 	- rm -f $(LFC) $(YFC) $(YFC:.c=.h)
-	- rm -f *~
 	- rm mem_log_*
 	- rm test_result_*.output
 	- rm core
