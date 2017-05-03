@@ -1,0 +1,3 @@
+unary(BuildInType 1->BuildInType 1)
+unary(BuildInType 1->unary(BuildInType 1->BuildInType 1))
+unary(BuildInType 1->unary(BuildInType 1->unary(BuildInType 1->BuildInType 1)))
