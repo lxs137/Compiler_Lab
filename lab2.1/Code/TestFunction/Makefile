@@ -6,3 +6,4 @@ syntax:
 clean:
 	- rm mem_log_*
 	- rm *.output
+	- rm core
