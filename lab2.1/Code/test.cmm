@@ -1,8 +1,0 @@
-let f = () -> Int {
-    let g = (Int a) -> Int {
-        Int c
-    }
-    let k = (Int a, Int b) -> Int {
-        return a + b
-    }
-}
