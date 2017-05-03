@@ -8,42 +8,46 @@
 /*     } */
 /*     | Specifier { $$ = $1; } */
 /*     ; */
-ID(401)
-{
-    if (childNum == 2)
-    {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->typeKind = FunctionType;
-        type_info->node = (void *)malloc(sizeof(FunctionNode));
-        ((FunctionNode *)type_info->node)->paramTypeInfo = NULL;
-        ((FunctionNode *)type_info->node)->returnTypeInfo = NULL;
-        type_info->nextInfo = NULL;
+/* ID(401) */
+/* { */
+/*     if (childNum == 2) */
+/*     { */
+/*         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo)); */
+/*         type_info->typeKind = FunctionType; */
+/*         type_info->node = (void *)malloc(sizeof(FunctionNode)); */
+/*         ((FunctionNode *)type_info->node)->paramTypeInfo = NULL; */
+/*         ((FunctionNode *)type_info->node)->returnTypeInfo = NULL; */
+/*         type_info->nextInfo = NULL; */
 
-        assert(child->other_info == NULL);
-        /* 分配的资源由SD(401)回收 */
-        child->other_info = type_info;
-    }
-}
+/*         assert(child->other_info == NULL); */
+/*         /1* 分配的资源由SD(401)回收 *1/ */
+/*         child->other_info = type_info; */
+/*     } */
+/* } */
 SD(401)
 {
     D_child_1;
     D_child_2;
     D_child_1_info;
     D_child_2_info;
-    D_parent_info;
 
-    assert(parent_info != NULL);
-    assert(parent_info->typeKind == FunctionType);
+    assert(parent->other_info == NULL);
+    D_type_info;
+    parent->other_info = type_info;
+    D_parent_info;
+    parent_info->typeKind = FunctionType;
 
     assert(child_1_info != NULL);
     assert(child_2_info != NULL);
     assert(child_2_info->typeKind == FunctionType);
-
-    ((FunctionNode *)parent_info->node)->paramTypeInfo = child_1_info;
-    ((FunctionNode *)parent_info->node)->returnTypeInfo = child_2_info;
+    FunctionNode *node = (FunctionNode *)malloc(sizeof(FunctionNode));
+    node->paramTypeInfo = child_1_info;
+    node->returnTypeInfo = child_2_info;
+    parent_info->node = node;
+    parent_info->nextInfo = NULL;
 
     /* 回收ID(401)释放的资源 */
-    child_2->other_info = NULL;
+    /* child_2->other_info = NULL; */
 }
 
 /* FuncType */
@@ -73,6 +77,7 @@ SD(402)
     FunctionNode *node = (FunctionNode *)child_1_info->node;
     assert(node != NULL);
     ((FunctionNode *)parent_info->node)->returnTypeInfo = child_1_info;
+    assert(child_1_info->nextInfo == NULL);
 }
 
 /* FuncDec */
@@ -290,7 +295,7 @@ ID(806)
 
 void initActionTable4()
 {
-    IS(401, 408);
+    IS(408);
     /* registerIAction(408, pro408IAction); */
     SS(401, 407, 408);
     /* registerSAction(408, pro408SAction); */
