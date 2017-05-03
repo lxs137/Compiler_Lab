@@ -107,84 +107,128 @@ SD(403)
 {
     gotoOuterSymbolTable();
 
-    D_parent_info;
     D_child_1_info;
-    D_child_2_info;
 
     TypeInfo *returnTypeInfo = child_1_info;
     assert(returnTypeInfo != NULL);
-    assert(re
-    TypeInfo *n;
-    for (returnTypeInfo = child_1_info, n = (TypeInfo *)((FunctionNode *)returnTypeInfo->node)->returnTypeInfo;
-         returnTypeInfo != NULL; 
-         returnTypeInfo = (TypeInfo *)((FunctionNode *)returnTypeInfo->node)->returnTypeInfo)
+    TypeInfo *n = (TypeInfo *)((FunctionNode *)returnTypeInfo->node)->returnTypeInfo;
+    for (; n != NULL; 
+         returnTypeInfo = n, n = (TypeInfo *)((FunctionNode *)n->node)->returnTypeInfo)
     {
         assert(returnTypeInfo->typeKind == FunctionType);
         assert(returnTypeInfo->node != NULL);
         assert(returnTypeInfo->nextInfo == NULL);
     }
-    returnTypeInfo = child_2_info;
 
-    parent_info = child_1_info;
+    D_child_2_info;
+    assert(child_2_info != NULL);
+    assert(child_2_info->typeKind != 0);
+    assert(child_2_info->node != NULL);
+    assert(child_2_info->nextInfo == NULL);
+    ((FunctionNode *)(returnTypeInfo->node))->returnTypeInfo = child_2_info;
+
+    assert(parent->other_info == NULL);
+    parent->other_info = child_1_info;
+
+    child_1_info = NULL;
+
+#ifdef function_type_debug_print
+    D_parent_info;
+    printTypeInfo(parent_info);
+    printf("\n");
+#endif
 }
 
-ID(404)
-{
-    if (childNum == 1)
-    {
-        /* 不需要额外的内存空间 */
-    }
-}
 SD(404)
 {
-    D_parent_info;
+    /* type begin */
+    D_type_info;
+    type_info->typeKind = FunctionType;
+    /* node begin */
+    FunctionNode *node = (FunctionNode *)malloc(sizeof(FunctionNode));
+    node->paramTypeInfo = NULL;
     D_child_1_info;
-    parent_info = child_1_info;
+    assert(child_1_info != NULL);
+    assert(child_1_info->typeKind != 0);
+    assert(child_1_info->node != NULL);
+    assert(child_1_info->nextInfo == NULL);
+    node->returnTypeInfo = child_1_info;
+    /* node end */
+    type_info->node = node;
+    type_info->nextInfo = NULL;
+    /* type end */
+
+    assert(parent->other_info == NULL);
+    parent->other_info = type_info;
+
+#ifdef function_type_debug_print
+    D_parent_info;
+    printTypeInfo(parent_info);
+    printf("\n");
+#endif
 }
 
 /* VarList */
 /*     : ParamDec COMMA VarList { $$ = new_parent_node("VarList", GROUP_4 + 5, 2, $1, $3); } */
 /*     | ParamDec { $$ = new_parent_node("VarList", GROUP_4 + 6, 1, $1); } */
 /*     ; */
-ID(405)
-{
-    if (childNum == 1)
-    {
-        /* ParamDec直接用其子节点的other_info就可以 */
-        /* 不需要额外分配空间 */
-    }
-    else if (childNum == 2)
-    {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->typeKind = FunctionType;
-        type_info->nextInfo = NULL;
-        type_info->node = (void *)malloc(sizeof(FunctionNode));
-        child->other_info = type_info;
-    }
-}
 SD(405)
 {
-    D_parent_info;
     D_child_1_info;
-    D_child_2_info;
+    assert(child_1_info != NULL);
+    assert(child_1_info->typeKind != 0);
+    assert(child_1_info->nextInfo == NULL);
 
-    assert(parent_info->typeKind == FunctionType);
-    /* 不能确定传入参数的类型，也就是不能确定child_2_info->typeKind */
+    D_child_2_info;
+    assert(child_2_info != NULL);
     assert(child_2_info->typeKind == FunctionType);
-    ((FunctionNode *)parent_info->node)->paramTypeInfo = child_1_info;
-    ((FunctionNode *)parent_info->node)->returnTypeInfo = child_2_info;
+    FunctionNode *node = (FunctionNode *)child_2_info->node;
+    assert(node != NULL);
+    assert(node->paramTypeInfo != NULL);
+    /* 不好进行判断，两种情况都有可能 */
+    /* assert(node->returnTypeInfo == NULL); */
+    assert(child_2_info->nextInfo == NULL);
+
+    /* type begin */
+    D_type_info;
+    type_info->typeKind = FunctionType;
+    /* node begin */
+    FunctionNode *fnode = (FunctionNode *)malloc(sizeof(FunctionNode));
+    fnode->paramTypeInfo = child_1_info;
+    fnode->returnTypeInfo = child_2_info;
+    /* node end */
+    type_info->node = fnode;
+    type_info->nextInfo = NULL;
+    /* type end */
+    assert(parent->other_info == NULL);
+    parent->other_info = type_info;
 }
 
 SD(406)
 {
     D_parent_info;
-    D_child_1_info;
 
-    assert(parent_info->typeKind == FunctionType);
-    ((FunctionNode *)parent_info->node)->paramTypeInfo = child_1_info;
+    D_child_1_info;
+    assert(child_1_info != NULL);
+    assert(child_1_info->typeKind != 0);
+    assert(child_1_info->node != NULL);
+    assert(child_1_info->nextInfo == NULL);
+
+    /* type begin */
+    D_type_info;
+    type_info->typeKind = FunctionType;
+    /* node begin */
+    FunctionNode *node = (FunctionNode *)malloc(sizeof(FunctionNode));
+    node->paramTypeInfo = child_1_info;
     /* returnTypeInfo是整个函数的返回值，交给上层产生式填写 */
     /* 至此，形参列表的递归推导结束 */
-    ((FunctionNode *)parent_info->node)->returnTypeInfo = NULL;
+    node->returnTypeInfo = NULL;
+    /* node end */
+    type_info->node = node;
+    type_info->nextInfo = NULL;
+    /* type end */
+    assert(parent->other_info == NULL);
+    parent->other_info = type_info;
 }
 
 /* ParamDec */
@@ -192,12 +236,17 @@ SD(406)
 /*     ; */
 SD(407)
 {
-    D_parent_info;
-    D_child_1;
     D_child_1_info;
+    assert(child_1_info != NULL);
+    assert(child_1_info->typeKind != 0);
+    assert(child_1_info->node !=  NULL);
+    assert(child_1_info->nextInfo == NULL);
+    assert(parent->other_info == NULL);
+    parent->other_info = child_1_info;
+
     D_child_2;
     D_child_2_info;
-    parent_info = child_1_info;
+    assert(child_2_info != NULL);
     addSymbol((char *)child_2_info, child_2);
 }
 
@@ -305,7 +354,7 @@ void initActionTable4()
     /* registerIAction(408, pro408IAction); */
     /* SS(401, 407, 408); */
     IS(403, 408);
-    SS(401, 402, 403, 407, 408);
+    SS(401, 402, 403, 404, 405, 406, 407, 408);
     /* registerSAction(408, pro408SAction); */
     /* registerSAction(407, pro407SAction); */
 }
