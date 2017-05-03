@@ -72,7 +72,7 @@ void registerIAction(int proNum, SDTIAction action);
 void registerSAction(int proNum, SDTSAction action);
 void traversalTreePerformAction(AST_node *parent);
 
-enum TypeKindEnum { BuildInType, ArrayType, ReferType, FunctionType, AlgebraicDataType };
+enum TypeKindEnum { BuildInType = 1, ArrayType, ReferType, FunctionType, AlgebraicDataType };
 
 typedef struct
 {
@@ -83,7 +83,7 @@ typedef struct
 
 /* 节点中的域除特别说明者，均为继承属性 */
 
-enum BuildInTypeKindEnum { Int, Float, Let };
+enum BuildInTypeKindEnum { Int = 1, Float, Let };
 /* 内建类型的node域填充BuildInTypeKindEnum */
 
 typedef struct

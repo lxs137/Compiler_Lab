@@ -8,22 +8,8 @@
 /*     } */
 /*     | Specifier { $$ = $1; } */
 /*     ; */
-/* ID(401) */
-/* { */
-/*     if (childNum == 2) */
-/*     { */
-/*         TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo)); */
-/*         type_info->typeKind = FunctionType; */
-/*         type_info->node = (void *)malloc(sizeof(FunctionNode)); */
-/*         ((FunctionNode *)type_info->node)->paramTypeInfo = NULL; */
-/*         ((FunctionNode *)type_info->node)->returnTypeInfo = NULL; */
-/*         type_info->nextInfo = NULL; */
-
-/*         assert(child->other_info == NULL); */
-/*         /1* 分配的资源由SD(401)回收 *1/ */
-/*         child->other_info = type_info; */
-/*     } */
-/* } */
+/* 由于要兼容不同写法的函数类型 */
+/* 真正的语法树稍有调整，不再有FuncParam这种节点 */
 SD(401)
 {
     D_child_1;
@@ -32,23 +18,28 @@ SD(401)
     D_child_2_info;
 
     assert(parent->other_info == NULL);
+    /* type begin */
     D_type_info;
-    parent->other_info = type_info;
-    D_parent_info;
-    parent_info->typeKind = FunctionType;
-
+    type_info->typeKind = FunctionType;
+    /* node begin */
     assert(child_1_info != NULL);
+    assert(child_1_info->typeKind != 0);
+    assert(child_1_info->node != NULL);
     assert(child_2_info != NULL);
-    /* assert(child_2_info->typeKind == FunctionType); */
+    assert(child_2_info->typeKind != 0);
+    assert(child_2_info->node != NULL);
     FunctionNode *node = (FunctionNode *)malloc(sizeof(FunctionNode));
     node->paramTypeInfo = child_1_info;
     node->returnTypeInfo = child_2_info;
-    parent_info->node = node;
-    parent_info->nextInfo = NULL;
+    /* node end */
+    type_info->node = node;
+    type_info->nextInfo = NULL;
+    /* type end */
+    assert(parent->other_info == NULL);
+    parent->other_info = type_info;
 
-    /* 回收ID(401)释放的资源 */
-    /* child_2->other_info = NULL; */
 #ifdef function_type_debug_print
+    D_parent_info;
     printTypeInfo(parent_info);
     printf("\n");
 #endif
@@ -67,23 +58,29 @@ SD(401)
 /*         } */
 /*     } */
 /*     ; */
+/* 由于要兼容不同写法的函数类型 */
+/* 真正的语法树稍有调整，不再有FuncParam这种节点 */
 SD(402)
 {
-    D_child_1_info;
-    assert(child_1_info != NULL);
-    /* assert(child_1_info->typeKind = FunctionType); */
-    assert(child_1_info->node != NULL);
-    assert(child_1_info->nextInfo == NULL);
-
+    /* type begin */
     D_type_info;
     type_info->typeKind = FunctionType;
-    parent->other_info = type_info;
+    /* node begin */
     FunctionNode *node = (FunctionNode *)malloc(sizeof(FunctionNode));
-    type_info->node = node;
     node->paramTypeInfo = NULL;
+    D_child_1_info;
+    assert(child_1_info != NULL);
+    assert(child_1_info->typeKind != 0);
+    assert(child_1_info->node != NULL);
+    assert(child_1_info->nextInfo == NULL);
     node->returnTypeInfo = child_1_info;
-    /* assert(parent->other_info == NULL); */
-    /* parent->other_info = child_1_info; */
+    /* node end */
+    type_info->node = node;
+    type_info->nextInfo = NULL;
+    /* type end */
+    assert(parent->other_info == NULL);
+    parent->other_info = type_info;
+
 #ifdef function_type_debug_print
     D_parent_info;
     printTypeInfo(parent_info);
