@@ -1,5 +1,4 @@
 #include "SDTAction.h"
-#include "symbol_table.h"
 #include "4.h"
 
 /* FuncParamType */
@@ -27,11 +26,11 @@ ID(401)
 }
 SD(401)
 {
-    D_parent_info;
     D_child_1;
     D_child_2;
     D_child_1_info;
     D_child_2_info;
+    D_parent_info;
 
     assert(parent_info != NULL);
     assert(parent_info->typeKind == FunctionType);
@@ -294,8 +293,9 @@ ID(806)
 
 void initActionTable4()
 {
-    registerIAction(408, pro408IAction);
-    SS(407, 408);
+    IS(401, 408);
+    /* registerIAction(408, pro408IAction); */
+    SS(401, 407, 408);
     /* registerSAction(408, pro408SAction); */
     /* registerSAction(407, pro407SAction); */
 }
