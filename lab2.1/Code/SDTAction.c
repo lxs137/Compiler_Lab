@@ -24,6 +24,7 @@ void initActionTable()
     initActionTable3();
     initActionTable4();
     initActionTable7();
+    initActionTable8();
     initActionTable9();
 }
 

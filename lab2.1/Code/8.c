@@ -30,9 +30,7 @@ SD(801)
 
 SD(802)
 {
-    D_child_1;
     D_parent_info;
-
     parent_info->typeKind = BuildInType;
     parent_info->node = (void *)Let;
     assert(parent_info->nextInfo == NULL);
@@ -40,4 +38,45 @@ SD(802)
 
 SD(803)
 {
+    D_child_1;
+    D_parent_info;
+
+    parent_info->typeKind = AlgebraicDataType;
+    AlgebraicDataTypeNode *node = (AlgebraicDataTypeNode *)malloc(sizeof(AlgebraicDataTypeNode));
+    node->typeIdName = child_1 ->str + 4;
+    node->constructors = NULL;
+    /* 回收 */
+    parent_info->node = node;
+    assert(parent_info->nextInfo == NULL);
 }
+
+SD(804)
+{
+    D_child_1_info;
+    assert(child_1_info->typeKind = ArrayType);
+    ArrayNode *node = (ArrayNode *)child_1_info->node;
+    assert(node != NULL);
+    assert(node->arrayTo != NULL);
+    assert(node->width > 0);
+    
+    assert(parent->other_info == NULL);
+    parent->other_info = child_1_info;
+}
+
+SD(805)
+{
+    D_child_1_info;
+    assert(child_1_info->typeKind = ArrayType);
+    ReferNode *node = (ReferNode *)child_1_info->node;
+    assert(node != NULL);
+    assert(node->referTo != NULL);
+    
+    assert(parent->other_info == NULL);
+    parent->other_info = child_1_info;
+}
+
+void initActionTable8()
+{
+    SS(801, 802, 803, 804, 805);
+}
+
