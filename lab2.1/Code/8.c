@@ -14,9 +14,11 @@
 SD(801)
 {
     D_child_1;
+
+    assert(parent->other_info == NULL);
+    parent->other_info = (void *)malloc(sizeof(TypeInfo));
     D_parent_info;
 
-    assert(parent_info != NULL);
     parent_info->typeKind = BuildInType;
     if (!strcmp(child_1->str + 4, "Int"))
     {
@@ -26,7 +28,7 @@ SD(801)
     {
         parent_info->node = (void *)Float;
     }
-    assert(parent_info->nextInfo == NULL);
+    parent_info->nextInfo = NULL;
 }
 
 SD(802)
