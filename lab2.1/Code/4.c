@@ -235,44 +235,44 @@ ID(803)
 {
     if (childNum == 1)
     {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->typeKind = AlgebraicDataType;
-        type_info->node = (void *)malloc(sizeof(AlgebraicDataTypeNode));
-        type_info->nextInfo = NULL;
-        child->other_info = type_info;
+        /* TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo)); */
+        /* type_info->typeKind = AlgebraicDataType; */
+        /* type_info->node = (void *)malloc(sizeof(AlgebraicDataTypeNode)); */
+        /* type_info->nextInfo = NULL; */
+        /* child->other_info = type_info; */
     }
 }
 ID(804)
 {
     if (childNum == 1)
     {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->typeKind = ArrayType;
-        type_info->node = (void *)malloc(sizeof(ArrayNode));
-        type_info->nextInfo = NULL;
-        child->other_info = type_info;
+        /* TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo)); */
+        /* type_info->typeKind = ArrayType; */
+        /* type_info->node = (void *)malloc(sizeof(ArrayNode)); */
+        /* type_info->nextInfo = NULL; */
+        /* child->other_info = type_info; */
     }
 }
 ID(805)
 {
     if (childNum == 1)
     {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->typeKind = ReferType;
-        type_info->node = (void *)malloc(sizeof(ReferNode));
-        type_info->nextInfo = NULL;
-        child->other_info = type_info;
+        /* TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo)); */
+        /* type_info->typeKind = ReferType; */
+        /* type_info->node = (void *)malloc(sizeof(ReferNode)); */
+        /* type_info->nextInfo = NULL; */
+        /* child->other_info = type_info; */
     }
 }
 ID(806)
 {
     if (childNum == 1)
     {
-        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
-        type_info->typeKind = FunctionType;
-        type_info->node = (void *)malloc(sizeof(FunctionNode));
-        type_info->nextInfo = NULL;
-        child->other_info = type_info;
+        /* TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo)); */
+        /* type_info->typeKind = FunctionType; */
+        /* type_info->node = (void *)malloc(sizeof(FunctionNode)); */
+        /* type_info->nextInfo = NULL; */
+        /* child->other_info = type_info; */
     }
 }
 /* SDS(801, 802, 803, 804, 805, 806) */
