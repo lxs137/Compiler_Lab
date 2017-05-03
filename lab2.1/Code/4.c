@@ -36,6 +36,8 @@ SD(401)
     type_info->nextInfo = NULL;
     /* type end */
     assert(parent->other_info == NULL);
+    /* 类型信息不能删除，直到销毁语法树 */
+    /* 故在销毁语法树时才回收 */
     parent->other_info = type_info;
 
 #ifdef function_type_debug_print
@@ -79,6 +81,8 @@ SD(402)
     type_info->nextInfo = NULL;
     /* type end */
     assert(parent->other_info == NULL);
+    /* 类型信息不能删除，直到销毁语法树 */
+    /* 故在销毁语法树时才回收 */
     parent->other_info = type_info;
 
 #ifdef function_type_debug_print
