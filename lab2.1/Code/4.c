@@ -48,6 +48,10 @@ SD(401)
 
     /* 回收ID(401)释放的资源 */
     /* child_2->other_info = NULL; */
+#ifdef function_type_debug_print
+    printTypeInfo(parent_info);
+    printf("\n");
+#endif
 }
 
 /* FuncType */
@@ -80,6 +84,11 @@ SD(402)
     node->returnTypeInfo = child_1_info;
     /* assert(parent->other_info == NULL); */
     /* parent->other_info = child_1_info; */
+#ifdef function_type_debug_print
+    D_parent_info;
+    printTypeInfo(parent_info);
+    printf("\n");
+#endif
 }
 
 /* FuncDec */
