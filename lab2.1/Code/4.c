@@ -59,22 +59,19 @@ SD(401)
 /*         } */
 /*     } */
 /*     ; */
-ID(402)
-{
-    if (childNum == 1)
-    {
-        /* 402号产生式只有一个子节点：Specifier */
-        /* 不需要为它分配空间 */
-    }
-}
 SD(402)
 {
+    assert(parent->other_info == NULL);
+    D_type_info;
+    parent->other_info = type_info;
     D_parent_info;
-    D_child_1_info;
 
-    assert(parent_info->typeKind == FunctionType);
-    assert(parent_info->nextInfo == NULL);
     ((FunctionNode *)parent_info->node)->paramTypeInfo = NULL;
+    D_child_1_info;
+    assert(child_1_info != NULL);
+    assert(child_1_info->typeKind = FunctionType);
+    FunctionNode *node = (FunctionNode *)child_1_info->node;
+    assert(node != NULL);
     ((FunctionNode *)parent_info->node)->returnTypeInfo = child_1_info;
 }
 
