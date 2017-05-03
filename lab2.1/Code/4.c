@@ -100,7 +100,7 @@ ID(403)
 {
     if (childNum == 0)
     {
-        /* createInnerSymbolTable(); */
+        createInnerSymbolTable();
     }
     else if (childNum == 1)
     {
@@ -116,7 +116,7 @@ ID(403)
 }
 SD(403)
 {
-    /* gotoOuterSymbolTable(); */
+    gotoOuterSymbolTable();
 
     D_parent_info;
     D_child_1_info;
@@ -310,7 +310,8 @@ void initActionTable4()
     /* IS(408); */
     /* registerIAction(408, pro408IAction); */
     /* SS(401, 407, 408); */
-    SS(401, 402);
+    IS(403, 408);
+    SS(401, 402, 403, 407, 408);
     /* registerSAction(408, pro408SAction); */
     /* registerSAction(407, pro407SAction); */
 }
