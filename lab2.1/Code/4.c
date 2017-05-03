@@ -96,17 +96,8 @@ SD(402)
 /*     : LP VarList RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", GROUP_4 + 3, 2, $2, $5); } */
 /*     | LP RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", GROUP_4 + 4, 1, $4); } */
 /*     ; */
-ID(403)
-{
-    /* if (childNum == 0) */
-    /* { */
-    /*     createInnerSymbolTable(); */
-    /* } */
-}
 SD(403)
 {
-    /* gotoOuterSymbolTable(); */
-
     D_child_1_info;
 
     TypeInfo *returnTypeInfo = child_1_info;
@@ -128,17 +119,11 @@ SD(403)
     ((FunctionNode *)(returnTypeInfo->node))->returnTypeInfo = child_2_info;
 
     assert(parent->other_info == NULL);
-    /* 分配的资源不回收直到语法树销毁 */
+    /* 分配的资源又SD(408)回收 */
     parent->other_info = child_1_info;
 
     /* 回收SD(405) / SD(406)释放的资源 */
     child_1_info = NULL;
-
-#ifdef function_type_debug_print
-    D_parent_info;
-    printTypeInfo(parent_info);
-    printf("\n");
-#endif
 }
 
 SD(404)
@@ -161,14 +146,8 @@ SD(404)
     /* type end */
 
     assert(parent->other_info == NULL);
-    /* 分配的资源不回收直到语法树销毁 */
+    /* 分配的资源又SD(408)回收 */
     parent->other_info = type_info;
-
-#ifdef function_type_debug_print
-    D_parent_info;
-    printTypeInfo(parent_info);
-    printf("\n");
-#endif
 }
 
 /* VarList */
@@ -208,7 +187,7 @@ SD(405)
     parent->other_info = type_info;
 
     D_child_1;
-    /* 回收SD(407)释放的资源 */
+    /* 回收SD(407)分配的资源 */
     child_1->other_info == NULL;
 }
 
@@ -277,9 +256,28 @@ ID(408)
 SD(408)
 {
     gotoOuterSymbolTable();
-    D_parent_info;
+
     D_child_1_info;
-    parent_info = child_1_info;
+    assert(child_1_info != NULL);
+    assert(child_1_info->typeKind == FunctionType);
+    FunctionNode *node = (FunctionNode *)child_1_info->node;
+    /* node->paramTypeInfo可以有两种情况，不好判断 */
+    assert(node->returnTypeInfo != NULL);
+    assert(child_1_info->nextInfo == NULL);
+
+    assert(parent->other_info == NULL);
+    /* 分配的资源不回收直到语法树被销毁 */
+    parent->other_info = child_1_info;
+
+    D_child_1;
+    /* 回收SD(403) / SD(404)分配的资源 */
+    child_1->other_info = NULL;
+
+#ifdef function_type_debug_print
+    D_parent_info;
+    printTypeInfo(parent_info);
+    printf("\n");
+#endif
 }
 
 /* Specifier */
@@ -367,7 +365,7 @@ void initActionTable4()
     /* IS(408); */
     /* registerIAction(408, pro408IAction); */
     /* SS(401, 407, 408); */
-    IS(403, 408);
+    IS(408);
     SS(401, 402, 403, 404, 405, 406, 407, 408);
     /* registerSAction(408, pro408SAction); */
     /* registerSAction(407, pro407SAction); */
