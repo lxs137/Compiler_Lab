@@ -67,12 +67,19 @@ SD(402)
 {
     D_child_1_info;
     assert(child_1_info != NULL);
-    assert(child_1_info->typeKind = FunctionType);
+    /* assert(child_1_info->typeKind = FunctionType); */
     assert(child_1_info->node != NULL);
     assert(child_1_info->nextInfo == NULL);
 
-    assert(parent->other_info == NULL);
-    parent->other_info = child_1_info;
+    D_type_info;
+    type_info->typeKind = FunctionType;
+    parent->other_info = type_info;
+    FunctionNode *node = (FunctionNode *)malloc(sizeof(FunctionNode));
+    type_info->node = node;
+    node->paramTypeInfo = NULL;
+    node->returnTypeInfo = child_1_info;
+    /* assert(parent->other_info == NULL); */
+    /* parent->other_info = child_1_info; */
 }
 
 /* FuncDec */
