@@ -33,10 +33,18 @@ syntax-c: $(YFILE)
 
 # 定义的一些伪目标
 .PHONY: clean test
-test: parser
-	 # for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do echo; echo Now testing test$$i.cmm; valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="mem_log_$$i" ./parser ../Test/OneError/test$$i.cmm > test_result_$$i.output; echo Comparing; diff test_result_$$i.output ../Expect/OneError/$$i.output; wc -l mem_log_$$i; done;
-	 cd TestFunction && make type && make clean
+SUBDIRS = TestSymbolTable TestFunction TestSymbolTable
+test:
+	for subdir in $(SUBDIRS); do \
+		echo "Making all in $$subdir"; \
+		(cd $$subdir && make all); \
+	done;
+
 clean:
+	- for subdir in $(SUBDIRS); do \
+		echo "Clean in $$subdir"; \
+	    (cd $$subdir && make clean); \
+	  done;
 	- rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output
 	- rm -f $(OBJS) $(OBJS:.o=.d)
 	- rm -f $(LFC) $(YFC) $(YFC:.c=.h)

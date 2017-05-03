@@ -9,7 +9,7 @@ syntax:
 	@ $(call testTemplate, 1 2 3 4 5 6 7 8, 'syntax')
 
 type:
-	@ $(call testTemplate, 1 2 3 4 5 6 7 8, 'type')
+	@ $(call testTemplate, 1 2 3 4 5 6 7, 'type')
 
 clean:
 	@ $(call cleanTemplate)
