@@ -1,0 +1,174 @@
+Program (101)
+* DSList (201)
+* * Stmt (302)
+* * * VarDef (901)
+* * * * Specifier (802)
+* * * * * LET (0)
+* * * * DecList (903)
+* * * * * Dec (905)
+* * * * * * VarDec (906)
+* * * * * * * ID: f (0)
+* * * * * * Exp (1019)
+* * * * * * * FuncBody (408)
+* * * * * * * * FuncDec (403)
+* * * * * * * * * VarList (405)
+* * * * * * * * * * ParamDec (407)
+* * * * * * * * * * * Specifier (801)
+* * * * * * * * * * * * INT (0)
+* * * * * * * * * * * VarDec (906)
+* * * * * * * * * * * * ID: a (0)
+* * * * * * * * * * VarList (406)
+* * * * * * * * * * * ParamDec (407)
+* * * * * * * * * * * * Specifier (801)
+* * * * * * * * * * * * * INT (0)
+* * * * * * * * * * * * VarDec (906)
+* * * * * * * * * * * * * ID: b (0)
+* * * * * * * * * Specifier (806)
+* * * * * * * * * * FuncType (401)
+* * * * * * * * * * * Specifier (801)
+* * * * * * * * * * * * INT (0)
+* * * * * * * * * * * Specifier (801)
+* * * * * * * * * * * * INT (0)
+* * * * * * * * Compst (310)
+* * * * * * * * * DSList (201)
+* * * * * * * * * * Stmt (309)
+* * * * * * * * * * DSList (201)
+* * * * * * * * * * * Stmt (302)
+* * * * * * * * * * * * VarDef (901)
+* * * * * * * * * * * * * Specifier (801)
+* * * * * * * * * * * * * * INT (0)
+* * * * * * * * * * * * * DecList (903)
+* * * * * * * * * * * * * * Dec (905)
+* * * * * * * * * * * * * * * VarDec (906)
+* * * * * * * * * * * * * * * * ID: c (0)
+* * * * * * * * * * * * * * * Exp (1017)
+* * * * * * * * * * * * * * * * INT: 1 (0)
+* * * * * * * * * * * DSList (201)
+* * * * * * * * * * * * Stmt (302)
+* * * * * * * * * * * * * VarDef (901)
+* * * * * * * * * * * * * * Specifier (802)
+* * * * * * * * * * * * * * * LET (0)
+* * * * * * * * * * * * * * DecList (903)
+* * * * * * * * * * * * * * * Dec (905)
+* * * * * * * * * * * * * * * * VarDec (906)
+* * * * * * * * * * * * * * * * * ID: h (0)
+* * * * * * * * * * * * * * * * Exp (1019)
+* * * * * * * * * * * * * * * * * FuncBody (408)
+* * * * * * * * * * * * * * * * * * FuncDec (403)
+* * * * * * * * * * * * * * * * * * * VarList (406)
+* * * * * * * * * * * * * * * * * * * * ParamDec (407)
+* * * * * * * * * * * * * * * * * * * * * Specifier (801)
+* * * * * * * * * * * * * * * * * * * * * * INT (0)
+* * * * * * * * * * * * * * * * * * * * * VarDec (906)
+* * * * * * * * * * * * * * * * * * * * * * ID: a (0)
+* * * * * * * * * * * * * * * * * * * Specifier (801)
+* * * * * * * * * * * * * * * * * * * * INT (0)
+* * * * * * * * * * * * * * * * * * Compst (310)
+* * * * * * * * * * * * * * * * * * * DSList (201)
+* * * * * * * * * * * * * * * * * * * * Stmt (309)
+* * * * * * * * * * * * * * * * * * * * DSList (201)
+* * * * * * * * * * * * * * * * * * * * * Stmt (305)
+* * * * * * * * * * * * * * * * * * * * * * Exp (1006)
+* * * * * * * * * * * * * * * * * * * * * * * Exp (1016)
+* * * * * * * * * * * * * * * * * * * * * * * * VarDec (906)
+* * * * * * * * * * * * * * * * * * * * * * * * * ID: a (0)
+* * * * * * * * * * * * * * * * * * * * * * * Exp (1017)
+* * * * * * * * * * * * * * * * * * * * * * * * INT: 1 (0)
+* * * * * * * * * * * * * * * * * * * * * DSList (202)
+* * * * * * * * * * * * DSList (201)
+* * * * * * * * * * * * * Stmt (302)
+* * * * * * * * * * * * * * VarDef (901)
+* * * * * * * * * * * * * * * Specifier (802)
+* * * * * * * * * * * * * * * * LET (0)
+* * * * * * * * * * * * * * * DecList (903)
+* * * * * * * * * * * * * * * * Dec (905)
+* * * * * * * * * * * * * * * * * VarDec (906)
+* * * * * * * * * * * * * * * * * * ID: g (0)
+* * * * * * * * * * * * * * * * * Exp (1019)
+* * * * * * * * * * * * * * * * * * FuncBody (408)
+* * * * * * * * * * * * * * * * * * * FuncDec (403)
+* * * * * * * * * * * * * * * * * * * * VarList (406)
+* * * * * * * * * * * * * * * * * * * * * ParamDec (407)
+* * * * * * * * * * * * * * * * * * * * * * Specifier (801)
+* * * * * * * * * * * * * * * * * * * * * * * INT (0)
+* * * * * * * * * * * * * * * * * * * * * * VarDec (906)
+* * * * * * * * * * * * * * * * * * * * * * * ID: d (0)
+* * * * * * * * * * * * * * * * * * * * Specifier (801)
+* * * * * * * * * * * * * * * * * * * * * INT (0)
+* * * * * * * * * * * * * * * * * * * Compst (310)
+* * * * * * * * * * * * * * * * * * * * DSList (201)
+* * * * * * * * * * * * * * * * * * * * * Stmt (309)
+* * * * * * * * * * * * * * * * * * * * * DSList (201)
+* * * * * * * * * * * * * * * * * * * * * * Stmt (305)
+* * * * * * * * * * * * * * * * * * * * * * * Exp (1006)
+* * * * * * * * * * * * * * * * * * * * * * * * Exp (1006)
+* * * * * * * * * * * * * * * * * * * * * * * * * Exp (1006)
+* * * * * * * * * * * * * * * * * * * * * * * * * * Exp (1016)
+* * * * * * * * * * * * * * * * * * * * * * * * * * * VarDec (906)
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * ID: a (0)
+* * * * * * * * * * * * * * * * * * * * * * * * * * Exp (1016)
+* * * * * * * * * * * * * * * * * * * * * * * * * * * VarDec (906)
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * ID: b (0)
+* * * * * * * * * * * * * * * * * * * * * * * * * Exp (1016)
+* * * * * * * * * * * * * * * * * * * * * * * * * * VarDec (906)
+* * * * * * * * * * * * * * * * * * * * * * * * * * * ID: c (0)
+* * * * * * * * * * * * * * * * * * * * * * * * Exp (1012)
+* * * * * * * * * * * * * * * * * * * * * * * * * FuncCall (410)
+* * * * * * * * * * * * * * * * * * * * * * * * * * Exp (1016)
+* * * * * * * * * * * * * * * * * * * * * * * * * * * VarDec (906)
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * ID: h (0)
+* * * * * * * * * * * * * * * * * * * * * * * * * * Args (413)
+* * * * * * * * * * * * * * * * * * * * * * DSList (202)
+* * * * * * * * * * * * * DSList (201)
+* * * * * * * * * * * * * * Stmt (305)
+* * * * * * * * * * * * * * * Exp (1016)
+* * * * * * * * * * * * * * * * VarDec (906)
+* * * * * * * * * * * * * * * * * ID: g (0)
+* * * * * * * * * * * * * * DSList (202)
+* * DSList (202)
+Line 1: Program childNum(1) (101) I Action start.
+Line 1: DSList childNum(1) (201) I Action start.
+Line 1: Stmt childNum(1) (302) I Action start.
+Line 1: VarDef childNum(1) (901) I Action start.
+Line 1: Specifier childNum(1) (802) I Action start.
+Line 1: Specifier (802) I Action end.
+Line 1: Specifier (802) S Action end.
+Line 1: DecList childNum(1) (903) I Action start.
+Line 1: Dec childNum(1) (905) I Action start.
+Line 1: VarDec childNum(1) (906) I Action start.
+Line 1: VarDec (906) I Action end.
+Line 1: VarDec (906) S Action end.
+Line 1: Exp childNum(1) (1019) I Action start.
+Line 1: FuncBody childNum(1) (408) I Action start.
+Line 1: FuncDec childNum(1) (403) I Action start.
+Line 1: VarList childNum(1) (405) I Action start.
+Line 1: ParamDec childNum(1) (407) I Action start.
+Line 1: Specifier childNum(1) (801) I Action start.
+Line 1: Specifier (801) I Action end.
+Line 1: Specifier (801) S Action end.
+Line 1: VarDec childNum(1) (906) I Action start.
+Line 1: VarDec (906) I Action end.
+Line 1: VarDec (906) S Action end.
+Line 1: ParamDec (407) I Action end.
+Line 1: ParamDec (407) S Action end.
+Line 1: VarList childNum(1) (406) I Action start.
+Line 1: ParamDec childNum(1) (407) I Action start.
+Line 1: Specifier childNum(1) (801) I Action start.
+Line 1: Specifier (801) I Action end.
+Line 1: Specifier (801) S Action end.
+Line 1: VarDec childNum(1) (906) I Action start.
+Line 1: VarDec (906) I Action end.
+Line 1: VarDec (906) S Action end.
+Line 1: ParamDec (407) I Action end.
+Line 1: ParamDec (407) S Action end.
+Line 1: VarList (406) I Action end.
+Line 1: VarList (406) S Action end.
+Line 1: VarList (405) I Action end.
+Line 1: VarList (405) S Action end.
+Line 1: Specifier childNum(1) (806) I Action start.
+Line 1: FuncType childNum(1) (401) I Action start.
+Line 1: Specifier childNum(1) (801) I Action start.
+Line 1: Specifier (801) I Action end.
+Line 1: Specifier (801) S Action end.
+Line 1: Specifier childNum(1) (801) I Action start.
+Line 1: Specifier (801) I Action end.

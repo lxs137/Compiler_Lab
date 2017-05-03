@@ -1,4 +1,5 @@
 #include "SDTAction.h"
+#define action_debug_print
 
 /* 产生式数目 */
 static const int ProCount[10] = { 1, 2, 10, 13, 1, 1, 18, 6, 5, 19};
