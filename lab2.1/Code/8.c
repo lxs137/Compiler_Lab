@@ -10,3 +10,34 @@
 /*     | ReferType { $$ = new_parent_node("Specifier", GROUP_8 + 5, 1, $1); } */
 /*     | FuncType { $$ = $1; } */
 /*     ; */
+
+SD(801)
+{
+    D_child_1;
+    D_parent_info;
+
+    parent_info->typeKind = BuildInType;
+    if (!strcmp(child_1->str + 4, "Int"))
+    {
+        parent_info->node = (void *)Int;
+    }
+    else
+    {
+        parent_info->node = (void *)Float;
+    }
+    assert(parent_info->nextInfo == NULL);
+}
+
+SD(802)
+{
+    D_child_1;
+    D_parent_info;
+
+    parent_info->typeKind = BuildInType;
+    parent_info->node = (void *)Let;
+    assert(parent_info->nextInfo == NULL);
+}
+
+SD(803)
+{
+}
