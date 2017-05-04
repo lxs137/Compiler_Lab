@@ -191,7 +191,6 @@ ADTParam
     : LOWERID { $$ = new_parent_node("ADTParam", GROUP_7 + 6, 1, $1); }
     ;
 ConstructorDecList
-    /* 分号不能上移，否则冲突 */
     : ConstructorDec { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 7, 1, $1); }
     | ConstructorDec ConstructorDecList { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 8, 2, $1, $2); } 
     ;
@@ -204,6 +203,7 @@ ConstructorId
 TypeIdList
     : TypeId TypeIdList { $$ = new_parent_node("TypeIdList", GROUP_7 + 11, 2, $1, $2); }
     | ADTParam TypeIdList { $$ = new_parent_node("TypeIdList", GROUP_7 + 12, 2, $1, $2); }
+    /* 分号不能上移，否则冲突 */
     | SEMI { $$ = new_parent_node("TypeIdList", GROUP_7 + 13, 0); }
     ;
 TypeId

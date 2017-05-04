@@ -113,7 +113,7 @@ SD(706)
 }
 
 /* ConstructorDecList */
-/*     : ConstructorDec SEMI { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 7, 1, $1); } */
+/*     : ConstructorDec { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 7, 1, $1); } */
 /*     | ConstructorDec SEMI ConstructorDecList { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 8, 2, $1, $3); } */ 
 /*     ; */
 ID(707)
@@ -200,7 +200,7 @@ SD(710)
 /* TypeIdList */
 /*     : TypeId TypeIdList { $$ = new_parent_node("TypeIdList", GROUP_7 + 11, 2, $1, $2); } */
 /*     | ADTParam TypeIdList { $$ = new_parent_node("TypeIdList", GROUP_7 + 12, 2, $1, $2); } */
-/*     | /1* empty *1/ { $$ = new_parent_node("TypeIdList", GROUP_7 + 13, 0); } */
+/*     | SEMI { $$ = new_parent_node("TypeIdList", GROUP_7 + 13, 0); } */
 /*     ; */
 ID(711)
 {
