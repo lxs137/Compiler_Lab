@@ -192,8 +192,8 @@ ADTParam
     ;
 ConstructorDecList
     /* 分号不能上移，否则冲突 */
-    : ConstructorDec SEMI { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 7, 1, $1); }
-    | ConstructorDec SEMI ConstructorDecList { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 8, 2, $1, $3); } 
+    : ConstructorDec { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 7, 1, $1); }
+    | ConstructorDec ConstructorDecList { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 8, 2, $1, $2); } 
     ;
 ConstructorDec
     : ConstructorId TypeIdList { $$ = new_parent_node("ConstructorDec", GROUP_7 + 9, 2, $1, $2); }
@@ -204,7 +204,7 @@ ConstructorId
 TypeIdList
     : TypeId TypeIdList { $$ = new_parent_node("TypeIdList", GROUP_7 + 11, 2, $1, $2); }
     | ADTParam TypeIdList { $$ = new_parent_node("TypeIdList", GROUP_7 + 12, 2, $1, $2); }
-    | /* empty */ { $$ = new_parent_node("TypeIdList", GROUP_7 + 13, 0); }
+    | SEMI { $$ = new_parent_node("TypeIdList", GROUP_7 + 13, 0); }
     ;
 TypeId
     : UPPERID { $$ = new_parent_node("TypeId", GROUP_7 + 14, 1, $1); }
