@@ -9,3 +9,6 @@ Int／Float／ADT = <0, n>
 Array = <1, 0, ...>
 Refer = <1, 1, ...>
 Function = <3, ...>
+
+符号表中的指针也要指向lowerId的父亲节点
+才能取得相应的类型信息
