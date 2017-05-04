@@ -51,5 +51,6 @@ clean:
 	- @ rm -f $(OBJS) $(OBJS:.o=.d)
 	- @ rm -f $(LFC) $(YFC) $(YFC:.c=.h)
 	- @ rm -f mem_log_*
+	- @ rm -f unused_log
 	- @ rm -f test_result_*.output
 	- @ rm -f core
