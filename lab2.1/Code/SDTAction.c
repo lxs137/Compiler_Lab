@@ -26,6 +26,7 @@ void initActionTable()
     initActionTable7();
     initActionTable8();
     initActionTable9();
+    initActionTable10();
 }
 
 static int proNum2TableIndex(int proNum)
