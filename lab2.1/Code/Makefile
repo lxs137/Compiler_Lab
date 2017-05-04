@@ -34,7 +34,7 @@ syntax-c: $(YFILE)
 # 定义的一些伪目标
 .PHONY: clean test
 
-SUBDIRS = TestSymbolTable TestFunction TestSymbolTable
+SUBDIRS = TestSymbolTable TestFunction
 
 test:
 	@ for subdir in $(SUBDIRS); do \
