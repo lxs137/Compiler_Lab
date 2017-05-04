@@ -37,13 +37,13 @@ syntax-c: $(YFILE)
 SUBDIRS = TestSymbolTable TestFunction TestSymbolTable
 
 test:
-	for subdir in $(SUBDIRS); do \
+	@ for subdir in $(SUBDIRS); do \
 		echo "Making all in $$subdir"; \
 		(cd $$subdir && make all); \
 	done;
 
 clean:
-	- for subdir in $(SUBDIRS); do \
+	- @ for subdir in $(SUBDIRS); do \
 		echo "Clean in $$subdir"; \
 	    (cd $$subdir && make clean); \
 	  done;

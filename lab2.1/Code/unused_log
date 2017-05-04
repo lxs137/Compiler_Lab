@@ -5,20 +5,12 @@ for subdir in TestSymbolTable TestFunction TestSymbolTable; do \
   done;
 Clean in TestSymbolTable
 make[2]: Entering directory '/home/Compiler_Lab/lab2.1/Code/TestSymbolTable'
-rm mem_log_*
-Makefile:7: recipe for target 'clean' failed
-rm *.output
-Makefile:7: recipe for target 'clean' failed
 make[2]: Leaving directory '/home/Compiler_Lab/lab2.1/Code/TestSymbolTable'
 Clean in TestFunction
 make[2]: Entering directory '/home/Compiler_Lab/lab2.1/Code/TestFunction'
 make[2]: Leaving directory '/home/Compiler_Lab/lab2.1/Code/TestFunction'
 Clean in TestSymbolTable
 make[2]: Entering directory '/home/Compiler_Lab/lab2.1/Code/TestSymbolTable'
-rm mem_log_*
-Makefile:7: recipe for target 'clean' failed
-rm *.output
-Makefile:7: recipe for target 'clean' failed
 make[2]: Leaving directory '/home/Compiler_Lab/lab2.1/Code/TestSymbolTable'
 flex -o ./lex.yy.c ./lexical.l
 bison -o ./syntax.tab.c -d -t -v ./syntax.y
