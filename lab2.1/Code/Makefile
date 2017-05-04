@@ -33,7 +33,9 @@ syntax-c: $(YFILE)
 
 # 定义的一些伪目标
 .PHONY: clean test
+
 SUBDIRS = TestSymbolTable TestFunction TestSymbolTable
+
 test:
 	for subdir in $(SUBDIRS); do \
 		echo "Making all in $$subdir"; \
@@ -45,9 +47,9 @@ clean:
 		echo "Clean in $$subdir"; \
 	    (cd $$subdir && make clean); \
 	  done;
-	- rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output
-	- rm -f $(OBJS) $(OBJS:.o=.d)
-	- rm -f $(LFC) $(YFC) $(YFC:.c=.h)
-	- rm mem_log_*
-	- rm test_result_*.output
-	- rm core
+	- @ rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output
+	- @ rm -f $(OBJS) $(OBJS:.o=.d)
+	- @ rm -f $(LFC) $(YFC) $(YFC:.c=.h)
+	- @ rm -f mem_log_*
+	- @ rm -f test_result_*.output
+	- @ rm -f core

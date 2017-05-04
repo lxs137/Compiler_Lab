@@ -10,10 +10,10 @@ define testTemplate
 endef
 
 define cleanTemplate
-    -@ rm *.output
-    -@ rm mem_log_*
-    -@ rm core
-    -@ rm unused_log
+    - @ rm -f *.output
+    - @ rm -f mem_log_*
+    - @ rm -f core
+    - @ rm -f unused_log
 endef
 
 define compileTemplate

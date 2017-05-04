@@ -12,8 +12,6 @@ Makefile:7: recipe for target 'clean' failed
 make[2]: Leaving directory '/home/Compiler_Lab/lab2.1/Code/TestSymbolTable'
 Clean in TestFunction
 make[2]: Entering directory '/home/Compiler_Lab/lab2.1/Code/TestFunction'
-Makefile:16: recipe for target 'clean' failed
-Makefile:16: recipe for target 'clean' failed
 make[2]: Leaving directory '/home/Compiler_Lab/lab2.1/Code/TestFunction'
 Clean in TestSymbolTable
 make[2]: Entering directory '/home/Compiler_Lab/lab2.1/Code/TestSymbolTable'
@@ -22,15 +20,6 @@ Makefile:7: recipe for target 'clean' failed
 rm *.output
 Makefile:7: recipe for target 'clean' failed
 make[2]: Leaving directory '/home/Compiler_Lab/lab2.1/Code/TestSymbolTable'
-rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output
-rm -f ./SDTAction.o ./lex.yy.o ./7.o ./8.o ./symbol_table.o ./4.o ./9.o ./syntax.tab.o ./3.o ./main.o ./syntax_tree.o ./GodelNumber.o ./jsw_rbtree.o ./SDTAction.d ./lex.yy.d ./7.d ./8.d ./symbol_table.d ./4.d ./9.d ./syntax.tab.d ./3.d ./main.d ./syntax_tree.d ./GodelNumber.d ./jsw_rbtree.d
-rm -f ./lex.yy.c ./syntax.tab.c ./syntax.tab.h
-rm mem_log_*
-Makefile:44: recipe for target 'clean' failed
-rm test_result_*.output
-Makefile:44: recipe for target 'clean' failed
-rm core
-Makefile:44: recipe for target 'clean' failed
 flex -o ./lex.yy.c ./lexical.l
 bison -o ./syntax.tab.c -d -t -v ./syntax.y
 gcc -c ./syntax.tab.c -o ./syntax.tab.o
