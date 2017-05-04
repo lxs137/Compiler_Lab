@@ -24,7 +24,7 @@
 /*     | FuncBody { $$ = new_parent_node("Exp", GROUP_10 + 19, 1, $1); } */
 /*     ; */
 
-SD(116)
+SD(1016)
 {
     D_child_1_info;
     assert(child_1_info != NULL);
@@ -39,8 +39,18 @@ SD(116)
 
     assert(parent->other_info == NULL);
     parent->other_info = info;
+
+    D_child_1;
+    /* 回收SD(906)分配的资源 */;
+    child_1->other_info = NULL;
+
+#ifdef exp_type_debug_print
+    D_parent_info;
+    printTypeInfo(parent_info);
+#endif
 }
 
 void initActionTable10()
 {
+    SS(1016);
 }

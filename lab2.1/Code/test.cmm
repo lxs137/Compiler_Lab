@@ -1,0 +1,5 @@
+let a = (Int a, Int b) -> Int {
+    return a + b
+}
+
+a
