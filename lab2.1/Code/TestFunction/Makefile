@@ -1,6 +1,6 @@
 include ../commonFunction.md
 
-.PHONY: syntax type clean
+.PHONY: all syntax type clean
 
 all: syntax type
 

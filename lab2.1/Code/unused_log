@@ -1,17 +1,13 @@
-make[1]: Entering directory '/home/Compiler_Lab/lab2.1/Code'
-for subdir in TestSymbolTable TestFunction TestSymbolTable; do \
-	echo "Clean in $subdir"; \
-    (cd $subdir && make clean); \
-  done;
+make[2]: Entering directory '/home/Compiler_Lab/lab2.1/Code'
 Clean in TestSymbolTable
-make[2]: Entering directory '/home/Compiler_Lab/lab2.1/Code/TestSymbolTable'
-make[2]: Leaving directory '/home/Compiler_Lab/lab2.1/Code/TestSymbolTable'
+make[3]: Entering directory '/home/Compiler_Lab/lab2.1/Code/TestSymbolTable'
+make[3]: Leaving directory '/home/Compiler_Lab/lab2.1/Code/TestSymbolTable'
 Clean in TestFunction
-make[2]: Entering directory '/home/Compiler_Lab/lab2.1/Code/TestFunction'
-make[2]: Leaving directory '/home/Compiler_Lab/lab2.1/Code/TestFunction'
+make[3]: Entering directory '/home/Compiler_Lab/lab2.1/Code/TestFunction'
+make[3]: Leaving directory '/home/Compiler_Lab/lab2.1/Code/TestFunction'
 Clean in TestSymbolTable
-make[2]: Entering directory '/home/Compiler_Lab/lab2.1/Code/TestSymbolTable'
-make[2]: Leaving directory '/home/Compiler_Lab/lab2.1/Code/TestSymbolTable'
+make[3]: Entering directory '/home/Compiler_Lab/lab2.1/Code/TestSymbolTable'
+make[3]: Leaving directory '/home/Compiler_Lab/lab2.1/Code/TestSymbolTable'
 flex -o ./lex.yy.c ./lexical.l
 bison -o ./syntax.tab.c -d -t -v ./syntax.y
 gcc -c ./syntax.tab.c -o ./syntax.tab.o
@@ -27,4 +23,4 @@ gcc -std=c99 -ggdb   -c -o syntax_tree.o syntax_tree.c
 gcc -std=c99 -ggdb   -c -o GodelNumber.o GodelNumber.c
 gcc -std=c99 -ggdb   -c -o jsw_rbtree.o jsw_rbtree.c
 gcc -o parser ./SDTAction.o ./7.o ./8.o ./symbol_table.o ./4.o ./9.o ./syntax.tab.o ./3.o ./main.o ./syntax_tree.o ./GodelNumber.o ./jsw_rbtree.o -lfl -ly
-make[1]: Leaving directory '/home/Compiler_Lab/lab2.1/Code'
+make[2]: Leaving directory '/home/Compiler_Lab/lab2.1/Code'
