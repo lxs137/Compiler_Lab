@@ -24,6 +24,23 @@
 /*     | FuncBody { $$ = new_parent_node("Exp", GROUP_10 + 19, 1, $1); } */
 /*     ; */
 
+SD(116)
+{
+    D_child_1_info;
+    assert(child_1_info != NULL);
+    AST_node *anode = getASTNode((char *)child_1_info);
+    assert(anode != NULL);
+    assert(anode->other_info != NULL);
+    TypeInfo *info = (TypeInfo *)anode->other_info;
+    assert(info != NULL);
+    assert(info->typeKind != 0);
+    assert(info->node != NULL);
+    assert(info->nextInfo == NULL);
+
+    assert(parent->other_info == NULL);
+    parent->other_info = info;
+}
+
 void initActionTable10()
 {
 }
