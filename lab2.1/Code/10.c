@@ -23,6 +23,12 @@
 /*     | FLOAT { $$ = new_parent_node("Exp", GROUP_10 + 18, 1, $1); } */
 /*     | FuncBody { $$ = new_parent_node("Exp", GROUP_10 + 19, 1, $1); } */
 /*     ; */
+SD(1001)
+{
+    D_child_1;
+    D_child_2;
+    child_1->other_info = child_2->other_info;
+}
 
 SD(1016)
 {
@@ -50,7 +56,29 @@ SD(1016)
 #endif
 }
 
+SD(1019)
+{
+    D_child_1_info;
+    assert(child_1_info != NULL);
+    assert(child_1_info->typeKind == FunctionType);
+    FunctionNode *node = (FunctionNode *)child_1_info->node;
+    assert(node != NULL);
+    assert(node->returnTypeInfo != NULL);
+    assert(child_1_info->nextInfo == NULL);
+
+    assert(parent->other_info == NULL);
+    parent->other_info = child_1_info;
+
+    D_child_1;
+    child_1->other_info = NULL;
+
+#ifdef exp_type_debug_print
+    D_parent_info;
+    printTypeInfo(parent_info);
+#endif
+}
+
 void initActionTable10()
 {
-    SS(1016);
+    SS(1016, 1019);
 }
