@@ -20,3 +20,10 @@ define compileTemplate
     @ cp $1/DebugMacro.h ../DebugMacro.h
     @ cd .. && make
 endef
+
+define updateExpectTemplate
+	for i in $1; \
+	do \
+    mv $$i.output $2/$$i.expect; \
+	done;
+endef
