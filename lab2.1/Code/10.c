@@ -32,27 +32,36 @@ SD(1001)
 
 SD(1016)
 {
-    D_child_1_info;
-    assert(child_1_info != NULL);
-    AST_node *anode = getASTNode((char *)child_1_info);
-    assert(anode != NULL);
-    assert(anode->other_info != NULL);
-    TypeInfo *info = (TypeInfo *)anode->other_info;
-    assert(info != NULL);
-    assert(info->typeKind != 0);
-    assert(info->node != NULL);
-    assert(info->nextInfo == NULL);
-
-    assert(parent->other_info == NULL);
-    parent->other_info = info;
+    D_parent_info;
+    assert(parent_info != NULL);
+    assert(parent_info->nextInfo == NULL);
 
     D_child_1;
-    /* 回收SD(906)分配的资源 */;
-    child_1->other_info = NULL;
+    assert(child_1->other_info == NULL);
+    child_1->other_info = parent_info;
+    parent->other_info = NULL;
+
+    /* D_child_1_info; */
+    /* assert(child_1_info != NULL); */
+    /* AST_node *anode = getASTNode((char *)child_1_info); */
+    /* assert(anode != NULL); */
+    /* assert(anode->other_info != NULL); */
+    /* TypeInfo *info = (TypeInfo *)anode->other_info; */
+    /* assert(info != NULL); */
+    /* assert(info->typeKind != 0); */
+    /* assert(info->node != NULL); */
+    /* assert(info->nextInfo == NULL); */
+
+    /* assert(parent->other_info == NULL); */
+    /* parent->other_info = info; */
+
+    /* D_child_1; */
+    /* /1* 回收SD(906)分配的资源 *1/; */
+    /* child_1->other_info = NULL; */
 
 #ifdef exp_type_debug_print
-    D_parent_info;
-    printTypeInfo(parent_info);
+    D_child_1_info;
+    printTypeInfo(child_1_info);
 #endif
 }
 
