@@ -84,6 +84,9 @@ SD(1016)
     /* 目前还不能判断类型，之后补全所有测试之后判断 */
     D_parent_info;
 
+    D_child_1;
+    D_type_info;
+    child_1->other_info = type_info;
     D_child_1_info;
     /* VarDec的other_info保留变量名称信息 */
     /* assert(child_1_info != NULL); */
