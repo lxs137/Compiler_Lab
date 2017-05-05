@@ -42,6 +42,7 @@ static int proNum2TableIndex(int proNum)
         sum += ProCount[i];
     }
 
+    assert(sum < ProSum);
     return sum;
 }
 

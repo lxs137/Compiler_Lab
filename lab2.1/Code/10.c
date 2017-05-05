@@ -89,5 +89,5 @@ SD(1019)
 
 void initActionTable10()
 {
-    SS(1016, 1019);
+    SS(1001, 1016, 1019);
 }
