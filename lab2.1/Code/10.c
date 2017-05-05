@@ -33,6 +33,35 @@ SD(1001)
     child_2->other_info = NULL;
 }
 
+SDS(1002, 1003, 1004, 1005)
+{
+    parent->other_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+    D_parent_info;
+    parent_info->typeKind = BuildInType;
+    parent_info->node = (void *)Int;
+}
+
+SDS(1006, 1007, 1008, 1009)
+{
+    parent->other_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+    D_parent_info;
+    parent_info->typeKind = BuildInType;
+    D_child_1_info;
+    parent_info->node = child_1_info->node;
+}
+
+SD(1010)
+{
+    D_child_1_info;
+    parent->other_info = child_1_info;
+}
+
+SD(1011)
+{
+    D_child_1_info;
+    parent->other_info = child_1_info;
+}
+
 SD(1016)
 {
     /* 目前还不能判断类型，之后补全所有测试之后判断 */
