@@ -119,7 +119,7 @@ SD(403)
     ((FunctionNode *)(returnTypeInfo->node))->returnTypeInfo = child_2_info;
 
     assert(parent->other_info == NULL);
-    /* 分配的资源又SD(408)回收 */
+    /* 分配的资源由SD(408)回收 */
     parent->other_info = child_1_info;
 
     /* 回收SD(405) / SD(406)释放的资源 */
@@ -146,7 +146,7 @@ SD(404)
     /* type end */
 
     assert(parent->other_info == NULL);
-    /* 分配的资源又SD(408)回收 */
+    /* 分配的资源由SD(408)回收 */
     parent->other_info = type_info;
 }
 
