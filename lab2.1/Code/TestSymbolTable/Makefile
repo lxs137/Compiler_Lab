@@ -1,6 +1,6 @@
 include ../commonFunction.md
 
-.PHONY: all insert clean updateExpect
+.PHONY: all insert updateExpect clean
 
 all: insert
 
@@ -12,4 +12,4 @@ clean:
 	@ $(call cleanTemplate)
 
 updateExpect:
-	@ $(call updatExpectTemplate, 1 2, '.')
+	@ $(call updateExpectTemplate, 1 2, '.')
