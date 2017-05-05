@@ -62,6 +62,23 @@ SD(1011)
     parent->other_info = child_1_info;
 }
 
+SD(1013)
+{
+    D_child_2_info;
+    parent->other_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+    D_parent_info;
+    parent_info->typeKind = ReferType;
+    parent_info->node = (ReferNode *)malloc(sizeof(ReferNode));
+    ((ReferNode *)parent_info->node)->referTo = child_2_info;
+    parent_info->nextInfo = NULL;
+}
+
+SD(1014)
+{
+    D_child_2_info;
+    parent->other_info = ((ReferNode *)child_2_info->node)->referTo;
+}
+
 SD(1016)
 {
     /* 目前还不能判断类型，之后补全所有测试之后判断 */
@@ -109,5 +126,5 @@ SD(1019)
 
 void initActionTable10()
 {
-    SS(1001, 1016, 1019);
+    SS(1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1013, 1014, 1016, 1019);
 }
