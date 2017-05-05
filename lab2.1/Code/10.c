@@ -81,27 +81,17 @@ SD(1014)
 
 SD(1016)
 {
-    /* 目前还不能判断类型，之后补全所有测试之后判断 */
-    D_parent_info;
-
-    D_child_1;
-    D_type_info;
-    child_1->other_info = type_info;
     D_child_1_info;
-    /* VarDec的other_info保留变量名称信息 */
-    /* assert(child_1_info != NULL); */
-    /* assert(child_1_info->nextInfo == NULL); */
-    child_1_info->nextInfo = parent_info;
-
-    parent->other_info = NULL;
-
-#ifdef exp_type_debug_print
-    if (child_1_info->nextInfo != NULL)
-    {
-        printTypeInfo(child_1_info->nextInfo);
-        printf("\n");
-    }
-#endif
+    assert(child_1_info != NULL);
+    AST_node *anode = getASTNode((char *)child_1_info);
+    assert(anode != NULL);
+    TypeInfo *info = anode->other_info;
+    assert(info != NULL);
+    assert(info->typeKind != 0);
+    void *node = info->node;
+    assert(node != NULL);
+    assert(info->nextInfo == NULL);
+    parent->other_info = info;
 }
 
 SD(1019)
@@ -129,5 +119,5 @@ SD(1019)
 
 void initActionTable10()
 {
-    SS(1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1013, 1014, 1016, 1019);
+    /* SS(1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1013, 1014, 1016, 1019); */
 }
