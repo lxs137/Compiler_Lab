@@ -226,6 +226,20 @@ SD(406)
 /* ParamDec */
 /*     : Specifier VarDec { $$ = new_parent_node("ParamDec", GROUP_4 + 7, 2, $1, $2); } */
 /*     ; */
+ID(407)
+{
+    if (childNum == 2)
+    {
+        D_child_1_info;
+        assert(child_1_info != NULL);
+        assert(child_1_info->node != NULL);
+        assert(child_1_info->nextInfo == NULL);
+
+        assert(child->other_info == NULL);
+        /* 分配的资源不回收直到语法树销毁 */
+        child->other_info = child_1_info;
+    }
+}
 SD(407)
 {
     D_child_1_info;
@@ -295,7 +309,7 @@ void initActionTable4()
     /* IS(408); */
     /* registerIAction(408, pro408IAction); */
     /* SS(401, 407, 408); */
-    IS(408);
+    IS(407, 408);
     SS(401, 402, 403, 404, 405, 406, 407, 408);
     /* registerSAction(408, pro408SAction); */
     /* registerSAction(407, pro407SAction); */
