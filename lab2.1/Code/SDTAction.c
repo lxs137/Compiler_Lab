@@ -1,7 +1,7 @@
 #include "SDTAction.h"
 
 /* 产生式数目 */
-static const int ProCount[10] = { 1, 2, 10, 13, 1, 1, 18, 6, 5, 19};
+static const int ProCount[10] = { 1, 2, 10, 13, 1, 1, 18, 6, 6, 19};
 static int ProSum = 0;
 
 static SDTIAction *sdtIActionTable = NULL;
