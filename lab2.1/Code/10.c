@@ -89,6 +89,7 @@ SD(1019)
 #ifdef exp_type_debug_print
     D_parent_info;
     printTypeInfo(parent_info);
+    printf("\n");
 #endif
 }
 
