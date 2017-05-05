@@ -92,6 +92,12 @@ SD(1016)
     assert(node != NULL);
     assert(info->nextInfo == NULL);
     parent->other_info = info;
+
+#ifdef exp_type_debug_print
+    D_parent_info;
+    printTypeInfo(parent_info);
+    printf("\n");
+#endif
 }
 
 SD(1019)
@@ -120,4 +126,5 @@ SD(1019)
 void initActionTable10()
 {
     /* SS(1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1013, 1014, 1016, 1019); */
+    SS(1016);
 }
