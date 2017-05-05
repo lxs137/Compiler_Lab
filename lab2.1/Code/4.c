@@ -199,7 +199,7 @@ SD(406)
     assert(child_1_info != NULL);
     assert(child_1_info->typeKind != 0);
     assert(child_1_info->node != NULL);
-    assert(child_1_info->nextInfo == NULL);
+    /* assert(child_1_info->nextInfo == NULL); */
 
     /* type begin */
     D_type_info;
@@ -246,7 +246,9 @@ SD(407)
     assert(child_1_info != NULL);
     assert(child_1_info->typeKind != 0);
     assert(child_1_info->node !=  NULL);
-    assert(child_1_info->nextInfo == NULL);
+    /* 由于Specifer->other_info与VarDec->other_info共享同一块内存 */
+    /* 所以当VarDec->other_in->nextInfofo被赋予变量名称时，Specifier->other_info->nextInfo也不再为空 */
+    /* assert(child_1_info->nextInfo == NULL); */
     assert(parent->other_info == NULL);
     /* 分配的资源由SD(405) / SD(406)回收 */
     parent->other_info = child_1_info;
