@@ -42,6 +42,11 @@ test:
 		(cd $$subdir && make all); \
 	done;
 
+debug:
+	cp DebugMacroCopy.h DebugMacro.h
+	make
+	./parser test.cmm
+
 clean:
 	- @ for subdir in $(SUBDIRS); do \
 		echo "Clean in $$subdir"; \
