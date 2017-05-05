@@ -25,43 +25,28 @@
 /*     ; */
 SD(1001)
 {
-    D_child_1;
+    /* 默认类型推断从右到左 */
     D_child_2;
+    D_child_1;
+    assert(child_1->other_info == NULL);
     child_1->other_info = child_2->other_info;
+    child_2->other_info = NULL;
 }
 
 SD(1016)
 {
+    /* 目前还不能判断类型，之后补全所有测试之后判断 */
     D_parent_info;
-    /* assert(parent_info != NULL); */
-    /* assert(parent_info->nextInfo == NULL); */
 
     D_child_1_info;
+    /* VarDec的other_info保留变量名称信息 */
+    assert(child_1_info != NULL);
+    assert(child_1_info->nextInfo == NULL);
     child_1_info->nextInfo = parent_info;
-    /* assert(child_1->other_info == NULL); */
-    /* child_1->other_info = parent_info; */
-    /* parent->other_info = NULL; */
 
-    /* D_child_1_info; */
-    /* assert(child_1_info != NULL); */
-    /* AST_node *anode = getASTNode((char *)child_1_info); */
-    /* assert(anode != NULL); */
-    /* assert(anode->other_info != NULL); */
-    /* TypeInfo *info = (TypeInfo *)anode->other_info; */
-    /* assert(info != NULL); */
-    /* assert(info->typeKind != 0); */
-    /* assert(info->node != NULL); */
-    /* assert(info->nextInfo == NULL); */
-
-    /* assert(parent->other_info == NULL); */
-    /* parent->other_info = info; */
-
-    /* D_child_1; */
-    /* /1* 回收SD(906)分配的资源 *1/; */
-    /* child_1->other_info = NULL; */
+    parent->other_info = NULL;
 
 #ifdef exp_type_debug_print
-    /* D_child_1_info; */
     if (child_1_info->nextInfo != NULL)
     {
         printTypeInfo(child_1_info->nextInfo);
