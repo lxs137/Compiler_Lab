@@ -33,13 +33,14 @@ SD(1001)
 SD(1016)
 {
     D_parent_info;
-    assert(parent_info != NULL);
-    assert(parent_info->nextInfo == NULL);
+    /* assert(parent_info != NULL); */
+    /* assert(parent_info->nextInfo == NULL); */
 
-    D_child_1;
-    assert(child_1->other_info == NULL);
-    child_1->other_info = parent_info;
-    parent->other_info = NULL;
+    D_child_1_info;
+    child_1_info->nextInfo = parent_info;
+    /* assert(child_1->other_info == NULL); */
+    /* child_1->other_info = parent_info; */
+    /* parent->other_info = NULL; */
 
     /* D_child_1_info; */
     /* assert(child_1_info != NULL); */
@@ -60,8 +61,12 @@ SD(1016)
     /* child_1->other_info = NULL; */
 
 #ifdef exp_type_debug_print
-    D_child_1_info;
-    printTypeInfo(child_1_info);
+    /* D_child_1_info; */
+    if (child_1_info->nextInfo != NULL)
+    {
+        printTypeInfo(child_1_info->nextInfo);
+        printf("\n");
+    }
 #endif
 }
 
