@@ -34,6 +34,54 @@ ID(901)
 /*     : Dec { $$ = new_parent_node("DecList", GROUP_9 + 3, 1, $1); } */
 /*     | Dec COMMA DecList { $$ = new_parent_node("DecList", GROUP_9 + 4, 2, $1, $3); } */
 /*     ; */
+ID(903)
+{
+    if (childNum == 1)
+    {
+        D_parent_info;
+        assert(parent_info != NULL);
+        assert(parent_info->typeKind != 0);
+        assert(parent_info->node != NULL);
+        assert(parent_info->nextInfo == NULL);
+
+        assert(child->other_info == NULL);
+        child->other_info = parent_info;
+
+        parent->other_info = NULL;
+
+#ifdef exp_type_debug_print
+        D_child_info;
+        printTypeInfo(child_info);
+        printf("(ID(903))\n");
+#endif
+    }
+}
+
+ID(904)
+{
+    if (childNum == 1 | childNum == 2)
+    {
+        D_parent_info;
+        assert(parent_info != NULL);
+        assert(parent_info->typeKind != 0);
+        assert(parent_info->node != NULL);
+        assert(parent_info->nextInfo == NULL);
+
+        assert(child->other_info == NULL);
+        child->other_info = parent_info;
+
+#ifdef exp_type_debug_print
+        D_child_info;
+        printTypeInfo(child_info);
+        printf("(ID(904))\n");
+#endif
+    }
+
+    if (childNum == 2)
+    {
+        parent->other_info = NULL;
+    }
+}
 
 /* Dec */
 /*     : VarDec { $$ = new_parent_node("Dec", GROUP_9 + 4, 1, $1); } */
@@ -73,6 +121,6 @@ SD(906)
 
 void initActionTable9()
 {
-    IS(901);
+    IS(901, 903, 904);
     SS(904, 905, 906);
 }
