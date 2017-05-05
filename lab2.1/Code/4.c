@@ -159,7 +159,7 @@ SD(405)
     D_child_1_info;
     assert(child_1_info != NULL);
     assert(child_1_info->typeKind != 0);
-    assert(child_1_info->nextInfo == NULL);
+    /* assert(child_1_info->nextInfo == NULL); */
 
     D_child_2_info;
     assert(child_2_info != NULL);
