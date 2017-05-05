@@ -86,8 +86,8 @@ SD(1016)
 
     D_child_1_info;
     /* VarDec的other_info保留变量名称信息 */
-    assert(child_1_info != NULL);
-    assert(child_1_info->nextInfo == NULL);
+    /* assert(child_1_info != NULL); */
+    /* assert(child_1_info->nextInfo == NULL); */
     child_1_info->nextInfo = parent_info;
 
     parent->other_info = NULL;
