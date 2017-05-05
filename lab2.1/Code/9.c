@@ -84,10 +84,18 @@ ID(904)
 }
 
 /* Dec */
-/*     : VarDec { $$ = new_parent_node("Dec", GROUP_9 + 4, 1, $1); } */
-/*     | VarDec ASSIGNOP Exp { $$ = new_parent_node("Dec", GROUP_9 + 5, 2, $1, $3); } */
+/*     : VarDec { $$ = new_parent_node("Dec", GROUP_9 + 5, 1, $1); } */
+/*     | VarDec ASSIGNOP Exp { $$ = new_parent_node("Dec", GROUP_9 + 6, 2, $1, $3); } */
 /*     ; */
-SD(904)
+ID(905)
+{
+    if (childNum == 1)
+    {
+        D_parent_info;
+        child->other_info = parent_info;
+    }
+}
+SD(905)
 {
     D_child_1;
     D_child_1_info;
@@ -97,7 +105,7 @@ SD(904)
     child_1->other_info = NULL;
 }
 
-SD(905)
+SD(906)
 {
     D_child_1;
     D_child_1_info;
@@ -109,18 +117,23 @@ SD(905)
 
 /* Declarators */
 /* VarDec */
-/*     : LOWERID { $$ = new_parent_node("VarDec", GROUP_9 + 6, 1, $1); } */
+/*     : LOWERID { $$ = new_parent_node("VarDec", GROUP_9 + 7, 1, $1); } */
 /*     ; */
-SD(906)
+SD(907)
 {
     D_child_1;
-    assert(parent->other_info == NULL);
+    /* assert(parent->other_info == NULL); */
     /* 分配的资源由SD(904) / SD(905) / SD(1016)回收 */
-    parent->other_info = child_1->str + 4;
+    /* parent->other_info = child_1->str + 4; */
+    ((TypeInfo *)parent->other_info)->nextInfo = child_1->str + 4;
 }
 
 void initActionTable9()
 {
-    IS(901, 903, 904);
-    SS(904, 905, 906);
+    IS(901, 903, 904, 905);
+    SS(905, 906, 907);
 }
+
+/* Using Variables */
+/* VarUse */
+/*     : LOWERID { $$ = new_parent_node("VarUse", GROUP_9 + 8, 1, $1); } */

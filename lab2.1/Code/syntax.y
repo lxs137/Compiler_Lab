@@ -46,7 +46,7 @@
 %type <type_node> DSList
 %type <type_node> Program
 %type <type_node> Specifier
-%type <type_node> VarDec FuncDec VarList ParamDec
+%type <type_node> VarDec FuncDec VarList ParamDec VarUse
 %type <type_node> CompSt Stmt
 %type <type_node> VarDef DecList Dec
 %type <type_node> Exp Args
@@ -247,13 +247,16 @@ DecList
     | Dec COMMA DecList { $$ = new_parent_node("DecList", GROUP_9 + 4, 2, $1, $3); }
     ;
 Dec
-    : VarDec { $$ = new_parent_node("Dec", GROUP_9 + 4, 1, $1); }
-    | VarDec ASSIGNOP Exp { $$ = new_parent_node("Dec", GROUP_9 + 5, 2, $1, $3); }
+    : VarDec { $$ = new_parent_node("Dec", GROUP_9 + 5, 1, $1); }
+    | VarDec ASSIGNOP Exp { $$ = new_parent_node("Dec", GROUP_9 + 6, 2, $1, $3); }
     ;
 /* Declarators */
 VarDec
-    : LOWERID { $$ = new_parent_node("VarDec", GROUP_9 + 6, 1, $1); }
+    : LOWERID { $$ = new_parent_node("VarDec", GROUP_9 + 7, 1, $1); }
     ;
+/* Using Variables */
+VarUse
+    : LOWERID { $$ = new_parent_node("VarUse", GROUP_9 + 8, 1, $1); }
 
 /* Expressions */
 Exp
@@ -278,7 +281,7 @@ Exp
     /* 从ADT中取数据 */
     | Exp DOT INT { $$ = new_parent_node("Exp", GROUP_10 + 15, 2, $1, $3); }
     /* Exp building block */
-    | VarDec { $$ = new_parent_node("Exp", GROUP_10 + 16, 1, $1); }
+    | VarUse { $$ = new_parent_node("Exp", GROUP_10 + 16, 1, $1); }
     | INT { $$ = new_parent_node("Exp", GROUP_10 + 17, 1, $1); }
     | FLOAT { $$ = new_parent_node("Exp", GROUP_10 + 18, 1, $1); }
     | FuncBody { $$ = new_parent_node("Exp", GROUP_10 + 19, 1, $1); }
