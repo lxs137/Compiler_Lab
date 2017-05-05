@@ -1,1 +1,3 @@
-Int a
+let a = (Int a, Int b) -> Int {
+    return 1
+}

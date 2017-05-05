@@ -164,7 +164,7 @@ SD(907)
 void initActionTable9()
 {
     IS(901, 903, 904, 905);
-    SS(905, 906, 907);
+    SS(901, 903, 904, 905, 906, 907);
 }
 
 /* Using Variables */
