@@ -1,3 +1,12 @@
+add VarDec: a in symbol table. (SD(407))
+add VarDec: b in symbol table. (SD(407))
+add varDec: a in symbol table. (SD(906))
+add varDec: c in symbol table. (SD(906))
+add varDec: f in symbol table. (SD(906))
+add ADTParam: Maybe-a in symbol table. (SD(704))
+add TypeId: Maybe in symbol table. (SD(703))
+add ConstructorId: Just in symbol table. (SD(709))
+add ConstructorId: Nothing in symbol table. (SD(709))
 symbol table 1.1 begin.
 name: Just, pointer: 0x51e76f0
 name: Maybe, pointer: 0x51e70f0
