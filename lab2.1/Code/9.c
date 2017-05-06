@@ -1,5 +1,6 @@
 #include "SDTAction.h"
 #include "9.h"
+#include <string.h>
 
 /* Local Definitions */
 /* VarDef */
@@ -140,6 +141,17 @@ SD(906)
     D_child_1_info;
     assert(child_1_info != NULL);
     addSymbol((char *)((TypeInfo *)child_1_info)->nextInfo, child_1);
+
+    if (child_1_info->typeKind == BuildInType && (intptr_t)child_1_info->node == Let)
+    {
+        TypeInfo *info = (TypeInfo *)malloc(sizeof(TypeInfo));
+        D_child_2_info;
+        char *c = (char *)((TypeInfo *)child_1_info)->nextInfo;
+        memcpy(info, child_2_info, sizeof(TypeInfo));
+        info->nextInfo = c;
+        child_1->other_info = info;
+    }
+
 #ifdef st_debug_print
     printf("add varDec: %s in symbol table. (SD(906))\n", (char *)((TypeInfo *)child_1_info)->nextInfo);
 #endif
