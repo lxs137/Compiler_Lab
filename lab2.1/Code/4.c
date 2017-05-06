@@ -363,27 +363,32 @@ SDS(411, 412)
 
 ID(412)
 {
-    D_parent_info;
-    FunctionNode *node = parent_info->node;
-    TypeInfo *pa = node->paramTypeInfo;
-    if (node->returnTypeInfo->typeKind != FunctionType)
+    if (childNum == 2)
     {
-        parent->other_info = parent->other_info;
-    }
-    else
-    {
-        while (node->returnTypeInfo->typeKind == FunctionType)
+        D_parent_info;
+        FunctionNode *node = parent_info->node;
+        TypeInfo *pa = node->paramTypeInfo;
+        if (node->returnTypeInfo->typeKind != FunctionType)
         {
-            node = (FunctionNode *)node->returnTypeInfo->node;
+            /* parent->other_info = parent->other_info; */
+            child->other_info = parent->other_info;
         }
-        TypeInfo *info = malloc(sizeof(TypeInfo));
-        info->typeKind = FunctionType;
-        info->nextInfo = NULL;
-        FunctionNode *new = malloc(sizeof(FunctionNode));
-        new->returnTypeInfo = node->returnTypeInfo;
-        new->paramTypeInfo = pa;
-        info->node = new;
-        node->returnTypeInfo = info;
+        else
+        {
+            while (node->returnTypeInfo->typeKind == FunctionType)
+            {
+                node = (FunctionNode *)node->returnTypeInfo->node;
+            }
+            TypeInfo *info = malloc(sizeof(TypeInfo));
+            info->typeKind = FunctionType;
+            info->nextInfo = NULL;
+            FunctionNode *new = malloc(sizeof(FunctionNode));
+            new->returnTypeInfo = node->returnTypeInfo;
+            new->paramTypeInfo = pa;
+            info->node = new;
+            node->returnTypeInfo = info;
+            child->other_info = parent_info;
+        }
     }
 }
 

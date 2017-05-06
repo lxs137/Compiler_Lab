@@ -93,6 +93,11 @@ ws [ \t]
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "MINUS");
     return MINUS;
 }
+"_"    {
+    print_loc_info("PLACEHOLDER");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "PLACEHOLDER");
+    return PLACEHOLDER;
+}
 "*"    {
     print_loc_info("STAR");
     yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "STAR");

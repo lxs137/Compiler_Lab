@@ -1,4 +1,4 @@
-let f = (Int a) -> Int {
+let f = (Int a, Float b) -> Int {
     return a
 }
-f(1)
+f(_, 1)
