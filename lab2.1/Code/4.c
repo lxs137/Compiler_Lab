@@ -317,8 +317,9 @@ SD(409)
     {
         parent->other_info = child_1_info;
     }
-#ifndef exp_type_debug_print
+#ifdef exp_type_debug_print
     printTypeInfo(parent->other_info);
+    printf("\n");
 #endif
 }
 
