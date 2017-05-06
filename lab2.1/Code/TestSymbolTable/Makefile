@@ -1,4 +1,3 @@
-current_dir = $(shell pwd)
 objects = 1 2
 
 include ../commonFunction.md

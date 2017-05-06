@@ -1,3 +1,5 @@
+current_dir = $(shell pwd)
+
 define compileAbstractTemplate
     @ cp DebugMacro.h ../DebugMacro.h
     @ cd .. && make > $(current_dir)/compile.output 2>&1
