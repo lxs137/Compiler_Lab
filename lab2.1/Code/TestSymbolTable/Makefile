@@ -1,37 +1,40 @@
 current_dir = $(shell pwd)
+objects = 1 2
 
 include ../commonFunction.md
 
-.PHONY: all insert updateExpect clean
+include ../commonMakefile
 
-all: insert
+# .PHONY: all insert updateExpect clean
 
-compileAbstract:
-	@ $(call compileAbstractTemplate)
+# all: insert
 
-compileDetail:
-	@ $(call compileDetailTemplate)
+# compileAbstract:
+# 	@ $(call compileAbstractTemplate)
 
-runAbstract:
-	@ $(call runAbstractTemplate, 1 2)
+# compileDetail:
+# 	@ $(call compileDetailTemplate)
 
-runDetail:
-	@ $(call runDetailTemplate, 1 2)
+# runAbstract:
+# 	@ $(call runAbstractTemplate, 1 2)
 
-testAbstract:
-	@ $(call testAbstractTemplate, 1 2)
+# runDetail:
+# 	@ $(call runDetailTemplate, 1 2)
 
-testDetail:
-	@ $(call testDetailTemplate, 1 2)
+# testAbstract:
+# 	@ $(call testAbstractTemplate, 1 2)
 
-checkMemoryAbstract:
-	@ $(call checkMemoryAbstractTemplate, 1 2)
+# testDetail:
+# 	@ $(call testDetailTemplate, 1 2)
 
-checkMemoryDetail:
-	@ $(call checkMemoryDetailTemplate, 1 2)
+# checkMemoryAbstract:
+# 	@ $(call checkMemoryAbstractTemplate, 1 2)
 
-clean:
-	@ $(call cleanTemplate)
+# checkMemoryDetail:
+# 	@ $(call checkMemoryDetailTemplate, 1 2)
 
-updateExpect:
-	@ $(call updateExpectTemplate, 1 2, '.')
+# clean:
+# 	@ $(call cleanTemplate)
+
+# updateExpect:
+# 	@ $(call updateExpectTemplate, 1 2, '.')
