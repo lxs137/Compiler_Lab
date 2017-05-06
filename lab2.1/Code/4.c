@@ -303,6 +303,25 @@ SD(408)
 /*     : Exp LP RP { $$ = new_parent_node("FuncCall", GROUP_4 + 9, 1, $1); } */
 /*     | Exp LP Args RP { $$ = new_parent_node("FuncCall", GROUP_4 + 10, 2, $1, $3); } */
 /*     ; */
+SD(409)
+{
+    D_child_1_info;
+    assert(child_1_info->typeKind == FunctionType);
+    /* assert(child_1_info->nextInfo == NULL); */
+    FunctionNode *node = (FunctionNode *)child_1_info->node;
+    if (node->paramTypeInfo == NULL)
+    {
+        parent->other_info = node->returnTypeInfo;
+    }
+    else
+    {
+        parent->other_info = child_1_info;
+    }
+#ifndef exp_type_debug_print
+    printTypeInfo(parent->other_info);
+#endif
+}
+
 /* Args */
 /*     : Exp COMMA Args { $$ = new_parent_node("Args", GROUP_4 + 11, 2, $1, $3); } */
 /*     | PLACEHOLDER COMMA Args { $$ = new_parent_node("Args", GROUP_4 + 12, 2, $1, $3); } */
@@ -315,7 +334,7 @@ void initActionTable4()
     /* registerIAction(408, pro408IAction); */
     /* SS(401, 407, 408); */
     IS(407, 408);
-    SS(401, 402, 403, 404, 405, 406, 407, 408);
+    SS(401, 402, 403, 404, 405, 406, 407, 408, 409);
     /* registerSAction(408, pro408SAction); */
     /* registerSAction(407, pro407SAction); */
 }
