@@ -23,10 +23,11 @@ define runAbstractTemplate
 endef
 
 define runDetailTemplate
-    @ for i in $1; \
-    do \
-        cat $$i.output; \
-    done
+    <!-- @ for i in $1; \ -->
+    <!-- do \ -->
+    <!--     cat $$i.output; \ -->
+    <!-- done -->
+    @ cat run.output
 endef
 
 define testAbstractTemplate
