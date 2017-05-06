@@ -366,30 +366,35 @@ ID(412)
     if (childNum == 2)
     {
         D_parent_info;
+        printTypeInfo(parent_info);
         FunctionNode *node = parent_info->node;
         TypeInfo *pa = node->paramTypeInfo;
+        TypeInfo *r = node->returnTypeInfo;
         if (node->returnTypeInfo->typeKind != FunctionType)
         {
             /* parent->other_info = parent->other_info; */
             child->other_info = parent->other_info;
+            assert(0);
         }
         else
         {
-            while (node->returnTypeInfo->typeKind == FunctionType)
-            {
-                node = (FunctionNode *)node->returnTypeInfo->node;
-            }
-            TypeInfo *info = malloc(sizeof(TypeInfo));
-            info->typeKind = FunctionType;
-            info->nextInfo = NULL;
-            FunctionNode *new = malloc(sizeof(FunctionNode));
-            new->returnTypeInfo = node->returnTypeInfo;
-            new->paramTypeInfo = pa;
-            info->node = new;
-            node->returnTypeInfo = info;
-            child->other_info = parent_info;
+            /* while (node->returnTypeInfo->typeKind == FunctionType) */
+            /* { */
+            /*     node = (FunctionNode *)node->returnTypeInfo->node; */
+            /* } */
+            /* TypeInfo *info = malloc(sizeof(TypeInfo)); */
+            /* info->typeKind = FunctionType; */
+            /* info->nextInfo = NULL; */
+            /* FunctionNode *new = malloc(sizeof(FunctionNode)); */
+            /* new->returnTypeInfo = node->returnTypeInfo; */
+            /* new->paramTypeInfo = pa; */
+            /* info->node = new; */
+            /* node->returnTypeInfo = info; */
+            child->other_info = r;
         }
     }
+    /* printTypeInfo(child->other_info); */
+    /* printf("\n"); */
 }
 
 SD(413)
