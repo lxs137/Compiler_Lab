@@ -16,7 +16,7 @@ define runAbstractTemplate
             --show-leak-kinds=all \
             --track-origins=yes \
             --log-file="mem_log_$$i" \
-        ../parser $$i.cmm > $$i.output; \
+        ../parser $$i.cmm > $$i.output 2>> run.output;\
     done
 endef
 
