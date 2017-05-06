@@ -323,19 +323,57 @@ SD(409)
 #endif
 }
 
+ID(410)
+{
+    if (childNum == 2)
+    {
+        D_child_1_info;
+        child->other_info = child_1_info;
+    }
+}
+SD(410)
+{
+    D_child_2_info;
+    parent->other_info = child_2_info;
+#ifdef function_type_debug_print
+    printTypeInfo(parent->other_info);
+    printf(" (SD(410))\n");
+#endif
+}
+
 /* Args */
 /*     : Exp COMMA Args { $$ = new_parent_node("Args", GROUP_4 + 11, 2, $1, $3); } */
 /*     | PLACEHOLDER COMMA Args { $$ = new_parent_node("Args", GROUP_4 + 12, 2, $1, $3); } */
 /*     | Exp { $$ = new_parent_node("Args", GROUP_4 + 13, 0); } */
 /*     ; */
 
+ID(411)
+{
+    if (childNum == 2)
+    {
+        D_parent_info;
+        child->other_info = ((FunctionNode *)parent_info->node)->returnTypeInfo;
+    }
+}
+SD(411)
+{
+    D_child_2_info;
+    parent->other_info = child_2_info;
+}
+
+SD(413)
+{
+    D_parent_info;
+    parent->other_info = ((FunctionNode *)parent_info->node)->returnTypeInfo;
+}
+
 void initActionTable4()
 {
     /* IS(408); */
     /* registerIAction(408, pro408IAction); */
     /* SS(401, 407, 408); */
-    IS(407, 408);
-    SS(401, 402, 403, 404, 405, 406, 407, 408, 409);
+    IS(407, 408, 410, 411);
+    SS(401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 413);
     /* registerSAction(408, pro408SAction); */
     /* registerSAction(407, pro407SAction); */
 }
