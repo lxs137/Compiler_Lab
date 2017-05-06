@@ -1,12 +1,34 @@
+current_dir = $(shell pwd)
+
 include ../commonFunction.md
 
 .PHONY: all insert updateExpect clean
 
 all: insert
 
-insert: 
-	@ $(call compileTemplate, '.') > unused_log
-	@ $(call testTemplate, 1 2, '.')
+compileAbstract:
+	@ $(call compileAbstractTemplate)
+
+compileDetail:
+	@ $(call compileDetailTemplate)
+
+runAbstract:
+	@ $(call runAbstractTemplate, 1 2)
+
+runDetail:
+	@ $(call runDetailTemplate, 1 2)
+
+testAbstract:
+	@ $(call testAbstractTemplate, 1 2)
+
+testDetail:
+	@ $(call testDetailTemplate, 1 2)
+
+checkMemoryAbstract:
+	@ $(call checkMemoryAbstractTemplate, 1 2)
+
+checkMemoryDetail:
+	@ $(call checkMemoryDetailTemplate, 1 2)
 
 clean:
 	@ $(call cleanTemplate)
