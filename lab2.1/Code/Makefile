@@ -17,7 +17,7 @@ YFC = $(shell find ./ -name "*.y" | sed s/[^/]*\\.y/syntax.tab.c/)
 LFO = $(LFC:.c=.o)
 YFO = $(YFC:.c=.o)
 
-parser: clean syntax $(filter-out $(LFO),$(OBJS))
+parser: syntax $(filter-out $(LFO),$(OBJS))
 	$(CC) -o parser $(filter-out $(LFO),$(OBJS)) -lfl -ly
 
 syntax: lexical syntax-c
@@ -28,7 +28,7 @@ lexical: $(LFILE)
 
 syntax-c: $(YFILE)
 	$(BISON) -o $(YFC) -d -t -v $(YFILE)
-
+# make > compile.output 2>&1
 -include $(patsubst %.o, %.d, $(OBJS))
 
 # 定义的一些伪目标
@@ -45,7 +45,13 @@ test:
 debug:
 	cp DebugMacroCopy.h DebugMacro.h
 	make
-	./parser test.cmm
+	valgrind ./parser test.cmm
+	echo "FINISH"
+	# cmp
+
+FILES = Makefile Makefile Makefile
+num:
+	./test.sh $(FILES)
 
 clean:
 	- @ for subdir in $(SUBDIRS); do \
