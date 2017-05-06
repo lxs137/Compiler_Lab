@@ -9,3 +9,4 @@ let f = (Int a, Int b) -> Func(Int -> Int) {
     }
     return g
 }
+f
