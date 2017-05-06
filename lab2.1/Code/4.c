@@ -256,7 +256,10 @@ SD(407)
     D_child_2;
     D_child_2_info;
     assert(child_2_info != NULL);
-    addSymbol((char *)child_2_info, child_2);
+    addSymbol((char *)((TypeInfo *)child_2_info)->nextInfo, child_2);
+#ifdef st_debug_print
+    printf("add VarDec: %s in symbol table. (SD(407))\n", (char *)((TypeInfo *)child_2_info)->nextInfo);
+#endif
 }
 
 /* FuncBody */

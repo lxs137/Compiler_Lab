@@ -54,6 +54,11 @@ SD(703)
     D_child_1_info;
     assert(child_1_info != NULL);
     addSymbol((char *)child_1_info, child_1);
+#ifdef st_debug_print
+    printf("add TypeId: %s in symbol table. (SD(703))\n", (char *)child_1_info);
+#endif
+
+
     /* 回收SD(714)分配的资源 */
     child_1->other_info = NULL;
 
@@ -85,6 +90,9 @@ SD(704)
     D_child_1_info;
     D_child_1;
     addSymbol((char *)child_1_info, child_1);
+#ifdef st_debug_print
+    printf("add ADTParam: %s in symbol table. (SD(704))\n", (char *)child_1_info);
+#endif
 
     D_child_2;
     /* 回收ID(704)分配的资源 */
@@ -177,6 +185,10 @@ SD(709)
     D_child_1_info;
     assert(child_1_info != NULL);
     addSymbol((char *)child_1_info, child_1);
+#ifdef st_debug_print
+    printf("add ConstructorId: %s in symbol table. (SD(709))\n", (char *)child_1_info);
+#endif
+
     /* 回收SD(710)分配的资源 */
     child_1->other_info = NULL;
 

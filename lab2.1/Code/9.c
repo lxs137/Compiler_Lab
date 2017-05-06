@@ -113,7 +113,10 @@ SD(905)
     D_child_1;
     D_child_1_info;
     assert(child_1_info != NULL);
-    addSymbol((char *)child_1_info, child_1);
+    addSymbol((char *)((TypeInfo *)child_1_info)->nextInfo, child_1);
+#ifdef st_debug_print
+    printf("add varDec: %s in symbol table. (SD(906))\n", (char *)((TypeInfo *)child_1_info)->nextInfo);
+#endif
 }
 
 ID(906)
@@ -136,7 +139,10 @@ SD(906)
     D_child_1;
     D_child_1_info;
     assert(child_1_info != NULL);
-    addSymbol((char *)child_1_info, child_1);
+    addSymbol((char *)((TypeInfo *)child_1_info)->nextInfo, child_1);
+#ifdef st_debug_print
+    printf("add varDec: %s in symbol table. (SD(906))\n", (char *)((TypeInfo *)child_1_info)->nextInfo);
+#endif
 }
 
 /* Declarators */
