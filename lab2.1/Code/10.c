@@ -96,7 +96,7 @@ SD(1016)
 #ifdef exp_type_debug_print
     D_parent_info;
     printTypeInfo(parent_info);
-    printf("\n");
+    printf(" (SD(1016))\n");
 #endif
 }
 
@@ -119,7 +119,7 @@ SD(1019)
 #ifdef exp_type_debug_print
     D_parent_info;
     printTypeInfo(parent_info);
-    printf("\n");
+    printf(" (SD(1019))\n");
 #endif
 }
 

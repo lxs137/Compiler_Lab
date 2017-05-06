@@ -162,7 +162,7 @@ SD(907)
 
 #ifdef exp_type_debug_print
     printTypeInfo(parent_info);
-    printf(" (id: %s)", (char *)parent_info->nextInfo);
+    printf(" (VarDec: %s)", (char *)parent_info->nextInfo);
     printf(" (SD(907))\n");
 #endif
 }
