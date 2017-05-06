@@ -28,7 +28,7 @@ lexical: $(LFILE)
 
 syntax-c: $(YFILE)
 	$(BISON) -o $(YFC) -d -t -v $(YFILE)
-# make > compile.output 2>&1
+
 -include $(patsubst %.o, %.d, $(OBJS))
 
 # 定义的一些伪目标
@@ -45,13 +45,7 @@ test:
 debug:
 	cp DebugMacroCopy.h DebugMacro.h
 	make
-	valgrind ./parser test.cmm
-	echo "FINISH"
-	# cmp
-
-FILES = Makefile Makefile Makefile
-num:
-	./test.sh $(FILES)
+	./parser test.cmm
 
 clean:
 	- @ for subdir in $(SUBDIRS); do \
@@ -61,7 +55,4 @@ clean:
 	- @ rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output
 	- @ rm -f $(OBJS) $(OBJS:.o=.d)
 	- @ rm -f $(LFC) $(YFC) $(YFC:.c=.h)
-	- @ rm -f mem_log_*
-	- @ rm -f unused_log
-	- @ rm -f test_result_*.output
 	- @ rm -f core
