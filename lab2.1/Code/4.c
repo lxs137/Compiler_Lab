@@ -355,10 +355,36 @@ ID(411)
         child->other_info = ((FunctionNode *)parent_info->node)->returnTypeInfo;
     }
 }
-SD(411)
+SDS(411, 412)
 {
     D_child_2_info;
     parent->other_info = child_2_info;
+}
+
+ID(412)
+{
+    D_parent_info;
+    FunctionNode *node = parent_info->node;
+    TypeInfo *pa = node->paramTypeInfo;
+    if (node->returnTypeInfo->typeKind != FunctionType)
+    {
+        parent->other_info = parent->other_info;
+    }
+    else
+    {
+        while (node->returnTypeInfo->typeKind == FunctionType)
+        {
+            node = (FunctionNode *)node->returnTypeInfo->node;
+        }
+        TypeInfo *info = malloc(sizeof(TypeInfo));
+        info->typeKind = FunctionType;
+        info->nextInfo = NULL;
+        FunctionNode *new = malloc(sizeof(FunctionNode));
+        new->returnTypeInfo = node->returnTypeInfo;
+        new->paramTypeInfo = pa;
+        info->node = new;
+        node->returnTypeInfo = info;
+    }
 }
 
 SD(413)
@@ -372,8 +398,8 @@ void initActionTable4()
     /* IS(408); */
     /* registerIAction(408, pro408IAction); */
     /* SS(401, 407, 408); */
-    IS(407, 408, 410, 411);
-    SS(401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 413);
+    IS(407, 408, 410, 411, 412);
+    SS(401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413);
     /* registerSAction(408, pro408SAction); */
     /* registerSAction(407, pro407SAction); */
 }
