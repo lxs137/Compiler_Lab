@@ -18,7 +18,7 @@
 /*     | REFER LP Exp RP { $$ = new_parent_node("Exp", GROUP_10 + 13, 2, $1, $3); } */
 /*     | DEFER LP Exp RP { $$ = new_parent_node("Exp", GROUP_10 + 14, 2, $1, $3); } */
 /*     | Exp DOT INT { $$ = new_parent_node("Exp", GROUP_10 + 15, 2, $1, $3); } */
-/*     | VarDec { $$ = new_parent_node("Exp", GROUP_10 + 16, 1, $1); } */
+/*     | VarUse { $$ = new_parent_node("Exp", GROUP_10 + 16, 1, $1); } */
 /*     | INT { $$ = new_parent_node("Exp", GROUP_10 + 17, 1, $1); } */
 /*     | FLOAT { $$ = new_parent_node("Exp", GROUP_10 + 18, 1, $1); } */
 /*     | FuncBody { $$ = new_parent_node("Exp", GROUP_10 + 19, 1, $1); } */
@@ -90,7 +90,7 @@ SD(1016)
     assert(info->typeKind != 0);
     void *node = info->node;
     assert(node != NULL);
-    assert(info->nextInfo == NULL);
+    assert(info->nextInfo != NULL);
     parent->other_info = info;
 
 #ifdef exp_type_debug_print

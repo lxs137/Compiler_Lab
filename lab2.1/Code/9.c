@@ -167,12 +167,17 @@ SD(907)
 #endif
 }
 
-void initActionTable9()
-{
-    IS(901, 903, 904, 905, 906);
-    SS(901, 903, 904, 905, 906, 907);
-}
-
 /* Using Variables */
 /* VarUse */
 /*     : LOWERID { $$ = new_parent_node("VarUse", GROUP_9 + 8, 1, $1); } */
+SD(908)
+{
+    D_child_1;
+    parent->other_info = child_1->str + 4;
+}
+
+void initActionTable9()
+{
+    IS(901, 903, 904, 905, 906);
+    SS(901, 903, 904, 905, 906, 907, 908);
+}
