@@ -34,14 +34,6 @@ syntax-c: $(YFILE)
 # 定义的一些伪目标
 .PHONY: clean test
 
-SUBDIRS = TestSymbolTable TestFunction
-
-test:
-	@ for subdir in $(SUBDIRS); do \
-		echo "Making all in $$subdir"; \
-		(cd $$subdir && make all); \
-	done;
-
 debug:
 	cp DebugMacroCopy.h DebugMacro.h
 	make
