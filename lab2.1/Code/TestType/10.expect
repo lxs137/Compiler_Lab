@@ -1,0 +1,2 @@
+nullary(Maybe a)
+unary(a -> Maybe a)
