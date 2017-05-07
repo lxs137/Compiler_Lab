@@ -35,10 +35,7 @@ define runDetailTemplate
 endef
 
 define testAbstractTemplate
-	@ for i in $1; \
-	do \
-	    cmp $$i.output $$i.expect; \
-	done
+    @ ../cmp.sh $1
 endef
 
 define testDetailTemplate
