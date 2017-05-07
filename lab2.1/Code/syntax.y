@@ -178,7 +178,7 @@ ReferType
 /* ADT */
 ADTDef
     : ADTHeader %prec LOWER_THAN_ASSIGNOP SEMI { $$ = new_parent_node("ADTRef", GROUP_7 + 1, 1, $1); }
-    | ADTHeader ASSIGNOP ConstructorDecList { $$ = new_parent_node("ADTHeader", GROUP_7 + 2, 2, $1, $3); }
+    | ADTHeader ASSIGNOP ConstructorDecList { $$ = new_parent_node("ADTDef", GROUP_7 + 2, 2, $1, $3); }
     ;
 ADTHeader
     : DATA TypeId ADTParamList { $$ = new_parent_node("ADTHeader", GROUP_7 + 3, 2, $2, $3); }

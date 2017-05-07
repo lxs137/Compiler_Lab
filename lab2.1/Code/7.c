@@ -356,11 +356,8 @@ SD(714)
     D_child_1;
     /* 把名字继承到父亲 */
     assert(parent->other_info == NULL);
-    TypeInfo *info = malloc(sizeof(TypeInfo));
-    info->typeKind = BuildInType;
-    info->node = (void *)Int;
-    info->nextInfo = NULL;
-    parent->other_info = info;
+    allocPointer();
+    parent->other_info = child_1->str + 4;
 }
 
 /* pattern matching */
