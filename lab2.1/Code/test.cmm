@@ -1,2 +1,2 @@
-Func(Int -> Float -> Int) f
-f(_, 1.0)
+data Maybe = Just A
+             Nothing B V

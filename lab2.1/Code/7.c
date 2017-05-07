@@ -226,6 +226,27 @@ ID(711)
 }
 SD(711)
 {
+    D_child_2_info;
+    D_child_1_info;
+    if (((FunctionNode *)child_2_info->node)->paramTypeInfo == NULL)
+    {
+        ((FunctionNode *)child_2_info->node)->paramTypeInfo = child_1_info;
+        parent->other_info = child_2_info;
+        printTypeInfo(parent->other_info);
+    }
+    else
+    {
+        FunctionNode *node = malloc(sizeof(FunctionNode));
+        node->paramTypeInfo = child_1_info;
+        node->returnTypeInfo = child_2_info;
+        TypeInfo *info = malloc(sizeof(TypeInfo));
+        info->node = node;
+        info->typeKind = FunctionType;
+        info->nextInfo = NULL;
+        parent->other_info = info;
+        printTypeInfo(parent->other_info);
+    }
+
     D_child_1;
     assert(child_1->other_info != NULL);
     /* 回收SD(714)分配的资源 */
@@ -260,6 +281,23 @@ SD(712)
     child_2->other_info = NULL;
 }
 
+SD(713)
+{
+    FunctionNode *node = malloc(sizeof(FunctionNode));
+    node->paramTypeInfo = NULL;
+    TypeInfo *returnTypeInfo = malloc(sizeof(TypeInfo));
+    returnTypeInfo->typeKind = AlgebraicDataType;
+    returnTypeInfo->node = malloc(sizeof(AlgebraicDataTypeNode));
+    returnTypeInfo->nextInfo = NULL;
+    D_parent_info;
+    ((AlgebraicDataTypeNode *)returnTypeInfo->node)->typeIdName = (char *)parent_info;
+    node->returnTypeInfo = returnTypeInfo;
+    parent->other_info = malloc(sizeof(TypeInfo));
+    ((TypeInfo *)parent->other_info)->node = node;
+    ((TypeInfo *)parent->other_info)->nextInfo = NULL;
+    ((TypeInfo *)parent->other_info)->typeKind = FunctionType;
+}
+
 /* TypeId */
 /*     : UPPERID { $$ = new_parent_node("TypeId", GROUP_7 + 14, 1, $1); } */
 /*     ; */
@@ -268,7 +306,11 @@ SD(714)
     D_child_1;
     /* 把名字继承到父亲 */
     assert(parent->other_info == NULL);
-    parent->other_info = (void *)child_1->str + 4;
+    TypeInfo *info = malloc(sizeof(TypeInfo));
+    info->typeKind = BuildInType;
+    info->node = (void *)Int;
+    info->nextInfo = NULL;
+    parent->other_info = info;
 }
 
 /* pattern matching */
@@ -290,5 +332,5 @@ SD(714)
 void initActionTable7()
 {
     IS(702, 703, 704, 707, 708, 709, 711, 712);
-    SS(702, 703, 704, 706, 707, 708, 709, 710, 711, 712, 714);
+    SS(702, 703, 704, 706, 707, 708, 709, 710, 711, 712, 713, 714);
 }
