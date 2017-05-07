@@ -308,9 +308,6 @@ SD(711)
     parent->other_info = info;
     D_parent_info;
     parent_info->nextInfo = str;
-#ifdef type_debug_print
-    printTypeInfo(parent_info);
-#endif
 
     /* 回收ID(711)分配的资源 */
     assert(child_2_info != NULL);
