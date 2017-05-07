@@ -1,2 +1,2 @@
-nullary(Maybe a)
-unary(a -> Maybe a)
+nullary(Maybe) (SD(709))
+unary(Maybe-a->Maybe) (SD(709))
