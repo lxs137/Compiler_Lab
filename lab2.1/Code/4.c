@@ -366,35 +366,32 @@ ID(412)
     if (childNum == 2)
     {
         D_parent_info;
-        printTypeInfo(parent_info);
-        FunctionNode *node = parent_info->node;
-        TypeInfo *pa = node->paramTypeInfo;
-        TypeInfo *r = node->returnTypeInfo;
-        if (node->returnTypeInfo->typeKind != FunctionType)
+        assert(parent_info != NULL);
+        assert(parent_info->typeKind == FunctionType);
+        assert(parent_info->node != NULL);
+        /* assert(parent_info->nextInfo == NULL); */
+
+        FunctionNode *fn = parent_info->node;
+        TypeInfo *paramTypeInfo = fn->paramTypeInfo;
+        TypeInfo *returnTypeInfo = fn->returnTypeInfo;
+        TypeInfo *realReturnTypeInfo = ((FunctionNode *)returnTypeInfo->node)->returnTypeInfo;
+        while (realReturnTypeInfo->typeKind == FunctionType)
         {
-            /* parent->other_info = parent->other_info; */
-            child->other_info = parent->other_info;
-            assert(0);
+            returnTypeInfo = realReturnTypeInfo;
+            realReturnTypeInfo = ((FunctionNode *)realReturnTypeInfo->node)->returnTypeInfo;
         }
-        else
-        {
-            /* while (node->returnTypeInfo->typeKind == FunctionType) */
-            /* { */
-            /*     node = (FunctionNode *)node->returnTypeInfo->node; */
-            /* } */
-            /* TypeInfo *info = malloc(sizeof(TypeInfo)); */
-            /* info->typeKind = FunctionType; */
-            /* info->nextInfo = NULL; */
-            /* FunctionNode *new = malloc(sizeof(FunctionNode)); */
-            /* new->returnTypeInfo = node->returnTypeInfo; */
-            /* new->paramTypeInfo = pa; */
-            /* info->node = new; */
-            /* node->returnTypeInfo = info; */
-            child->other_info = r;
-        }
+        FunctionNode *node = malloc(sizeof(FunctionNode));
+        node->paramTypeInfo = paramTypeInfo;
+        node->returnTypeInfo = realReturnTypeInfo; 
+        TypeInfo *info = malloc(sizeof(TypeInfo));
+        info->typeKind = FunctionType;
+        info->node = node;
+        info->nextInfo = NULL;
+        ((FunctionNode *)returnTypeInfo->node)->returnTypeInfo = info;
+        child->other_info = ((FunctionNode *)parent_info->node)->returnTypeInfo;
+        printTypeInfo(child->other_info);
+        printf(" (ID(412))\n");
     }
-    /* printTypeInfo(child->other_info); */
-    /* printf("\n"); */
 }
 
 SD(413)

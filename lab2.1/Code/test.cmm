@@ -1,4 +1,2 @@
-let f = (Int a, Float b) -> Int {
-    return a
-}
-f(_, 1)
+Func(Int -> Float -> Int) f
+f(_, 1.0)
