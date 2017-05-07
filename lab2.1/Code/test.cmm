@@ -1,1 +1,2 @@
-data Maybe = Just A
+data Maybe a = Just a
+               Nothing

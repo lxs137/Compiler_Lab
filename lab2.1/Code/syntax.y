@@ -201,7 +201,7 @@ ConstructorId
     : UPPERID { $$ = new_parent_node("ConstructorId", GROUP_7 + 10, 1, $1); }
     ;
 TypeIdList
-    : TypeId TypeIdList { $$ = new_parent_node("TypeIdList", GROUP_7 + 11, 2, $1, $2); }
+    : Specifier TypeIdList { $$ = new_parent_node("TypeIdList", GROUP_7 + 11, 2, $1, $2); }
     | ADTParam TypeIdList { $$ = new_parent_node("TypeIdList", GROUP_7 + 12, 2, $1, $2); }
     /* 分号不能上移，否则冲突 */
     | SEMI { $$ = new_parent_node("TypeIdList", GROUP_7 + 13, 0); }
