@@ -20,6 +20,7 @@ ID(702)
         /* child->oter_info充当继承属性 */
         /* 分配的资源都SD(702)回收 */
         child->other_info = child_1_info;
+        printf("5s (ID(702))\n", child->other_info);
     }
 }
 SD(702)
@@ -132,6 +133,7 @@ ID(707)
         assert(child->other_info == NULL);
         /* 分配的资源由SD(707)回收 */
         child->other_info = parent_info;
+        printf("%s ID(707)\n", child->other_info);
     }
 }
 SD(707)
@@ -176,6 +178,7 @@ ID(709)
         assert(child->other_info == NULL);
         /* 分配的资源由SD(709)回收 */
         child->other_info = parent_info;
+        printf("%s ID(709)\n", (char *)child->other_info);
     }
 }
 SD(709)
@@ -291,6 +294,7 @@ SD(713)
     returnTypeInfo->nextInfo = NULL;
     D_parent_info;
     ((AlgebraicDataTypeNode *)returnTypeInfo->node)->typeIdName = (char *)parent_info;
+    printf("5s\n", (char *)parent_info);
     node->returnTypeInfo = returnTypeInfo;
     parent->other_info = malloc(sizeof(TypeInfo));
     ((TypeInfo *)parent->other_info)->node = node;
