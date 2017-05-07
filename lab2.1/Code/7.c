@@ -58,12 +58,11 @@ SD(703)
     printf("add TypeId: %s in symbol table. (SD(703))\n", (char *)child_1_info);
 #endif
 
+    assert(parent->other_info == NULL);
+    parent->other_info = child_1_info;
 
     /* 回收SD(714)分配的资源 */
     child_1->other_info = NULL;
-
-    assert(parent->other_info == NULL);
-    parent->other_info = child_1_info;
 
     D_child_2;
     /* 回收ID(703)分配的资源 */
