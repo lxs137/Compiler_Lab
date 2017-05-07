@@ -159,13 +159,17 @@ ID(707)
         assert(parent_info != NULL);
         assert(child->other_info == NULL);
         /* 分配的资源由SD(707)回收 */
+	allocPointer();
         child->other_info = parent_info;
     }
 }
 SD(707)
 {
     D_child_1;
+    D_child_1_info;
     /* 回收ID(707)分配的资源 */
+    assert(child_1_info != NULL);
+    allocPointer();
     child_1->other_info = NULL;
 }
 
@@ -177,6 +181,7 @@ ID(708)
         assert(parent_info != NULL);
         assert(child->other_info == NULL);
         /* 分配的资源由SD(708)回收 */
+	allocPointer();
         child->other_info = parent_info;
     }
 }
@@ -186,9 +191,11 @@ SD(708)
     D_child_2;
     assert(child_1->other_info != NULL);
     /* 回收ID(708)分配的资源 */
+    deallocPointer();
     child_1->other_info = NULL;
     assert(child_2->other_info != NULL);
     /* 回收ID(708)分配的资源 */
+    deallocPointer();
     child_2->other_info = NULL;
 }
 
@@ -203,6 +210,7 @@ ID(709)
         assert(parent_info != NULL);
         assert(child->other_info == NULL);
         /* 分配的资源由SD(709)回收 */
+	allocPointer();
         child->other_info = parent_info;
     }
 }
@@ -217,11 +225,13 @@ SD(709)
 #endif
 
     /* 回收SD(710)分配的资源 */
+    deallocPointer();
     child_1->other_info = NULL;
 
     D_child_2;
     assert(child_2->other_info != NULL);
     /* 回收ID(709)分配的资源 */
+    allocPointer();
     child_2->other_info = NULL;
 }
 
@@ -232,7 +242,9 @@ SD(710)
 {
     D_child_1;
     assert(parent->other_info == NULL);
-    /* 分配的资源由SD(709)回收 */
+    /* 分配的资源不回收直到语法树销毁 */
+    allocPointer();
+    noallocPointer();
     parent->other_info = (void *)(child_1->str + 4);
 }
 
@@ -249,40 +261,49 @@ ID(711)
         assert(parent_info != NULL);
         assert(child->other_info == NULL);
         /* 分配的资源由SD(711)回收 */
+	allocPointer();
         child->other_info = parent_info;
     }
 }
 SD(711)
 {
-    D_child_2_info;
     D_child_1_info;
+    D_child_2_info;
+    TypeInfo *info;
     if (((FunctionNode *)child_2_info->node)->paramTypeInfo == NULL)
     {
         ((FunctionNode *)child_2_info->node)->paramTypeInfo = child_1_info;
-        parent->other_info = child_2_info;
-        printTypeInfo(parent->other_info);
+	info = child_2_info;
     }
     else
     {
+        info = malloc(sizeof(TypeInfo));
+        info->typeKind = FunctionType;
         FunctionNode *node = malloc(sizeof(FunctionNode));
         node->paramTypeInfo = child_1_info;
         node->returnTypeInfo = child_2_info;
-        TypeInfo *info = malloc(sizeof(TypeInfo));
         info->node = node;
-        info->typeKind = FunctionType;
         info->nextInfo = NULL;
-        parent->other_info = info;
-        printTypeInfo(parent->other_info);
     }
+    void *str = parent->other_info;
+    /* 分配的资源由SD(711)回收 */
+    allocPointer();
+    parent->other_info = info;
+    D_parent_info;
+    parent_info->nextInfo = str;
+#ifdef constructor_type_debug_print
+    printTypeInfo(parent_info);
+#endif
 
-    D_child_1;
-    assert(child_1->other_info != NULL);
-    /* 回收SD(714)分配的资源 */
-    child_1->other_info = NULL;
-
-    D_child_2;
-    assert(child_2->other_info != NULL);
     /* 回收ID(711)分配的资源 */
+    assert(child_2_info != NULL);
+    assert(child_2_info->nextInfo != NULL);
+    deallocPointer();
+    child_2_info->nextInfo = NULL;
+
+    /* 回收SD(711)分配的资源 */
+    D_child_2;
+    deallocPointer();
     child_2->other_info = NULL;
 }
 
