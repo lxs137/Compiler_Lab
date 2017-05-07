@@ -85,9 +85,10 @@ SD(703)
     /* deallocPointer(); */
     /* child_1->other_info = NULL; */
 
-    D_child_2;
     /* 回收ID(703)分配的资源 */
+    D_child_2;
     assert(child_2->other_info != NULL);
+    deallocPointer();
     child_2->other_info = NULL;
 }
 
@@ -116,12 +117,12 @@ SD(704)
     printf("add ADTParam: %s in symbol table. (SD(704))\n", (char *)child_1_info);
 #endif
 
-    D_child_2;
     /* 回收ID(704)分配的资源 */
     deallocPointer();
     child_1->other_info = NULL;
 
     /* 回收ID(704)分配的资源 */
+    D_child_2;
     D_child_2_info;
     assert(child_2_info != NULL);
     deallocPointer();
@@ -169,7 +170,7 @@ SD(707)
     D_child_1_info;
     /* 回收ID(707)分配的资源 */
     assert(child_1_info != NULL);
-    allocPointer();
+    deallocPointer();
     child_1->other_info = NULL;
 }
 
@@ -224,6 +225,22 @@ SD(709)
     printf("add ConstructorId: %s in symbol table. (SD(709))\n", (char *)child_1_info);
 #endif
 
+    void *str = child_1_info;
+    D_child_2_info;
+    assert(child_2_info != NULL);
+    assert(child_2_info->typeKind == FunctionType);
+    assert(child_2_info->node != NULL);
+    /* assert(child_2_info->nextInfo != NULL); */
+    child_1->other_info = child_2_info;
+    /* 分配的资源不回收直到语法树销毁 */
+    allocPointer();
+    noallocPointer();
+    ((TypeInfo *)child_1->other_info)->nextInfo = str;
+#ifdef type_debug_print
+    printTypeInfo(child_1->other_info);
+    printf(" (SD(709))\n");
+#endif
+
     /* 回收SD(710)分配的资源 */
     deallocPointer();
     child_1->other_info = NULL;
@@ -231,7 +248,7 @@ SD(709)
     D_child_2;
     assert(child_2->other_info != NULL);
     /* 回收ID(709)分配的资源 */
-    allocPointer();
+    deallocPointer();
     child_2->other_info = NULL;
 }
 
@@ -291,7 +308,7 @@ SD(711)
     parent->other_info = info;
     D_parent_info;
     parent_info->nextInfo = str;
-#ifdef constructor_type_debug_print
+#ifdef type_debug_print
     printTypeInfo(parent_info);
 #endif
 
@@ -301,7 +318,7 @@ SD(711)
     deallocPointer();
     child_2_info->nextInfo = NULL;
 
-    /* 回收SD(711)分配的资源 */
+    /* 回收SD(711) / SD(712) / SD(713)分配的资源 */
     D_child_2;
     deallocPointer();
     child_2->other_info = NULL;
@@ -332,20 +349,32 @@ SD(712)
 
 SD(713)
 {
-    FunctionNode *node = malloc(sizeof(FunctionNode));
+    /* info begin */
+    TypeInfo *info = (TypeInfo *)malloc(sizeof(TypeInfo));
+    /* node begin */
+    FunctionNode *node = (FunctionNode *)malloc(sizeof(FunctionNode));
     node->paramTypeInfo = NULL;
-    TypeInfo *returnTypeInfo = malloc(sizeof(TypeInfo));
+    /* returnTypeInfo begin */
+    TypeInfo *returnTypeInfo = (TypeInfo *)malloc(sizeof(TypeInfo));
     returnTypeInfo->typeKind = AlgebraicDataType;
-    returnTypeInfo->node = malloc(sizeof(AlgebraicDataTypeNode));
-    returnTypeInfo->nextInfo = NULL;
+    returnTypeInfo->node = (TypeInfo *)malloc(sizeof(AlgebraicDataTypeNode));
     D_parent_info;
     ((AlgebraicDataTypeNode *)returnTypeInfo->node)->typeIdName = (char *)parent_info;
+    returnTypeInfo->nextInfo = NULL;
+    /* returnTypeInfo end */
     node->returnTypeInfo = returnTypeInfo;
-    parent->other_info = malloc(sizeof(TypeInfo));
-    ((TypeInfo *)parent->other_info)->node = node;
-    ((TypeInfo *)parent->other_info)->nextInfo = NULL;
-    ((TypeInfo *)parent->other_info)->typeKind = FunctionType;
-    printTypeInfo(parent->other_info);
+    /* node end */
+    info->typeKind = FunctionType;
+    info->node = node;
+    info->nextInfo = NULL;
+    /* info end */
+
+    void *str = parent_info;
+    assert(str != NULL);
+    allocPointer();
+    /* 分配的资源由SD(711) / SD(712)回收 */
+    parent->other_info = info;
+    ((TypeInfo *)parent->other_info)->nextInfo = str;
 }
 
 /* TypeId */
@@ -356,7 +385,6 @@ SD(714)
     D_child_1;
     /* 把名字继承到父亲 */
     assert(parent->other_info == NULL);
-    allocPointer();
     parent->other_info = child_1->str + 4;
 }
 
@@ -379,5 +407,5 @@ SD(714)
 void initActionTable7()
 {
     IS(702, 703, 704, 707, 708, 709, 711, 712);
-    SS(702, 703, 704, 706, 707, 708, 709, 710, 711, 712, 713, 714);
+    SS(701, 702, 703, 704, 706, 707, 708, 709, 710, 711, 712, 713, 714);
 }
