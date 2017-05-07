@@ -21,7 +21,7 @@ SD(801)
     D_parent_info;
 
     parent_info->typeKind = BuildInType;
-    if (!strcmp(child_1->str, "INT"))
+    if (strcmp(child_1->str, "INT"))
     {
         parent_info->node = (void *)Int;
     }
