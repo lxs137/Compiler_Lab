@@ -345,6 +345,7 @@ SD(713)
     ((TypeInfo *)parent->other_info)->node = node;
     ((TypeInfo *)parent->other_info)->nextInfo = NULL;
     ((TypeInfo *)parent->other_info)->typeKind = FunctionType;
+    printTypeInfo(parent->other_info);
 }
 
 /* TypeId */
