@@ -334,13 +334,47 @@ ID(712)
 }
 SD(712)
 {
-    D_child_1;
+    D_child_1_info;
+    TypeInfo *i = (TypeInfo *)malloc(sizeof(TypeInfo));
+    i->typeKind = GenericType;
+    GenericTypeNode *n = (GenericTypeNode *)malloc(sizeof(GenericTypeNode));
+    n->genericTypeName = (char *)child_1_info;
+    i->node = n;
+    i->nextInfo = NULL;
+
+    D_child_2_info;
+    TypeInfo *info;
+    if (((FunctionNode *)child_2_info->node)->paramTypeInfo == NULL)
+    {
+        ((FunctionNode *)child_2_info->node)->paramTypeInfo = i;
+	info = child_2_info;
+    }
+    else
+    {
+        info = malloc(sizeof(TypeInfo));
+        info->typeKind = FunctionType;
+        FunctionNode *node = malloc(sizeof(FunctionNode));
+        node->paramTypeInfo = i;
+        node->returnTypeInfo = child_2_info;
+        info->node = node;
+        info->nextInfo = NULL;
+    }
+    void *str = parent->other_info;
+    /* 分配的资源由SD(711)回收 */
+    allocPointer();
+    parent->other_info = info;
+    D_parent_info;
+    parent_info->nextInfo = str;
+
+    /* 回收ID(711)分配的资源 */
+    assert(child_2_info != NULL);
+    assert(child_2_info->nextInfo != NULL);
+    deallocPointer();
+    child_2_info->nextInfo = NULL;
+
+    /* 回收SD(711) / SD(712) / SD(713)分配的资源 */
     D_child_2;
-    assert(child_1->other_info != NULL);
-    /* 回收ID(712)分配的资源 */
-    child_1->other_info = NULL;
-    assert(child_2->other_info != NULL);
-    /* 回收ID(712)分配的资源 */
+    deallocPointer();
     child_2->other_info = NULL;
 }
 

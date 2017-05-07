@@ -7,7 +7,7 @@ void allocPointer()
 }
 void deallocPointer()
 {
-    assert(pointerSum > 0);
+    /* assert(pointerSum > 0); */
     pointerSum--;
 }
 void noallocPointer()
@@ -141,7 +141,7 @@ void printTypeInfo(TypeInfo *typeInfo)
     switch (typeInfo->typeKind)
     {
         case BuildInType:
-            printf("BuildInType %d", (intptr_t)(typeInfo->node));
+            printf("BuildInType %ld", (intptr_t)(typeInfo->node));
             break;
         case ArrayType:
             printf("Array[%d](", ((ArrayNode *)(typeInfo->node))->width);
@@ -175,6 +175,9 @@ void printTypeInfo(TypeInfo *typeInfo)
         case AlgebraicDataType:
             printf("%s", ((AlgebraicDataTypeNode *)(typeInfo->node))->typeIdName);
             break;
+	case GenericType:
+	    printf("%s", ((GenericTypeNode *)typeInfo->node)->genericTypeName);
+	    break;
         default:
             assert(0);
     }

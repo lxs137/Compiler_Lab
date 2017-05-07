@@ -77,7 +77,7 @@ void registerIAction(int proNum, SDTIAction action);
 void registerSAction(int proNum, SDTSAction action);
 void traversalTreePerformAction(AST_node *parent);
 
-enum TypeKindEnum { BuildInType = 1, ArrayType, ReferType, FunctionType, AlgebraicDataType };
+enum TypeKindEnum { BuildInType = 1, ArrayType, ReferType, FunctionType, AlgebraicDataType, GenericType };
 
 typedef struct
 {
@@ -125,6 +125,11 @@ typedef struct
     char *typeIdName;
     ListNode *constructors;
 } AlgebraicDataTypeNode;
+
+typedef struct
+{
+    char *genericTypeName;
+} GenericTypeNode;
 
 void printTypeInfo(TypeInfo *typeInfo);
 
