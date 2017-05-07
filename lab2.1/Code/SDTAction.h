@@ -15,6 +15,10 @@
 #include <assert.h>
 #include <inttypes.h>
 
+void allocPointer();
+void deallocPointer();
+void noallocPointer();
+
 #define I(proNum) registerIAction(proNum, pro##proNum##IAction);
 #define IS(...) FOR_EACH(I, __VA_ARGS__)
 

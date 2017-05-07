@@ -1,5 +1,20 @@
 #include "SDTAction.h"
 
+static int pointerSum = 0;
+void allocPointer()
+{
+    pointerSum++;
+}
+void deallocPointer()
+{
+    assert(pointerSum > 0);
+    pointerSum--;
+}
+void noallocPointer()
+{
+    deallocPointer();
+}
+
 /* 产生式数目 */
 static const int ProCount[10] = { 1, 2, 10, 13, 1, 1, 18, 6, 8, 19};
 static int ProSum = 0;

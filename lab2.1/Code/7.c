@@ -11,26 +11,30 @@ ID(702)
     if (childNum == 2)
     {
         D_child_1_info;
-        /* 断言类型ID已经综合 */
+        /* child_1_info存储的是整个ADT的类型名：如Maybe */
         assert(child_1_info != NULL);
 
-        /* 赋值other_info之前都需要断言它为空 */
-        /* 以防覆盖有用信息 */
         assert(child->other_info == NULL);
-        /* child->oter_info充当继承属性 */
         /* 分配的资源都SD(702)回收 */
         child->other_info = child_1_info;
     }
 }
 SD(702)
 {
-    D_child_1;
-    D_child_2;
     /* 回收SD(703)分配的资源 */
-    assert(child_1->other_info != NULL);
+    D_child_1;
+    D_child_1_info;
+    assert(child_1_info != NULL);
+    /* 断言没有其他资源需要回收 */
+    assert(child_1_info->nextInfo == NULL);
     child_1->other_info = NULL;
+
     /* 回收ID(702)分配的资源 */
-    assert(child_2->other_info != NULL);
+    D_child_2;
+    D_child_2_info;
+    assert(child_2_info != NULL);
+    /* 断言没有其他资源需要回收 */
+    assert(child_2_info->nextInfo == NULL);
     child_2->other_info = NULL;
 }
 
@@ -59,6 +63,8 @@ SD(703)
 #endif
 
     assert(parent->other_info == NULL);
+    /* 分配的资源由SD(701) / SD(702)回收 */
+    /* 分配的资源是ADT的类型名称，如Maybe */
     parent->other_info = child_1_info;
 
     /* 回收SD(714)分配的资源 */
