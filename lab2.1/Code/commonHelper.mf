@@ -44,7 +44,7 @@ endef
 define testDetailTemplate
     @ for i in $1; \
     do \
-        echo "Comparing $$i.output"; \
+        echo "Comparing $$i.output and $$i.expect"; \
         diff $$i.output $$i.expect; \
         echo ""; \
     done
