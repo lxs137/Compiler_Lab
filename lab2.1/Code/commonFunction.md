@@ -18,16 +18,20 @@ define runAbstractTemplate
             --show-leak-kinds=all \
             --track-origins=yes \
             --log-file="mem_log_$$i" \
-        ../parser $$i.cmm > $$i.output 2>> run.output;\
+        ../parser $$i.cmm > $$i.output 2>> run.output; \
     done
 endef
 
 define runDetailTemplate
-    <!-- @ for i in $1; \ -->
-    <!-- do \ -->
-    <!--     cat $$i.output; \ -->
-    <!-- done -->
+    @ for i in $1; \
+    do \
+        echo "$$i.output"; \
+        cat $$i.output; \
+        echo ""; \
+    done
+    echo "run.output"
     @ cat run.output
+    echo ""
 endef
 
 define testAbstractTemplate
@@ -40,7 +44,9 @@ endef
 define testDetailTemplate
     @ for i in $1; \
     do \
+        echo "Comparing $$i.output"; \
         diff $$i.output $$i.expect; \
+        echo ""; \
     done
 endef
 
@@ -51,7 +57,9 @@ endef
 define checkMemoryDetailTemplate
     @ for i in $1; \
     do \
+        echo "mem_log_$$i"; \
         cat mem_log_$$i; \
+        echo ""; \
     done
 endef
 
