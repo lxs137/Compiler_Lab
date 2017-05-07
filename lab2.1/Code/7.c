@@ -6,6 +6,19 @@
 /*     : ADTHeader %prec LOWER_THAN_ASSIGNOP SEMI { $$ = new_parent_node("ADTRef", GROUP_7 + 1, 1, $1); } */
 /*     | ADTHeader ASSIGNOP ConstructorDecList { $$ = new_parent_node("ADTHeader", GROUP_7 + 2, 2, $1, $3); } */
 /*     ; */
+SD(701)
+{
+    /* 回收SD(703)分配的资源 */
+    D_child_1;
+    D_child_1_info;
+    assert(child_1_info != NULL);
+    /* 断言没有其他资源需要回收 */
+    /* child_1_info是char *类型，不可能有nextInfo */
+    /* assert(child_1_info->nextInfo == NULL); */
+    deallocPointer();
+    child_1->other_info = NULL;
+}
+
 ID(702)
 {
     if (childNum == 2)
@@ -16,6 +29,7 @@ ID(702)
 
         assert(child->other_info == NULL);
         /* 分配的资源都SD(702)回收 */
+	allocPointer();
         child->other_info = child_1_info;
     }
 }
@@ -25,16 +39,14 @@ SD(702)
     D_child_1;
     D_child_1_info;
     assert(child_1_info != NULL);
-    /* 断言没有其他资源需要回收 */
-    assert(child_1_info->nextInfo == NULL);
+    deallocPointer();
     child_1->other_info = NULL;
 
     /* 回收ID(702)分配的资源 */
     D_child_2;
     D_child_2_info;
     assert(child_2_info != NULL);
-    /* 断言没有其他资源需要回收 */
-    assert(child_2_info->nextInfo == NULL);
+    deallocPointer();
     child_2->other_info = NULL;
 }
 
@@ -49,6 +61,7 @@ ID(703)
         assert(child_1_info != NULL);
         assert(child->other_info == NULL);
         /* 分配的资源由SD(703)回收 */
+	allocPointer();
         child->other_info = child_1_info;
     }
 }
@@ -65,10 +78,12 @@ SD(703)
     assert(parent->other_info == NULL);
     /* 分配的资源由SD(701) / SD(702)回收 */
     /* 分配的资源是ADT的类型名称，如Maybe */
+    allocPointer();
     parent->other_info = child_1_info;
 
-    /* 回收SD(714)分配的资源 */
-    child_1->other_info = NULL;
+    /* /1* 回收SD(714)分配的资源 *1/ */
+    /* deallocPointer(); */
+    /* child_1->other_info = NULL; */
 
     D_child_2;
     /* 回收ID(703)分配的资源 */
@@ -78,7 +93,7 @@ SD(703)
 
 /* ADTParamList */
 /*     : ADTParam ADTParamList { $$ = new_parent_node("ADTParamList", GROUP_7 + 4, 2, $1, $2); } */
-/*     | /1* empty *1/ { $$ = new_parent_node("ADTParamList", GROUP_7 + 5, 0); } */
+/*     | { $$ = new_parent_node("ADTParamList", GROUP_7 + 5, 0); } */
 /*     ; */
 ID(704)
 {
@@ -87,6 +102,7 @@ ID(704)
         assert(parent->other_info != NULL);
         assert(child->other_info == NULL);
         /* 分配的资源由SD(704)回收 */
+	allocPointer();
         child->other_info = parent->other_info;
     }
 }
@@ -94,6 +110,7 @@ SD(704)
 {
     D_child_1_info;
     D_child_1;
+    assert(child_1_info != NULL);
     addSymbol((char *)child_1_info, child_1);
 #ifdef st_debug_print
     printf("add ADTParam: %s in symbol table. (SD(704))\n", (char *)child_1_info);
@@ -101,8 +118,13 @@ SD(704)
 
     D_child_2;
     /* 回收ID(704)分配的资源 */
+    deallocPointer();
     child_1->other_info = NULL;
+
     /* 回收ID(704)分配的资源 */
+    D_child_2_info;
+    assert(child_2_info != NULL);
+    deallocPointer();
     child_2->other_info = NULL;
 }
 
