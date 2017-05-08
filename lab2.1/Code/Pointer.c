@@ -4,19 +4,11 @@
 /* #include <assert.h> */
 /* #define assert(exp) ; */
 
-typedef struct EP
-{
-    int proNum;
-    struct EP *next;
-} ExpectProNum;
-
 typedef struct PL
 {
     int allocProNum;
-    ExpectProNum *expectDeallocProNums;
     int deallocProNum;
     void **pointer;
-    int isTypeInfo;
     struct PL *nextPointerLog;
 } PointerLog;
 
@@ -24,18 +16,40 @@ static PointerLog *pl = NULL;
 
 void alloc(int proNum, void **pointer, void *value)
 {
-    /* if (*pointer == NULL) */
-    /* { */
-	/* printf("%d\n", proNum); */
-    /* } */
     /* assert(*pointer == NULL); */
     *pointer = value;
+
+    PointerLog *newPl = (PointerLog *)malloc(sizeof(PointerLog));
+    newPl->allocProNum = proNum;
+    /* 不存在0号产生式，用0代表未赋值 */
+    newPl->deallocProNum = 0;
+    newPl->nextPointerLog = NULL;
+
+    if (pl == NULL)
+    {
+	pl = newPl;
+    }
+    else
+    {
+	pl->nextPointerLog = newPl;
+    }
 }
 
 void dealloc(int proNum, void **pointer)
 {
-    /* assert(*pointer != NULL); */
     *pointer = NULL;
+    PointerLog *tmp;
+    for (tmp = pl; tmp != NULL; tmp = tmp->nextPointerLog)
+    {
+	if (tmp->pointer == pointer)
+	{
+	    tmp->deallocProNum = proNum;
+
+	    *pointer = NULL;
+	    return;
+	}
+    }
+/*     /1* assert(0); *1/ */
 }
 
 /* void alloc(int proNum, void **pointer, void *value, int isTypeInfo, int expectDeallocProNum, ...) */
