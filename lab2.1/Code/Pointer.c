@@ -79,16 +79,17 @@ void overwrite(int proNum, AllocatorRole role, void **pointer, void *value)
     alloc(proNum, role, pointer, value);
 }
 
-void noalloc(void **pointer)
+void noalloc(int proNum, void **pointer)
 {
     PointerLog *tmp;
     for (tmp = pl; tmp != NULL; tmp = tmp->nextPointerLog)
     {
-	if (tmp->pointer == pointer && tmp->deallocProNum == UNALLOC)
-	{
-	    tmp->deallocProNum = NOALLOC;
-	    break;
-	}
+	    if (tmp->pointer == pointer && tmp->deallocProNum == UNALLOC)
+	    {
+	        tmp->deallocProNum = NOALLOC;
+            assert(tmp->allocProNum == proNum);
+	        break;
+	    }
     }
     assert(tmp != NULL);
 }
