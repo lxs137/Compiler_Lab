@@ -80,7 +80,7 @@ void overwrite(int proNum, AllocatorRole role, void **pointer, void *value)
     alloc(proNum, role, pointer, value);
 }
 
-void dealloc(int proNum, void **pointer)
+void dealloc(int proNum, void **pointer, AST_node *parent)
 {
     *pointer = NULL;
     PointerLog *tmp;
@@ -88,15 +88,15 @@ void dealloc(int proNum, void **pointer)
     {
 	if (tmp->pointer == pointer && tmp->deallocProNum == UNALLOC)
 	{
+	    assert(tmp->role != IRole || tmp->allocProNum == proNum);
+	    assert(tmp->role != SRole || isChildProduction(parent, tmp->allocProNum) == true);
 	    tmp->deallocProNum = proNum;
 
 	    *pointer = NULL;
 	    return;
 	}
     }
-#ifdef pointer_debug_print
-    printf("fuck\n");
-#endif
+    assert(0);
 }
 
 void printPointerLog()
