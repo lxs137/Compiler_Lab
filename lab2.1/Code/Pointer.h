@@ -3,8 +3,8 @@
 
 #include <stdarg.h>
 
-#define Alloc(p1, p2) alloc(proNum, (void **)&(p1), (void *)(p2))
-#define Dealloc(p) dealloc(proNum, (void **)&(p))
+#define Alloc(p1, p2) assert((p1) == NULL); alloc(proNum, (void **)&(p1), (void *)(p2))
+#define Dealloc(p) assert((p) != NULL); dealloc(proNum, (void **)&(p))
 
 /* void alloc(int proNum, void **pointer, void *value, int isTypeInfo, int expectDeallocProNum, ...); */
 void alloc(int proNum, void **pointer, void *value);

@@ -230,8 +230,8 @@ NSD(709)
     /* 分配的资源不回收直到语法树销毁 */
     allocPointer();
     noallocPointer();
-    /* ((TypeInfo *)child_1->other_info)->nextInfo = str; */
-    Alloc(((TypeInfo *)child_1->other_info)->nextInfo, str);
+    ((TypeInfo *)child_1->other_info)->nextInfo = str;
+    /* Alloc(((TypeInfo *)child_1->other_info)->nextInfo, str); */
 #ifdef type_debug_print
     printTypeInfo(child_1->other_info);
     printf(" (SD(709))\n");
@@ -348,6 +348,7 @@ NSD(712)
     {
         ((FunctionNode *)child_2_info->node)->paramTypeInfo = i;
 	info = child_2_info;
+	info->nextInfo = NULL;
     }
     else
     {
@@ -363,6 +364,7 @@ NSD(712)
     /* 分配的资源由SD(711)回收 */
     allocPointer();
     /* parent->other_info = info; */
+    Dealloc(parent->other_info);
     Alloc(parent->other_info, info);
     D_parent_info;
     /* parent_info->nextInfo = str; */
@@ -408,7 +410,6 @@ NSD(713)
     allocPointer();
     /* 分配的资源由SD(711) / SD(712)回收 */
     parent->other_info = info;
-    /* ((TypeInfo *)parent->other_info)->nextInfo = str; */
     Alloc(((TypeInfo *)parent->other_info)->nextInfo, str);
 END
 

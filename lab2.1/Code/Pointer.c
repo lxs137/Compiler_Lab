@@ -24,13 +24,17 @@ static PointerLog *pl = NULL;
 
 void alloc(int proNum, void **pointer, void *value)
 {
-    assert(*pointer == NULL);
+    /* if (*pointer == NULL) */
+    /* { */
+	/* printf("%d\n", proNum); */
+    /* } */
+    /* assert(*pointer == NULL); */
     *pointer = value;
 }
 
 void dealloc(int proNum, void **pointer)
 {
-    assert(*pointer != NULL);
+    /* assert(*pointer != NULL); */
     *pointer = NULL;
 }
 
