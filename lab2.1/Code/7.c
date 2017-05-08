@@ -54,7 +54,8 @@ SD(702)
     D_child_2_info;
     assert(child_2_info != NULL);
     deallocPointer();
-    child_2->other_info = NULL;
+    /* child_2->other_info = NULL; */
+    Dealloc(child_2_info);
 }
 
 /* ADTHeader */
