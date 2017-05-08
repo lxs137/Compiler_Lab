@@ -1,8 +1,7 @@
 #include "Pointer.h"
 #include "SDTAction.h"
 #include <malloc.h>
-/* #include <assert.h> */
-/* #define assert(exp) ; */
+#include <assert.h>
 
 bool isChildProduction(AST_node *node, int proNum)
 {
@@ -78,6 +77,20 @@ void overwrite(int proNum, AllocatorRole role, void **pointer, void *value)
 
     *pointer = NULL;
     alloc(proNum, role, pointer, value);
+}
+
+void noalloc(void **pointer)
+{
+    PointerLog *tmp;
+    for (tmp = pl; tmp != NULL; tmp = tmp->nextPointerLog)
+    {
+	if (tmp->pointer == pointer && tmp->deallocProNum == UNALLOC)
+	{
+	    tmp->deallocProNum = NOALLOC;
+	    break;
+	}
+    }
+    assert(tmp != NULL);
 }
 
 void dealloc(int proNum, void **pointer, AST_node *parent)

@@ -158,11 +158,8 @@ NSD(709)
     assert(child_2_info->typeKind == FunctionType);
     assert(child_2_info->node != NULL);
     OverWrite(child_1->other_info, child_2_info);
-    /* 分配的资源不回收直到语法树销毁 */
-    allocPointer();
-    noallocPointer();
-    /* ((TypeInfo *)child_1->other_info)->nextInfo = str; */
     Alloc(((TypeInfo *)child_1->other_info)->nextInfo, str);
+    Noalloc(((TypeInfo *)child_1->other_info)->nextInfo);
 #ifdef type_debug_print
     printTypeInfo(child_1->other_info);
     printf(" (SD(709))\n");
@@ -290,9 +287,6 @@ END
 /*     ; */
 NSD(714)
     D_child_1;
-    /* 把名字继承到父亲 */
-    assert(parent->other_info == NULL);
-    /* parent->other_info = child_1->str + 4; */
     Alloc(parent->other_info, child_1->str + 4);
 END
 
