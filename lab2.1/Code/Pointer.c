@@ -49,7 +49,15 @@ void dealloc(int proNum, void **pointer)
 	    return;
 	}
     }
-/*     /1* assert(0); *1/ */
+}
+
+void printPointerLog()
+{
+    PointerLog *tmp;
+    for (tmp = pl; tmp != NULL; tmp = tmp->nextPointerLog)
+    {
+	printf("%p alloc: %d dealloc: %d.\n", tmp->pointer, tmp->allocProNum, tmp->deallocProNum);
+    }
 }
 
 /* void alloc(int proNum, void **pointer, void *value, int isTypeInfo, int expectDeallocProNum, ...) */

@@ -9,5 +9,6 @@
 /* void alloc(int proNum, void **pointer, void *value, int isTypeInfo, int expectDeallocProNum, ...); */
 void alloc(int proNum, void **pointer, void *value);
 void dealloc(int proNum, void **pointer);
+void printPointerLog();
 
 #endif

@@ -5,6 +5,7 @@
     #include "SDTAction.h"
     #include "symbol_table.h"
     #include "DebugMacro.h"
+    #include "Pointer.h"
 
     #define GROUP_1 100
     #define GROUP_2 200
@@ -83,6 +84,7 @@ Program
         initSymbolTableStack();
         traversalTreePerformAction($$);
         cleanActionTable();
+	printPointerLog();
     #ifdef st_debug_print
         printGlobalSymbolTable();
     #endif
