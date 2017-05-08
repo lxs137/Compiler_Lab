@@ -14,7 +14,9 @@ static PointerLog *pl = NULL;
 
 void allocPointer(int proNum, void **pointer, void *value, int isTypeInfo)
 {
+    assert(*pointer == NULL);
     *pointer = value;
+
     PointerLog *newPl = (PointerLog *)malloc(sizeof(PointerLog));
     newPl->allocProNum = proNum;
     /* 不存在0号产生式，用0代表未赋值 */
@@ -41,6 +43,8 @@ void deallocPointer(int proNum, void **pointer)
 	{
 	    assert(tmp->deallocProNum == 0);
 	    tmp->deallocProNum = proNum;
+
+	    assert(*pointer != NULL);
 	    *pointer = NULL;
 	    return;
 	}

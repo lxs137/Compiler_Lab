@@ -9,14 +9,8 @@
 SD(701)
 {
     /* 回收SD(703)分配的资源 */
-    D_child_1;
     D_child_1_info;
-    assert(child_1_info != NULL);
-    /* 断言没有其他资源需要回收 */
-    /* child_1_info是char *类型，不可能有nextInfo */
-    /* assert(child_1_info->nextInfo == NULL); */
-    deallocPointer();
-    child_1->other_info = NULL;
+    deallocPointer(701, (void **)&child_1_info);
 }
 
 ID(702)

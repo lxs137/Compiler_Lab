@@ -14,10 +14,7 @@
 #include <malloc.h>
 #include <assert.h>
 #include <inttypes.h>
-
-void allocPointer();
-void deallocPointer();
-void noallocPointer();
+#include "Pointer.h"
 
 #define I(proNum) registerIAction(proNum, pro##proNum##IAction);
 #define IS(...) FOR_EACH(I, __VA_ARGS__)
