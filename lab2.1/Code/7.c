@@ -167,9 +167,7 @@ NID(707)
 	Alloc(child->other_info, parent_info);
     }
 END
-SD(707)
-{
-    int proNum = 707;
+NSD(707)
     D_child_1;
     D_child_1_info;
     /* 回收ID(707)分配的资源 */
@@ -177,11 +175,9 @@ SD(707)
     deallocPointer();
     /* child_1->other_info = NULL; */
     Dealloc(child_1->other_info);
-}
+END
 
-ID(708)
-{
-    int proNum = 708;
+NID(708)
     if (childNum == 1 || childNum == 2)
     {
         D_parent_info;
@@ -192,11 +188,8 @@ ID(708)
         /* child->other_info = parent_info; */
 	Alloc(child->other_info, parent_info);
     }
-}
-SD(708)
-{
-    int proNum = 708;
-
+END
+NSD(708)
     D_child_1;
     D_child_2;
     assert(child_1->other_info != NULL);
@@ -209,14 +202,12 @@ SD(708)
     deallocPointer();
     /* child_2->other_info = NULL; */
     Dealloc(child_2->other_info);
-}
+END
 
 /* ConstructorDec */
 /*     : ConstructorId TypeIdList { $$ = new_parent_node("ConstructorDec", GROUP_7 + 9, 2, $1, $2); } */
 /*     ; */
-ID(709)
-{
-    int proNum = 709;
+NID(709)
     if (childNum == 2)
     {
         D_parent_info;
@@ -227,11 +218,8 @@ ID(709)
         /* child->other_info = parent_info; */
 	Alloc(child->other_info, parent_info);
     }
-}
-SD(709)
-{
-    int proNum = 709;
-
+END
+NSD(709)
     D_child_1;
     D_child_1_info;
     assert(child_1_info != NULL);
@@ -268,14 +256,12 @@ SD(709)
     deallocPointer();
     /* child_2->other_info = NULL; */
     Dealloc(child_2->other_info);
-}
+END
 
 /* ConstructorId */
 /*     : UPPERID { $$ = new_parent_node("ConstructorId", GROUP_7 + 10, 1, $1); } */
 /*     ; */
-SD(710)
-{
-    int proNum = 710;
+NSD(710)
     D_child_1;
     assert(parent->other_info == NULL);
     /* 分配的资源不回收直到语法树销毁 */
@@ -283,17 +269,14 @@ SD(710)
     noallocPointer();
     /* parent->other_info = (void *)(child_1->str + 4); */
     Alloc(parent->other_info, child_1->str + 4);
-}
+END
 
 /* TypeIdList */
 /*     : Specifier TypeIdList { $$ = new_parent_node("TypeIdList", GROUP_7 + 11, 2, $1, $2); } */
 /*     | ADTParam TypeIdList { $$ = new_parent_node("TypeIdList", GROUP_7 + 12, 2, $1, $2); } */
 /*     | SEMI { $$ = new_parent_node("TypeIdList", GROUP_7 + 13, 0); } */
 /*     ; */
-ID(711)
-{
-    int proNum = 711;
-
+NID(711)
     if (childNum == 2)
     {
         D_parent_info;
@@ -304,7 +287,7 @@ ID(711)
         /* child->other_info = parent_info; */
 	Alloc(child->other_info, parent_info);
     }
-}
+END
 NSD(711)
     D_child_1_info;
     D_child_2_info;
