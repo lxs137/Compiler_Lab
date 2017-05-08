@@ -420,9 +420,9 @@ SD(714)
     D_child_1;
     /* 把名字继承到父亲 */
     assert(parent->other_info == NULL);
-    parent->other_info = child_1->str + 4;
-    /* int proNum = 714; */
-    /* Alloc(parent->other_info, child_1->str + 4); */
+    /* parent->other_info = child_1->str + 4; */
+    int proNum = 714;
+    Alloc(parent->other_info, child_1->str + 4);
 }
 
 /* pattern matching */
