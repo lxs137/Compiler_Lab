@@ -11,3 +11,12 @@ ADT constructor 类型推断
 3个单位时间
 所有变量的定义部分的信息都是不允许修改的，可以做一次深拷贝，然后随便改
 6个单位时间
+
+重构7.c代码，重点检查指针的分配与释放问题
+统一调试语句的格式
+在7.c的头部写上引用外界的指针和暴露给外界的指针
+2个单位时间
+造一个指针自动检查系统：记录那个指针是那个产生式分配的，是那个产生式释放的
+allocPointer(void **pointer, void * value, int isTypeInfo);
+deallocPointer(void **pointer)
+把释放指针的断言放到里面去
