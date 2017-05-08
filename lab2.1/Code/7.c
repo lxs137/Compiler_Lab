@@ -16,9 +16,9 @@ SD(701)
     /* child_1_info是char *类型，不可能有nextInfo */
     /* assert(child_1_info->nextInfo == NULL); */
     deallocPointer();
-    /* child_1->other_info = NULL; */
-    int proNum = 701;
-    Dealloc(child_1->other_info);
+    child_1->other_info = NULL;
+    /* int proNum = 701; */
+    /* Dealloc(child_1->other_info); */
 }
 
 ID(702)
@@ -32,9 +32,9 @@ ID(702)
         assert(child->other_info == NULL);
         /* 分配的资源都SD(702)回收 */
 	allocPointer();
-        /* child->other_info = child_1_info; */
-	int proNum = 702;
-	Alloc(child->other_info, child_1_info);
+        child->other_info = child_1_info;
+	/* int proNum = 702; */
+	/* Alloc(child->other_info, child_1_info); */
     }
 }
 SD(702)
@@ -420,9 +420,9 @@ SD(714)
     D_child_1;
     /* 把名字继承到父亲 */
     assert(parent->other_info == NULL);
-    /* parent->other_info = child_1->str + 4; */
-    int proNum = 714;
-    Alloc(parent->other_info, child_1->str + 4);
+    parent->other_info = child_1->str + 4;
+    /* int proNum = 714; */
+    /* Alloc(parent->other_info, child_1->str + 4); */
 }
 
 /* pattern matching */
