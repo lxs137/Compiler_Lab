@@ -3,7 +3,7 @@
 
 #include <stdarg.h>
 
-void allocPointer(int proNum, void **pointer, void *value, int isTypeInfo, int expectDeallocProNum, ...);
-void deallocPointer(int proNum, void **pointer);
+void alloc(int proNum, void **pointer, void *value, int isTypeInfo, int expectDeallocProNum, ...);
+void dealloc(int proNum, void **pointer);
 
 #endif

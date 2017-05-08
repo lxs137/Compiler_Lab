@@ -22,7 +22,7 @@ typedef struct PL
 
 static PointerLog *pl = NULL;
 
-void allocPointer(int proNum, void **pointer, void *value, int isTypeInfo, int expectDeallocProNum, ...)
+void alloc(int proNum, void **pointer, void *value, int isTypeInfo, int expectDeallocProNum, ...)
 {
     va_list argptr;
     va_start(argptr, expectDeallocProNum);
@@ -61,7 +61,7 @@ void allocPointer(int proNum, void **pointer, void *value, int isTypeInfo, int e
     }
 }
 
-void deallocPointer(int proNum, void **pointer)
+void dealloc(int proNum, void **pointer)
 {
     PointerLog *tmp;
     for (tmp = pl; tmp != NULL; tmp = tmp->nextPointerLog)
