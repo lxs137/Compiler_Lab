@@ -87,7 +87,7 @@ void noalloc(int proNum, void **pointer, AST_node *parent)
 	    if (tmp->pointer == pointer && tmp->deallocProNum == UNALLOC)
 	    {
 	        tmp->deallocProNum = NOALLOC;
-            /* assert(tmp->allocProNum == proNum || isChildProduction(parent, proNum) == true); */
+            assert(tmp->allocProNum == proNum || isChildProduction(parent, tmp->allocProNum) == true);
 	        break;
 	    }
     }

@@ -41,7 +41,7 @@ NID(703)
     if (childNum == 2)
     {
         D_child_1_info;
-	Alloc(child->other_info, child_1_info);
+	    Alloc(child->other_info, child_1_info);
     }
 END
 NSD(703)
@@ -241,8 +241,8 @@ NSD(712)
     if (((FunctionNode *)child_2_info->node)->paramTypeInfo == NULL)
     {
         ((FunctionNode *)child_2_info->node)->paramTypeInfo = i;
-	info = child_2_info;
-	info->nextInfo = NULL;
+	    info = child_2_info;
+	    info->nextInfo = NULL;
     }
     else
     {
