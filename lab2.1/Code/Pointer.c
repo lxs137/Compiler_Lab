@@ -4,9 +4,27 @@
 /* #include <assert.h> */
 /* #define assert(exp) ; */
 
+bool isChildProduction(AST_node *node, int proNum)
+{
+    node = node->first_child;
+    if (node == NULL)
+    {
+	return false;
+    }
+    for (; node != NULL; node = node->next_brother)
+    {
+	if (node->proNum == proNum)
+	{
+	    return true;
+	}
+    }
+    return false;
+}
+
 typedef struct PL
 {
     int allocProNum;
+    AllocatorRole role;
     int deallocProNum;
     void **pointer;
     struct PL *nextPointerLog;
@@ -14,15 +32,15 @@ typedef struct PL
 
 static PointerLog *pl = NULL;
 
-void alloc(int proNum, void **pointer, void *value)
+void alloc(int proNum, AllocatorRole role, void **pointer, void *value)
 {
     /* assert(*pointer == NULL); */
     *pointer = value;
 
     PointerLog *newPl = (PointerLog *)malloc(sizeof(PointerLog));
     newPl->allocProNum = proNum;
-    /* 不存在0号产生式，用0代表未赋值 */
-    newPl->deallocProNum = 0;
+    newPl->role = role;
+    newPl->deallocProNum = UNALLOC;
     newPl->nextPointerLog = NULL;
 
     if (pl == NULL)
