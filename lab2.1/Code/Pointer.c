@@ -68,7 +68,7 @@ void overwrite(int proNum, AllocatorRole role, void **pointer, void *value)
     PointerLog *tmp;
     for (tmp = pl; tmp != NULL; tmp = tmp->nextPointerLog)
     {
-	if (tmp->pointer == pointer)
+	if (tmp->pointer == pointer && tmp->deallocProNum == UNALLOC)
 	{
 	    tmp->deallocProNum = OVERWRITE;
 	    break;
@@ -86,7 +86,7 @@ void dealloc(int proNum, void **pointer)
     PointerLog *tmp;
     for (tmp = pl; tmp != NULL; tmp = tmp->nextPointerLog)
     {
-	if (tmp->pointer == pointer)
+	if (tmp->pointer == pointer && tmp->deallocProNum == UNALLOC)
 	{
 	    tmp->deallocProNum = proNum;
 
