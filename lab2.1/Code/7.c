@@ -17,31 +17,18 @@ ID(702)
 {
     if (childNum == 2)
     {
-        D_child_1_info;
         /* child_1_info存储的是整个ADT的类型名：如Maybe */
-        assert(child_1_info != NULL);
-
-        assert(child->other_info == NULL);
-        /* 分配的资源都SD(702)回收 */
-	allocPointer();
-        child->other_info = child_1_info;
+        D_child_1_info;
+	allocPointer(702, &child->other_info, (void **)child_1_info, 0, 702, 0);
     }
 }
 SD(702)
 {
-    /* 回收SD(703)分配的资源 */
-    D_child_1;
     D_child_1_info;
-    assert(child_1_info != NULL);
-    deallocPointer();
-    child_1->other_info = NULL;
+    deallocPointer(702, (void **)&child_1_info);
 
-    /* 回收ID(702)分配的资源 */
-    D_child_2;
     D_child_2_info;
-    assert(child_2_info != NULL);
-    deallocPointer();
-    child_2->other_info = NULL;
+    deallocPointer(702, (void **)&child_2_info);
 }
 
 /* ADTHeader */
@@ -52,11 +39,7 @@ ID(703)
     if (childNum == 2)
     {
         D_child_1_info;
-        assert(child_1_info != NULL);
-        assert(child->other_info == NULL);
-        /* 分配的资源由SD(703)回收 */
-	allocPointer();
-        child->other_info = child_1_info;
+	allocPointer(703, &child->other_info, child_1_info, 0, 703, 0);
     }
 }
 SD(703)
@@ -69,21 +52,17 @@ SD(703)
     printf("add TypeId: %s in symbol table. (SD(703))\n", (char *)child_1_info);
 #endif
 
-    assert(parent->other_info == NULL);
-    /* 分配的资源由SD(701) / SD(702)回收 */
+    D_parent_info;
     /* 分配的资源是ADT的类型名称，如Maybe */
-    allocPointer();
-    parent->other_info = child_1_info;
+    allocPointer(703, (void **)&parent_info, child_1_info, 0, 701, 702, 0);
 
     /* /1* 回收SD(714)分配的资源 *1/ */
     /* deallocPointer(); */
     /* child_1->other_info = NULL; */
 
     /* 回收ID(703)分配的资源 */
-    D_child_2;
-    assert(child_2->other_info != NULL);
-    deallocPointer();
-    child_2->other_info = NULL;
+    D_child_2_info;
+    deallocPointer(703, (void **)&child_2_info);
 }
 
 /* ADTParamList */
@@ -94,11 +73,9 @@ ID(704)
 {
     if (childNum ==  1 || childNum == 2)
     {
-        assert(parent->other_info != NULL);
-        assert(child->other_info == NULL);
         /* 分配的资源由SD(704)回收 */
-	allocPointer();
-        child->other_info = parent->other_info;
+	D_parent_info;
+	allocPointer(704, &child->other_info, parent_info, 0, 704, 0);
     }
 }
 SD(704)
@@ -112,15 +89,11 @@ SD(704)
 #endif
 
     /* 回收ID(704)分配的资源 */
-    deallocPointer();
-    child_1->other_info = NULL;
+    deallocPointer(704, (void **)&child_1_info);
 
     /* 回收ID(704)分配的资源 */
-    D_child_2;
     D_child_2_info;
-    assert(child_2_info != NULL);
-    deallocPointer();
-    child_2->other_info = NULL;
+    deallocPointer(704, (void **)&child_2_info);
 }
 
 /* ADTParam */
@@ -151,21 +124,13 @@ ID(707)
     if (childNum == 1)
     {
         D_parent_info;
-        assert(parent_info != NULL);
-        assert(child->other_info == NULL);
-        /* 分配的资源由SD(707)回收 */
-	allocPointer();
-        child->other_info = parent_info;
+	allocPointer(707, &child->other_info, parent_info, 0, 707, 0);
     }
 }
 SD(707)
 {
-    D_child_1;
     D_child_1_info;
-    /* 回收ID(707)分配的资源 */
-    assert(child_1_info != NULL);
-    deallocPointer();
-    child_1->other_info = NULL;
+    deallocPointer(707, (void **)&child_1_info);
 }
 
 ID(708)
@@ -173,25 +138,17 @@ ID(708)
     if (childNum == 1 || childNum == 2)
     {
         D_parent_info;
-        assert(parent_info != NULL);
-        assert(child->other_info == NULL);
         /* 分配的资源由SD(708)回收 */
-	allocPointer();
-        child->other_info = parent_info;
+	allocPointer(708, &child->other_info, parent_info, 0, 708, 0);
     }
 }
 SD(708)
 {
-    D_child_1;
-    D_child_2;
-    assert(child_1->other_info != NULL);
-    /* 回收ID(708)分配的资源 */
-    deallocPointer();
-    child_1->other_info = NULL;
-    assert(child_2->other_info != NULL);
-    /* 回收ID(708)分配的资源 */
-    deallocPointer();
-    child_2->other_info = NULL;
+    D_child_1_info;
+    deallocPointer(708, (void **)&child_1_info);
+
+    D_child_2_info;
+    deallocPointer(708, (void **)&child_2_info);
 }
 
 /* ConstructorDec */
@@ -202,11 +159,7 @@ ID(709)
     if (childNum == 2)
     {
         D_parent_info;
-        assert(parent_info != NULL);
-        assert(child->other_info == NULL);
-        /* 分配的资源由SD(709)回收 */
-	allocPointer();
-        child->other_info = parent_info;
+	allocPointer(709, &child->other_info, parent_info, 0, 709, 0);
     }
 }
 SD(709)
@@ -227,23 +180,18 @@ SD(709)
     /* assert(child_2_info->nextInfo != NULL); */
     child_1->other_info = child_2_info;
     /* 分配的资源不回收直到语法树销毁 */
-    allocPointer();
-    noallocPointer();
-    ((TypeInfo *)child_1->other_info)->nextInfo = str;
+    allocPointer(709, &child_1_info->nextInfo, str, 0, 1000000, 0);
+    /* noallocPointer(); */
 #ifdef type_debug_print
     printTypeInfo(child_1->other_info);
     printf(" (SD(709))\n");
 #endif
 
     /* 回收SD(710)分配的资源 */
-    deallocPointer();
-    child_1->other_info = NULL;
+    deallocPointer(709, (void **)child_1_info);
 
     D_child_2;
-    assert(child_2->other_info != NULL);
-    /* 回收ID(709)分配的资源 */
-    deallocPointer();
-    child_2->other_info = NULL;
+    deallocPointer(709, (void **)child_2_info);
 }
 
 /* ConstructorId */
@@ -252,11 +200,10 @@ SD(709)
 SD(710)
 {
     D_child_1;
-    assert(parent->other_info == NULL);
     /* 分配的资源不回收直到语法树销毁 */
-    allocPointer();
-    noallocPointer();
-    parent->other_info = (void *)(child_1->str + 4);
+    D_parent_info;
+    allocPointer(710, (void **)&parent_info, child_1->str + 4, 0, 100000, 0);
+    /* noallocPointer(); */
 }
 
 /* TypeIdList */
@@ -269,11 +216,7 @@ ID(711)
     if (childNum == 2)
     {
         D_parent_info;
-        assert(parent_info != NULL);
-        assert(child->other_info == NULL);
-        /* 分配的资源由SD(711)回收 */
-	allocPointer();
-        child->other_info = parent_info;
+	allocPointer(711, &child->other_info, parent_info, 0, 711, 0);
     }
 }
 SD(711)
@@ -297,22 +240,15 @@ SD(711)
         info->nextInfo = NULL;
     }
     void *str = parent->other_info;
-    /* 分配的资源由SD(711)回收 */
-    allocPointer();
-    parent->other_info = info;
+    allocPointer(711, &parent->other_info, info, 1, 711, 0);
     D_parent_info;
     parent_info->nextInfo = str;
 
     /* 回收ID(711)分配的资源 */
-    assert(child_2_info != NULL);
-    assert(child_2_info->nextInfo != NULL);
-    deallocPointer();
-    child_2_info->nextInfo = NULL;
+    deallocPointer(711, (void **)&child_2_info);
 
     /* 回收SD(711) / SD(712) / SD(713)分配的资源 */
-    D_child_2;
-    deallocPointer();
-    child_2->other_info = NULL;
+    deallocPointer(711, (void **)&child_2_info);
 }
 
 ID(712)
@@ -355,7 +291,7 @@ SD(712)
     }
     void *str = parent->other_info;
     /* 分配的资源由SD(711)回收 */
-    allocPointer();
+    /* allocPointer(); */
     parent->other_info = info;
     D_parent_info;
     parent_info->nextInfo = str;
@@ -363,12 +299,12 @@ SD(712)
     /* 回收ID(711)分配的资源 */
     assert(child_2_info != NULL);
     assert(child_2_info->nextInfo != NULL);
-    deallocPointer();
+    /* deallocPointer(); */
     child_2_info->nextInfo = NULL;
 
     /* 回收SD(711) / SD(712) / SD(713)分配的资源 */
     D_child_2;
-    deallocPointer();
+    /* deallocPointer(); */
     child_2->other_info = NULL;
 }
 
@@ -396,7 +332,7 @@ SD(713)
 
     void *str = parent_info;
     assert(str != NULL);
-    allocPointer();
+    /* allocPointer(); */
     /* 分配的资源由SD(711) / SD(712)回收 */
     parent->other_info = info;
     ((TypeInfo *)parent->other_info)->nextInfo = str;

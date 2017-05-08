@@ -1,4 +1,4 @@
-#ifndef DebugMarco_H
+#ifndef DebugMacro_H
 #define DebugMacro_H
 
 /* #define flex_debug_print */

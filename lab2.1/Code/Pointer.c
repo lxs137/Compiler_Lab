@@ -1,6 +1,8 @@
 #include "Pointer.h"
+#include "SDTAction.h"
 #include <malloc.h>
-#include <assert.h>
+/* #include <assert.h> */
+/* #define assert(exp) ; */
 
 typedef struct EP
 {
@@ -36,6 +38,8 @@ void allocPointer(int proNum, void **pointer, void *value, int isTypeInfo, int e
 	tmp->proNum = expectDeallocProNum;
     }
     tmp->next = NULL;
+
+    assert(value != NULL);
     assert(*pointer == NULL);
     *pointer = value;
 
@@ -66,11 +70,16 @@ void deallocPointer(int proNum, void **pointer)
 	{
 	    ExpectProNum *ep = tmp->expectDeallocProNums;
 	    while (ep == NULL || ep->proNum == proNum) ;
-	    assert(ep != NULL);
-	    assert(tmp->deallocProNum == 0);
+	    /* assert(ep != NULL); */
+	    /* assert(tmp->deallocProNum == 0); */
 	    tmp->deallocProNum = proNum;
 
-	    assert(*pointer != NULL);
+	    /* assert(*pointer != NULL); */
+	    /* if (tmp->isTypeInfo == 1) */
+	    /* { */
+		/* TypeInfo *info = *((TypeInfo **)tmp); */
+		/* assert(info->nextInfo == NULL); */
+	    /* } */
 	    *pointer = NULL;
 	    return;
 	}
