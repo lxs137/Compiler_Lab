@@ -33,10 +33,7 @@ NID(702)
 	Alloc(child->other_info, child_1_info);
     }
 END
-SD(702)
-{
-    int proNum = 702;
-
+NSD(702)
     /* 回收SD(703)分配的资源 */
     D_child_1;
     D_child_1_info;
@@ -52,14 +49,12 @@ SD(702)
     deallocPointer();
     /* child_2->other_info = NULL; */
     Dealloc(child_2->other_info);
-}
+END
 
 /* ADTHeader */
 /*     : DATA TypeId ADTParamList { $$ = new_parent_node("ADTHeader", GROUP_7 + 3, 2, $2, $3); } */
 /*     ; */
-ID(703)
-{
-    int proNum = 703;
+NID(703)
     if (childNum == 2)
     {
         D_child_1_info;
@@ -70,11 +65,8 @@ ID(703)
         /* child->other_info = child_1_info; */
 	Alloc(child->other_info, child_1_info);
     }
-}
-SD(703)
-{
-    int proNum = 703;
-
+END
+NSD(703)
     D_child_1;
     D_child_1_info;
     assert(child_1_info != NULL);
@@ -101,15 +93,13 @@ SD(703)
     /* child_2->other_info = NULL; */
     Dealloc(child_2->other_info);
     assert(child_2->other_info == NULL);
-}
+END
 
 /* ADTParamList */
 /*     : ADTParam ADTParamList { $$ = new_parent_node("ADTParamList", GROUP_7 + 4, 2, $1, $2); } */
 /*     | { $$ = new_parent_node("ADTParamList", GROUP_7 + 5, 0); } */
 /*     ; */
-ID(704)
-{
-    int proNum = 704;
+NID(704)
     if (childNum ==  1 || childNum == 2)
     {
         assert(parent->other_info != NULL);
@@ -119,10 +109,8 @@ ID(704)
         /* child->other_info = parent->other_info; */
 	Alloc(child->other_info, parent->other_info);
     }
-}
-SD(704)
-{
-    int proNum = 704;
+END
+NSD(704)
     D_child_1_info;
     D_child_1;
     assert(child_1_info != NULL);
@@ -143,7 +131,7 @@ SD(704)
     assert(child_2_info != NULL);
     deallocPointer();
     child_2->other_info = NULL;
-}
+END
 
 /* ADTParam */
 /*     : LOWERID { $$ = new_parent_node("ADTParam", GROUP_7 + 6, 1, $1); } */
