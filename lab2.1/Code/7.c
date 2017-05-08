@@ -315,6 +315,8 @@ ID(711)
 }
 SD(711)
 {
+    int proNum = 711;
+
     D_child_1_info;
     D_child_2_info;
     TypeInfo *info;
@@ -336,20 +338,24 @@ SD(711)
     void *str = parent->other_info;
     /* 分配的资源由SD(711)回收 */
     allocPointer();
-    parent->other_info = info;
+    /* parent->other_info = info; */
+    Alloc(parent->other_info, info);
     D_parent_info;
-    parent_info->nextInfo = str;
+    /* parent_info->nextInfo = str; */
+    Alloc(parent_info->nextInfo, str);
 
     /* 回收ID(711)分配的资源 */
     assert(child_2_info != NULL);
     assert(child_2_info->nextInfo != NULL);
     deallocPointer();
-    child_2_info->nextInfo = NULL;
+    /* child_2_info->nextInfo = NULL; */
+    Dealloc(child_2_info->nextInfo);
 
     /* 回收SD(711) / SD(712) / SD(713)分配的资源 */
     D_child_2;
     deallocPointer();
-    child_2->other_info = NULL;
+    /* child_2->other_info = NULL; */
+    Dealloc(child_2->other_info);
 }
 
 ID(712)
@@ -360,7 +366,8 @@ ID(712)
         assert(parent_info != NULL);
         assert(child->other_info == NULL);
         /* 分配的资源由SD(712)回收 */
-        child->other_info = parent_info;
+        /* child->other_info = parent_info; */
+	Alloc(child->other_info, parent_info);
     }
 }
 SD(712)
