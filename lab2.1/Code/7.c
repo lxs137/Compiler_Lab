@@ -255,8 +255,6 @@ NSD(712)
     }
     OverWrite(parent->other_info, info);
 
-    Dealloc(child_1_info);
-
     D_child_2;
     Dealloc(child_2->other_info);
 END
@@ -290,6 +288,7 @@ END
 NSD(714)
     D_child_1;
     Alloc(parent->other_info, child_1->str + 4);
+    Noalloc(parent->other_info);
 END
 
 /* pattern matching */
