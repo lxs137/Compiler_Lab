@@ -20,6 +20,6 @@ ADT constructor 类型推断
 allocPointer(void **pointer, void * value, int isTypeInfo);
 deallocPointer(void **pointer)
 把释放指针的断言放到里面去
-
 如果完全遵循回收规则，那么根据分配者就自然能够决定回收者是否合理
 指针回收应该更加智能
+2个时间单位未完成，预估还需要5个时间单位
