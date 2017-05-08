@@ -78,7 +78,7 @@ NSD(704)
     printf("add ADTParam: %s in symbol table. (SD(704))\n", (char *)child_1_info);
 #endif
 
-    Dealloc(child_1->other_info);
+    Noalloc(child_1->other_info);
 
     D_child_2;
     Dealloc(child_2->other_info);
@@ -255,6 +255,9 @@ NSD(712)
         info->nextInfo = NULL;
     }
     OverWrite(parent->other_info, info);
+
+    D_child_1;
+    Dealloc(child_1->other_info);
 
     D_child_2;
     Dealloc(child_2->other_info);
