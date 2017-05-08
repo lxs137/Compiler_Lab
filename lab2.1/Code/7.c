@@ -63,6 +63,7 @@ SD(702)
 /*     ; */
 ID(703)
 {
+    int proNum = 703;
     if (childNum == 2)
     {
         D_child_1_info;
@@ -70,7 +71,8 @@ ID(703)
         assert(child->other_info == NULL);
         /* 分配的资源由SD(703)回收 */
 	allocPointer();
-        child->other_info = child_1_info;
+        /* child->other_info = child_1_info; */
+	Alloc(child->other_info, child_1_info);
     }
 }
 SD(703)
@@ -89,7 +91,8 @@ SD(703)
     /* 分配的资源由SD(701) / SD(702)回收 */
     /* 分配的资源是ADT的类型名称，如Maybe */
     allocPointer();
-    parent->other_info = child_1_info;
+    /* parent->other_info = child_1_info; */
+    Alloc(parent->other_info, child_1_info);
 
     /* /1* 回收SD(714)分配的资源 *1/ */
     /* deallocPointer(); */
