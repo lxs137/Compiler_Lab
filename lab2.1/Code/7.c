@@ -140,11 +140,6 @@ NID(709)
     if (childNum == 2)
     {
         D_parent_info;
-        assert(parent_info != NULL);
-        assert(child->other_info == NULL);
-        /* 分配的资源由SD(709)回收 */
-	allocPointer();
-        /* child->other_info = parent_info; */
 	Alloc(child->other_info, parent_info);
     }
 END
@@ -162,22 +157,21 @@ NSD(709)
     assert(child_2_info != NULL);
     assert(child_2_info->typeKind == FunctionType);
     assert(child_2_info->node != NULL);
-    /* assert(child_2_info->nextInfo != NULL); */
-    child_1->other_info = child_2_info;
+    OverWrite(child_1->other_info, child_2_info);
     /* 分配的资源不回收直到语法树销毁 */
     allocPointer();
     noallocPointer();
-    ((TypeInfo *)child_1->other_info)->nextInfo = str;
-    /* Alloc(((TypeInfo *)child_1->other_info)->nextInfo, str); */
+    /* ((TypeInfo *)child_1->other_info)->nextInfo = str; */
+    Alloc(((TypeInfo *)child_1->other_info)->nextInfo, str);
 #ifdef type_debug_print
     printTypeInfo(child_1->other_info);
     printf(" (SD(709))\n");
 #endif
 
-    /* 回收SD(710)分配的资源 */
-    deallocPointer();
-    /* child_1->other_info = NULL; */
-    Dealloc(child_1->other_info);
+    /* /1* 回收SD(710)分配的资源 *1/ */
+    /* deallocPointer(); */
+    /* /1* child_1->other_info = NULL; *1/ */
+    /* Dealloc(child_1->other_info); */
 
     D_child_2;
     assert(child_2->other_info != NULL);
@@ -341,13 +335,7 @@ NSD(713)
     info->node = node;
     info->nextInfo = NULL;
     /* info end */
-
-    void *str = parent_info;
-    assert(str != NULL);
-    allocPointer();
-    /* 分配的资源由SD(711) / SD(712)回收 */
     parent->other_info = info;
-    Alloc(((TypeInfo *)parent->other_info)->nextInfo, str);
 END
 
 /* TypeId */ 
