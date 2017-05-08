@@ -6,8 +6,7 @@
 /*     : ADTHeader %prec LOWER_THAN_ASSIGNOP SEMI { $$ = new_parent_node("ADTRef", GROUP_7 + 1, 1, $1); } */
 /*     | ADTHeader ASSIGNOP ConstructorDecList { $$ = new_parent_node("ADTHeader", GROUP_7 + 2, 2, $1, $3); } */
 /*     ; */
-SD(701)
-{
+NSD(701)
     /* 回收SD(703)分配的资源 */
     D_child_1;
     D_child_1_info;
@@ -17,9 +16,8 @@ SD(701)
     /* assert(child_1_info->nextInfo == NULL); */
     deallocPointer();
     /* child_1->other_info = NULL; */
-    int proNum = 701;
     Dealloc(child_1->other_info);
-}
+END
 
 ID(702)
 {

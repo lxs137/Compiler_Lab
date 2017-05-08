@@ -42,6 +42,12 @@ void noallocPointer();
     FOR_EACH_2(AssociateHelperS, proNum, __VA_ARGS__) \
     void pro##proNum##SAction(AST_node *parent)
 
+#define NSD(n) \
+    SD(n) { \
+	int proNum = n;
+
+#define END }
+
 #define D_type_info TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
 #define D_parent_info TypeInfo *parent_info = (TypeInfo *)parent->other_info;
 #define D_child_info \
