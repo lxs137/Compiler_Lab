@@ -243,6 +243,8 @@ ID(709)
 }
 SD(709)
 {
+    int proNum = 709;
+
     D_child_1;
     D_child_1_info;
     assert(child_1_info != NULL);
@@ -261,7 +263,8 @@ SD(709)
     /* 分配的资源不回收直到语法树销毁 */
     allocPointer();
     noallocPointer();
-    ((TypeInfo *)child_1->other_info)->nextInfo = str;
+    /* ((TypeInfo *)child_1->other_info)->nextInfo = str; */
+    Alloc(((TypeInfo *)child_1->other_info)->nextInfo, str);
 #ifdef type_debug_print
     printTypeInfo(child_1->other_info);
     printf(" (SD(709))\n");
@@ -283,12 +286,14 @@ SD(709)
 /*     ; */
 SD(710)
 {
+    int proNum = 710;
     D_child_1;
     assert(parent->other_info == NULL);
     /* 分配的资源不回收直到语法树销毁 */
     allocPointer();
     noallocPointer();
-    parent->other_info = (void *)(child_1->str + 4);
+    /* parent->other_info = (void *)(child_1->str + 4); */
+    Alloc(parent->other_info, child_1->str + 4);
 }
 
 /* TypeIdList */
