@@ -119,7 +119,8 @@ ID(704)
         assert(child->other_info == NULL);
         /* 分配的资源由SD(704)回收 */
 	allocPointer();
-        child->other_info = parent->other_info;
+        /* child->other_info = parent->other_info; */
+	Alloc(child->other_info, parent->other_info);
     }
 }
 SD(704)
@@ -172,6 +173,7 @@ SD(706)
 /*     ; */
 ID(707)
 {
+    int proNum = 707;
     if (childNum == 1)
     {
         D_parent_info;
@@ -179,7 +181,8 @@ ID(707)
         assert(child->other_info == NULL);
         /* 分配的资源由SD(707)回收 */
 	allocPointer();
-        child->other_info = parent_info;
+        /* child->other_info = parent_info; */
+	Alloc(child->other_info, parent_info);
     }
 }
 SD(707)
