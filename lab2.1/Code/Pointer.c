@@ -2,8 +2,16 @@
 #include <malloc.h>
 #include <assert.h>
 
-typedef struct PL {
+typedef struct EP
+{
+    int proNum;
+    struct EP *next;
+} ExpectProNum;
+
+typedef struct PL
+{
     int allocProNum;
+    ExpectProNum *expectDeallocProNums;
     int deallocProNum;
     void **pointer;
     int isTypeInfo;
@@ -12,13 +20,28 @@ typedef struct PL {
 
 static PointerLog *pl = NULL;
 
-void allocPointer(int proNum, void **pointer, void *value, int isTypeInfo)
+void allocPointer(int proNum, void **pointer, void *value, int isTypeInfo, int expectDeallocProNum, ...)
 {
+    va_list argptr;
+    va_start(argptr, expectDeallocProNum);
+    assert(expectDeallocProNum != 0);
+    ExpectProNum *ep = (ExpectProNum *)malloc(sizeof(ExpectProNum));
+    ep->proNum = expectDeallocProNum;
+    ExpectProNum *tmp = ep;
+    while (expectDeallocProNum != 0)
+    {
+	expectDeallocProNum = va_arg(argptr, int);
+	tmp->next = (ExpectProNum *)malloc(sizeof(ExpectProNum));
+	tmp = tmp->next;
+	tmp->proNum = expectDeallocProNum;
+    }
+    tmp->next = NULL;
     assert(*pointer == NULL);
     *pointer = value;
 
     PointerLog *newPl = (PointerLog *)malloc(sizeof(PointerLog));
     newPl->allocProNum = proNum;
+    newPl->expectDeallocProNums = ep;
     /* 不存在0号产生式，用0代表未赋值 */
     newPl->deallocProNum = 0;
     newPl->isTypeInfo = isTypeInfo;
@@ -41,6 +64,9 @@ void deallocPointer(int proNum, void **pointer)
     {
 	if (tmp->pointer == pointer)
 	{
+	    ExpectProNum *ep = tmp->expectDeallocProNums;
+	    while (ep == NULL || ep->proNum == proNum) ;
+	    assert(ep != NULL);
 	    assert(tmp->deallocProNum == 0);
 	    tmp->deallocProNum = proNum;
 
@@ -50,34 +76,4 @@ void deallocPointer(int proNum, void **pointer)
 	}
     }
     assert(0);
-}
-
-void printPointerLog()
-{
-    PointerLog *tmp;
-    for (tmp = pl; tmp != NULL; tmp = tmp->nextPointerLog)
-    {
-	printf("%p, alloc at %d, dealloc at %d, ", tmp->pointer, tmp->allocProNum, tmp->deallocProNum);
-	if (tmp->isTypeInfo)
-	{
-	    printf("TypeInfo");
-	}
-	else
-	{
-	    printf("Other");
-	}
-	printf(".\n");
-    }
-}
-
-void cleanPointerLog()
-{
-    PointerLog *tmp;
-    for (tmp = pl; tmp != NULL; )
-    {
-	PointerLog *next = tmp->nextPointerLog;
-	free(tmp);
-	tmp = next;
-    }
-    assert(pl == NULL);
 }
