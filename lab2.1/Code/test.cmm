@@ -1,2 +1,6 @@
-data Maybe = Nothing
-             Just a
+let f = (Int a, Int b) -> Int {
+    Int a
+    Int c
+}
+data Maybe a = Just a
+               Nothing
