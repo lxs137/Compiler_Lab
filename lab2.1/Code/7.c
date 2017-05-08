@@ -408,8 +408,6 @@ NSD(712)
 END
 
 NSD(713)
-    int proNum = 713;
-
     /* info begin */
     TypeInfo *info = (TypeInfo *)malloc(sizeof(TypeInfo));
     /* node begin */
@@ -439,18 +437,16 @@ NSD(713)
     Alloc(((TypeInfo *)parent->other_info)->nextInfo, str);
 END
 
-/* TypeId */
+/* TypeId */ 
 /*     : UPPERID { $$ = new_parent_node("TypeId", GROUP_7 + 14, 1, $1); } */
 /*     ; */
-SD(714)
-{
+NSD(714)
     D_child_1;
     /* 把名字继承到父亲 */
     assert(parent->other_info == NULL);
     /* parent->other_info = child_1->str + 4; */
-    int proNum = 714;
     Alloc(parent->other_info, child_1->str + 4);
-}
+END
 
 /* pattern matching */
 /* PatternMatching */
