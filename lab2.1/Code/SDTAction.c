@@ -1,7 +1,7 @@
 #include "SDTAction.h"
 
 void allocPointer() {}
-void deallpocPointer() {}
+void deallocPointer() {}
 void noallocPointer() {}
 
 /* 产生式数目 */
