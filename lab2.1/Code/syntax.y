@@ -83,10 +83,10 @@ Program
         initActionTable();
         initSymbolTableStack();
         traversalTreePerformAction($$);
-        cleanActionTable();
     #ifdef pointer_debug
     	printPointerLog();
     #endif
+        cleanActionTable();
     #ifdef st_debug_print
         printGlobalSymbolTable();
     #endif

@@ -41,6 +41,7 @@ void alloc(int proNum, AllocatorRole role, void **pointer, void *value)
     newPl->allocProNum = proNum;
     newPl->role = role;
     newPl->deallocProNum = UNALLOC;
+    newPl->pointer = pointer;
     newPl->nextPointerLog = NULL;
 
     if (pl == NULL)
