@@ -19,8 +19,7 @@ NSD(701)
     Dealloc(child_1->other_info);
 END
 
-ID(702)
-{
+NID(702)
     if (childNum == 2)
     {
         D_child_1_info;
@@ -31,10 +30,9 @@ ID(702)
         /* 分配的资源都SD(702)回收 */
 	allocPointer();
         /* child->other_info = child_1_info; */
-	int proNum = 702;
 	Alloc(child->other_info, child_1_info);
     }
-}
+END
 SD(702)
 {
     int proNum = 702;

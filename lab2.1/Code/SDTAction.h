@@ -42,6 +42,10 @@ void noallocPointer();
     FOR_EACH_2(AssociateHelperS, proNum, __VA_ARGS__) \
     void pro##proNum##SAction(AST_node *parent)
 
+#define NID(n) \
+    ID(n) { \
+	int proNum = n;
+
 #define NSD(n) \
     SD(n) { \
 	int proNum = n;
