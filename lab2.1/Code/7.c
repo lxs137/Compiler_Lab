@@ -225,17 +225,17 @@ NSD(711)
     /* 分配的资源由SD(711)回收 */
     allocPointer();
     /* parent->other_info = info; */
-    Alloc(parent->other_info, info);
-    D_parent_info;
-    /* parent_info->nextInfo = str; */
-    Alloc(parent_info->nextInfo, str);
+    OverWrite(parent->other_info, info);
+    /* D_parent_info; */
+    /* /1* parent_info->nextInfo = str; *1/ */
+    /* Alloc(parent_info->nextInfo, str); */
 
     /* 回收ID(711)分配的资源 */
     assert(child_2_info != NULL);
-    assert(child_2_info->nextInfo != NULL);
-    deallocPointer();
-    /* child_2_info->nextInfo = NULL; */
-    Dealloc(child_2_info->nextInfo);
+    /* assert(child_2_info->nextInfo != NULL); */
+    /* deallocPointer(); */
+    /* /1* child_2_info->nextInfo = NULL; *1/ */
+    /* Dealloc(child_2_info->nextInfo); */
 
     /* 回收SD(711) / SD(712) / SD(713)分配的资源 */
     D_child_2;
