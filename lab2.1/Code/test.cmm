@@ -1,1 +1,3 @@
-data Maybe a
+data Either
+data Maybe a = Nothing
+	       Something

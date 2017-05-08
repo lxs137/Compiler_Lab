@@ -11,6 +11,11 @@
 /*     : ADTHeader %prec LOWER_THAN_ASSIGNOP SEMI { $$ = new_parent_node("ADTRef", GROUP_7 + 1, 1, $1); } */
 /*     | ADTHeader ASSIGNOP ConstructorDecList { $$ = new_parent_node("ADTHeader", GROUP_7 + 2, 2, $1, $3); } */
 /*     ; */
+NSD(701)
+    D_child_1;
+    Dealloc(child_1->other_info);
+END
+
 NID(702)
     if (childNum == 2)
     {
@@ -22,20 +27,10 @@ NID(702)
     }
 END
 NSD(702)
-    /* 回收SD(703)分配的资源 */
     D_child_1;
-    D_child_1_info;
-    assert(child_1_info != NULL);
-    deallocPointer();
-    /* child_1->other_info = NULL; */
     Dealloc(child_1->other_info);
 
-    /* 回收ID(702)分配的资源 */
     D_child_2;
-    D_child_2_info;
-    assert(child_2_info != NULL);
-    deallocPointer();
-    /* child_2->other_info = NULL; */
     Dealloc(child_2->other_info);
 END
 
@@ -115,21 +110,11 @@ NID(707)
     if (childNum == 1)
     {
         D_parent_info;
-        assert(parent_info != NULL);
-        assert(child->other_info == NULL);
-        /* 分配的资源由SD(707)回收 */
-	allocPointer();
-        /* child->other_info = parent_info; */
 	Alloc(child->other_info, parent_info);
     }
 END
 NSD(707)
     D_child_1;
-    D_child_1_info;
-    /* 回收ID(707)分配的资源 */
-    assert(child_1_info != NULL);
-    deallocPointer();
-    /* child_1->other_info = NULL; */
     Dealloc(child_1->other_info);
 END
 
@@ -137,26 +122,14 @@ NID(708)
     if (childNum == 1 || childNum == 2)
     {
         D_parent_info;
-        assert(parent_info != NULL);
-        assert(child->other_info == NULL);
-        /* 分配的资源由SD(708)回收 */
-	allocPointer();
-        /* child->other_info = parent_info; */
 	Alloc(child->other_info, parent_info);
     }
 END
 NSD(708)
     D_child_1;
-    D_child_2;
-    assert(child_1->other_info != NULL);
-    /* 回收ID(708)分配的资源 */
-    deallocPointer();
-    /* child_1->other_info = NULL; */
     Dealloc(child_1->other_info);
-    assert(child_2->other_info != NULL);
-    /* 回收ID(708)分配的资源 */
-    deallocPointer();
-    /* child_2->other_info = NULL; */
+
+    D_child_2;
     Dealloc(child_2->other_info);
 END
 
@@ -407,5 +380,5 @@ END
 void initActionTable7()
 {
     IS(702, 703, 704, 707, 708, 709, 711, 712);
-    SS(702, 703, 704, 706, 707, 708, 709, 710, 711, 712, 713, 714);
+    SS(701, 702, 703, 704, 706, 707, 708, 709, 710, 711, 712, 713, 714);
 }
