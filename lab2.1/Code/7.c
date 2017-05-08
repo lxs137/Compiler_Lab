@@ -75,6 +75,8 @@ ID(703)
 }
 SD(703)
 {
+    int proNum = 703;
+
     D_child_1;
     D_child_1_info;
     assert(child_1_info != NULL);
@@ -97,7 +99,11 @@ SD(703)
     D_child_2;
     assert(child_2->other_info != NULL);
     deallocPointer();
-    child_2->other_info = NULL;
+    /* child_2->other_info = NULL; */
+    D_child_2_info;
+    Dealloc(child_2_info);
+    assert(child_2_info != NULL);
+    assert(child_2->other_info == NULL);
 }
 
 /* ADTParamList */
