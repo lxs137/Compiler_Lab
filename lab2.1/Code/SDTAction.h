@@ -17,7 +17,7 @@
 #include "Pointer.h"
 
 void allocPointer();
-void deallpocPointer();
+void deallocPointer();
 void noallocPointer();
 
 #define I(proNum) registerIAction(proNum, pro##proNum##IAction);
