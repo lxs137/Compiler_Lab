@@ -140,7 +140,7 @@ NID(709)
     if (childNum == 2)
     {
         D_parent_info;
-	Alloc(child->other_info, parent_info);
+	    Alloc(child->other_info, parent_info);
     }
 END
 NSD(709)
@@ -158,6 +158,7 @@ NSD(709)
     assert(child_2_info->typeKind == FunctionType);
     assert(child_2_info->node != NULL);
     OverWrite(child_1->other_info, child_2_info);
+    Noalloc(child_1->other_info);
     Alloc(((TypeInfo *)child_1->other_info)->nextInfo, str);
     Noalloc(((TypeInfo *)child_1->other_info)->nextInfo);
 #ifdef type_debug_print
