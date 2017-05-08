@@ -311,6 +311,8 @@ SD(710)
 /*     ; */
 ID(711)
 {
+    int proNum = 711;
+
     if (childNum == 2)
     {
         D_parent_info;
