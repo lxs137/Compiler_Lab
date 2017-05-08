@@ -39,12 +39,15 @@ ID(702)
 }
 SD(702)
 {
+    int proNum = 702;
+
     /* 回收SD(703)分配的资源 */
     D_child_1;
     D_child_1_info;
     assert(child_1_info != NULL);
     deallocPointer();
-    child_1->other_info = NULL;
+    /* child_1->other_info = NULL; */
+    Dealloc(child_1_info);
 
     /* 回收ID(702)分配的资源 */
     D_child_2;
