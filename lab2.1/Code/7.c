@@ -305,10 +305,7 @@ ID(711)
 	Alloc(child->other_info, parent_info);
     }
 }
-SD(711)
-{
-    int proNum = 711;
-
+NSD(711)
     D_child_1_info;
     D_child_2_info;
     TypeInfo *info;
@@ -348,12 +345,9 @@ SD(711)
     deallocPointer();
     /* child_2->other_info = NULL; */
     Dealloc(child_2->other_info);
-}
+END
 
-ID(712)
-{
-    int proNum = 712;
-
+NID(712)
     if (childNum == 1 || childNum == 2)
     {
         D_parent_info;
@@ -363,11 +357,8 @@ ID(712)
         /* child->other_info = parent_info; */
 	Alloc(child->other_info, parent_info);
     }
-}
-SD(712)
-{
-    int proNum = 712;
-
+END
+NSD(712)
     D_child_1_info;
     TypeInfo *i = (TypeInfo *)malloc(sizeof(TypeInfo));
     i->typeKind = GenericType;
@@ -414,10 +405,9 @@ SD(712)
     deallocPointer();
     /* child_2->other_info = NULL; */
     Dealloc(child_2->other_info);
-}
+END
 
-SD(713)
-{
+NSD(713)
     int proNum = 713;
 
     /* info begin */
@@ -447,7 +437,7 @@ SD(713)
     parent->other_info = info;
     /* ((TypeInfo *)parent->other_info)->nextInfo = str; */
     Alloc(((TypeInfo *)parent->other_info)->nextInfo, str);
-}
+END
 
 /* TypeId */
 /*     : UPPERID { $$ = new_parent_node("TypeId", GROUP_7 + 14, 1, $1); } */
