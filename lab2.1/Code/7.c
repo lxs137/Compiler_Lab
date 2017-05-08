@@ -136,8 +136,7 @@ END
 /* ADTParam */
 /*     : LOWERID { $$ = new_parent_node("ADTParam", GROUP_7 + 6, 1, $1); } */
 /*     ; */
-SD(706)
-{
+NSD(706)
     D_parent_info;
     D_child_1;
     /* TypeId-ADTParam\0 */
@@ -150,15 +149,13 @@ SD(706)
     strcpy(name + part1 + 1, child_1->str + 4);
     /* parent->other_info由继承属性变为综合属性 */
     parent->other_info = name;
-}
+END
 
 /* ConstructorDecList */
 /*     : ConstructorDec { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 7, 1, $1); } */
 /*     | ConstructorDec SEMI ConstructorDecList { $$ = new_parent_node("ConstructorDecList", GROUP_7 + 8, 2, $1, $3); } */ 
 /*     ; */
-ID(707)
-{
-    int proNum = 707;
+NID(707)
     if (childNum == 1)
     {
         D_parent_info;
@@ -169,7 +166,7 @@ ID(707)
         /* child->other_info = parent_info; */
 	Alloc(child->other_info, parent_info);
     }
-}
+END
 SD(707)
 {
     int proNum = 707;
