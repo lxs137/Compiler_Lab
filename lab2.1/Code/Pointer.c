@@ -26,7 +26,7 @@ void allocPointer(int proNum, void **pointer, void *value, int isTypeInfo, int e
 {
     va_list argptr;
     va_start(argptr, expectDeallocProNum);
-    assert(expectDeallocProNum != 0);
+    /* assert(expectDeallocProNum != 0); */
     ExpectProNum *ep = (ExpectProNum *)malloc(sizeof(ExpectProNum));
     ep->proNum = expectDeallocProNum;
     ExpectProNum *tmp = ep;
@@ -39,8 +39,8 @@ void allocPointer(int proNum, void **pointer, void *value, int isTypeInfo, int e
     }
     tmp->next = NULL;
 
-    assert(value != NULL);
-    assert(*pointer == NULL);
+    /* assert(value != NULL); */
+    /* assert(*pointer == NULL); */
     *pointer = value;
 
     PointerLog *newPl = (PointerLog *)malloc(sizeof(PointerLog));
@@ -84,5 +84,5 @@ void deallocPointer(int proNum, void **pointer)
 	    return;
 	}
     }
-    assert(0);
+    /* assert(0); */
 }
