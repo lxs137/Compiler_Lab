@@ -360,6 +360,8 @@ SD(711)
 
 ID(712)
 {
+    int proNum = 712;
+
     if (childNum == 1 || childNum == 2)
     {
         D_parent_info;
@@ -372,6 +374,8 @@ ID(712)
 }
 SD(712)
 {
+    int proNum = 712;
+
     D_child_1_info;
     TypeInfo *i = (TypeInfo *)malloc(sizeof(TypeInfo));
     i->typeKind = GenericType;
@@ -400,7 +404,8 @@ SD(712)
     void *str = parent->other_info;
     /* 分配的资源由SD(711)回收 */
     allocPointer();
-    parent->other_info = info;
+    /* parent->other_info = info; */
+    Alloc(parent->other_info, info);
     D_parent_info;
     parent_info->nextInfo = str;
 
