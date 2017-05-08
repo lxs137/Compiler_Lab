@@ -46,11 +46,6 @@ NID(703)
     if (childNum == 2)
     {
         D_child_1_info;
-        assert(child_1_info != NULL);
-        assert(child->other_info == NULL);
-        /* 分配的资源由SD(703)回收 */
-	allocPointer();
-        /* child->other_info = child_1_info; */
 	Alloc(child->other_info, child_1_info);
     }
 END
@@ -63,24 +58,10 @@ NSD(703)
     printf("add TypeId: %s in symbol table. (SD(703))\n", (char *)child_1_info);
 #endif
 
-    assert(parent->other_info == NULL);
-    /* 分配的资源由SD(701) / SD(702)回收 */
-    /* 分配的资源是ADT的类型名称，如Maybe */
-    allocPointer();
-    /* parent->other_info = child_1_info; */
     Alloc(parent->other_info, child_1_info);
 
-    /* /1* 回收SD(714)分配的资源 *1/ */
-    /* deallocPointer(); */
-    /* child_1->other_info = NULL; */
-
-    /* 回收ID(703)分配的资源 */
     D_child_2;
-    assert(child_2->other_info != NULL);
-    deallocPointer();
-    /* child_2->other_info = NULL; */
     Dealloc(child_2->other_info);
-    assert(child_2->other_info == NULL);
 END
 
 /* ADTParamList */
@@ -90,11 +71,6 @@ END
 NID(704)
     if (childNum ==  1 || childNum == 2)
     {
-        assert(parent->other_info != NULL);
-        assert(child->other_info == NULL);
-        /* 分配的资源由SD(704)回收 */
-	allocPointer();
-        /* child->other_info = parent->other_info; */
 	Alloc(child->other_info, parent->other_info);
     }
 END
@@ -107,18 +83,10 @@ NSD(704)
     printf("add ADTParam: %s in symbol table. (SD(704))\n", (char *)child_1_info);
 #endif
 
-    /* 回收ID(704)分配的资源 */
-    deallocPointer();
-    /* child_1->other_info = NULL; */
     Dealloc(child_1->other_info);
-    assert(child_1->other_info == NULL);
 
-    /* 回收ID(704)分配的资源 */
     D_child_2;
-    D_child_2_info;
-    assert(child_2_info != NULL);
-    deallocPointer();
-    child_2->other_info = NULL;
+    Dealloc(child_2->other_info);
 END
 
 /* ADTParam */
@@ -135,8 +103,8 @@ NSD(706)
     strcpy(name, (char *)parent_info);
     name[part1] = '-';
     strcpy(name + part1 + 1, child_1->str + 4);
-    /* parent->other_info由继承属性变为综合属性 */
-    parent->other_info = name;
+    /* parent->other_info = name; */
+    OverWrite(parent->other_info, name);
 END
 
 /* ConstructorDecList */

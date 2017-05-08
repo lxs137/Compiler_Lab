@@ -34,7 +34,8 @@ static PointerLog *pl = NULL;
 
 void alloc(int proNum, AllocatorRole role, void **pointer, void *value)
 {
-    /* assert(*pointer == NULL); */
+    assert(value != NULL);
+    assert(*pointer == NULL);
     *pointer = value;
 
     PointerLog *newPl = (PointerLog *)malloc(sizeof(PointerLog));
@@ -50,8 +51,33 @@ void alloc(int proNum, AllocatorRole role, void **pointer, void *value)
     }
     else
     {
-	pl->nextPointerLog = newPl;
+	PointerLog *tmp = pl;
+	while (tmp->nextPointerLog != NULL)
+	{
+	    tmp = tmp->nextPointerLog;
+	}
+	tmp->nextPointerLog = newPl;
     }
+}
+
+void overwrite(int proNum, AllocatorRole role, void **pointer, void *value)
+{
+    assert(*pointer != NULL);
+    assert(value != NULL);
+
+    PointerLog *tmp;
+    for (tmp = pl; tmp != NULL; tmp = tmp->nextPointerLog)
+    {
+	if (tmp->pointer == pointer)
+	{
+	    tmp->deallocProNum = OVERWRITE;
+	    break;
+	}
+    }
+    assert(tmp != NULL);
+
+    *pointer = NULL;
+    alloc(proNum, role, pointer, value);
 }
 
 void dealloc(int proNum, void **pointer)

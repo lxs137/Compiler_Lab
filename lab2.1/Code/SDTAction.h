@@ -44,11 +44,13 @@ void noallocPointer();
 
 #define NID(n) \
     ID(n) { \
-	int proNum = n;
+	int proNum = n; \
+	AllocatorRole allocatorRole = IRole;
 
 #define NSD(n) \
     SD(n) { \
-	int proNum = n;
+	int proNum = n; \
+	AllocatorRole allocatorRole = SRole;
 
 #define END }
 
