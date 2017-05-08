@@ -16,6 +16,10 @@
 #include <inttypes.h>
 #include "Pointer.h"
 
+void allocPointer();
+void deallpocPointer();
+void noallocPointer();
+
 #define I(proNum) registerIAction(proNum, pro##proNum##IAction);
 #define IS(...) FOR_EACH(I, __VA_ARGS__)
 
