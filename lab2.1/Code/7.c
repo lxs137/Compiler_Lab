@@ -32,7 +32,9 @@ ID(702)
         assert(child->other_info == NULL);
         /* 分配的资源都SD(702)回收 */
 	allocPointer();
-        child->other_info = child_1_info;
+        /* child->other_info = child_1_info; */
+	int proNum = 702;
+	Alloc(child->other_info, child_1_info);
     }
 }
 SD(702)
