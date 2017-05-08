@@ -1,3 +1,8 @@
+/* TypeId作为整个ADT的名称，需要借给ADTParamList使用，同时继承到ADTHeader，方便借给ConstructorDecList使用 */
+/* ConstructorDecList会把借来的TypeId借给它的子节点使用 */
+/* ConstructorDecList在综合的时候已经不需要借来的TypeId信息，把这个域换成类型信息 */
+/* 所以，一些确定的分配规则是不可能的，不要想了，实现起来代价也太大 */
+
 #include "SDTAction.h"
 #include "7.h"
 
@@ -6,22 +11,13 @@
 /*     : ADTHeader %prec LOWER_THAN_ASSIGNOP SEMI { $$ = new_parent_node("ADTRef", GROUP_7 + 1, 1, $1); } */
 /*     | ADTHeader ASSIGNOP ConstructorDecList { $$ = new_parent_node("ADTHeader", GROUP_7 + 2, 2, $1, $3); } */
 /*     ; */
-NSD(701)
-    D_child_1;
-    Dealloc(child_1->other_info);
-END
-
 NID(702)
     if (childNum == 2)
     {
         D_child_1_info;
-        /* child_1_info存储的是整个ADT的类型名：如Maybe */
         assert(child_1_info != NULL);
 
         assert(child->other_info == NULL);
-        /* 分配的资源都SD(702)回收 */
-	allocPointer();
-        /* child->other_info = child_1_info; */
 	Alloc(child->other_info, child_1_info);
     }
 END
@@ -443,5 +439,5 @@ END
 void initActionTable7()
 {
     IS(702, 703, 704, 707, 708, 709, 711, 712);
-    SS(701, 702, 703, 704, 706, 707, 708, 709, 710, 711, 712, 713, 714);
+    SS(702, 703, 704, 706, 707, 708, 709, 710, 711, 712, 713, 714);
 }
