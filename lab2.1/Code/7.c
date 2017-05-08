@@ -47,7 +47,7 @@ SD(702)
     assert(child_1_info != NULL);
     deallocPointer();
     /* child_1->other_info = NULL; */
-    Dealloc(child_1_info);
+    Dealloc(child_1->other_info);
 
     /* 回收ID(702)分配的资源 */
     D_child_2;
@@ -55,7 +55,7 @@ SD(702)
     assert(child_2_info != NULL);
     deallocPointer();
     /* child_2->other_info = NULL; */
-    Dealloc(child_2_info);
+    Dealloc(child_2->other_info);
 }
 
 /* ADTHeader */
@@ -100,9 +100,7 @@ SD(703)
     assert(child_2->other_info != NULL);
     deallocPointer();
     /* child_2->other_info = NULL; */
-    D_child_2_info;
-    Dealloc(child_2_info);
-    assert(child_2_info != NULL);
+    Dealloc(child_2->other_info);
     assert(child_2->other_info == NULL);
 }
 
@@ -123,6 +121,7 @@ ID(704)
 }
 SD(704)
 {
+    int proNum = 704;
     D_child_1_info;
     D_child_1;
     assert(child_1_info != NULL);
@@ -133,7 +132,9 @@ SD(704)
 
     /* 回收ID(704)分配的资源 */
     deallocPointer();
-    child_1->other_info = NULL;
+    /* child_1->other_info = NULL; */
+    Dealloc(child_1->other_info);
+    assert(child_1->other_info == NULL);
 
     /* 回收ID(704)分配的资源 */
     D_child_2;
