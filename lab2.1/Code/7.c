@@ -188,12 +188,14 @@ ID(707)
 }
 SD(707)
 {
+    int proNum = 707;
     D_child_1;
     D_child_1_info;
     /* 回收ID(707)分配的资源 */
     assert(child_1_info != NULL);
     deallocPointer();
-    child_1->other_info = NULL;
+    /* child_1->other_info = NULL; */
+    Dealloc(child_1->other_info);
 }
 
 ID(708)
@@ -212,16 +214,20 @@ ID(708)
 }
 SD(708)
 {
+    int proNum = 708;
+
     D_child_1;
     D_child_2;
     assert(child_1->other_info != NULL);
     /* 回收ID(708)分配的资源 */
     deallocPointer();
-    child_1->other_info = NULL;
+    /* child_1->other_info = NULL; */
+    Dealloc(child_1->other_info);
     assert(child_2->other_info != NULL);
     /* 回收ID(708)分配的资源 */
     deallocPointer();
-    child_2->other_info = NULL;
+    /* child_2->other_info = NULL; */
+    Dealloc(child_2->other_info);
 }
 
 /* ConstructorDec */
@@ -272,13 +278,15 @@ SD(709)
 
     /* 回收SD(710)分配的资源 */
     deallocPointer();
-    child_1->other_info = NULL;
+    /* child_1->other_info = NULL; */
+    Dealloc(child_1->other_info);
 
     D_child_2;
     assert(child_2->other_info != NULL);
     /* 回收ID(709)分配的资源 */
     deallocPointer();
-    child_2->other_info = NULL;
+    /* child_2->other_info = NULL; */
+    Dealloc(child_2->other_info);
 }
 
 /* ConstructorId */
@@ -310,7 +318,8 @@ ID(711)
         assert(child->other_info == NULL);
         /* 分配的资源由SD(711)回收 */
 	allocPointer();
-        child->other_info = parent_info;
+        /* child->other_info = parent_info; */
+	Alloc(child->other_info, parent_info);
     }
 }
 SD(711)
@@ -407,22 +416,27 @@ SD(712)
     /* parent->other_info = info; */
     Alloc(parent->other_info, info);
     D_parent_info;
-    parent_info->nextInfo = str;
+    /* parent_info->nextInfo = str; */
+    Alloc(parent_info->nextInfo, str);
 
     /* 回收ID(711)分配的资源 */
     assert(child_2_info != NULL);
     assert(child_2_info->nextInfo != NULL);
     deallocPointer();
-    child_2_info->nextInfo = NULL;
+    /* child_2_info->nextInfo = NULL; */
+    Dealloc(child_2_info->nextInfo);
 
     /* 回收SD(711) / SD(712) / SD(713)分配的资源 */
     D_child_2;
     deallocPointer();
-    child_2->other_info = NULL;
+    /* child_2->other_info = NULL; */
+    Dealloc(child_2->other_info);
 }
 
 SD(713)
 {
+    int proNum = 713;
+
     /* info begin */
     TypeInfo *info = (TypeInfo *)malloc(sizeof(TypeInfo));
     /* node begin */
@@ -448,7 +462,8 @@ SD(713)
     allocPointer();
     /* 分配的资源由SD(711) / SD(712)回收 */
     parent->other_info = info;
-    ((TypeInfo *)parent->other_info)->nextInfo = str;
+    /* ((TypeInfo *)parent->other_info)->nextInfo = str; */
+    Alloc(((TypeInfo *)parent->other_info)->nextInfo, str);
 }
 
 /* TypeId */
