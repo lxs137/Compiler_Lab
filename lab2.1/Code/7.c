@@ -16,9 +16,9 @@ SD(701)
     /* child_1_info是char *类型，不可能有nextInfo */
     /* assert(child_1_info->nextInfo == NULL); */
     deallocPointer();
-    child_1->other_info = NULL;
-    /* int proNum = 701; */
-    /* Dealloc(child_1->other_info); */
+    /* child_1->other_info = NULL; */
+    int proNum = 701;
+    Dealloc(child_1->other_info);
 }
 
 ID(702)
