@@ -48,7 +48,7 @@ coverageAbstract:
 	! grep -q :0.00% coverage.output
 
 coverageDetail:
-	cat coverage.output
+	grep -B 1 ":0.00%" coverage.output
 
 debug:
 	cp DebugMacroCopy.h DebugMacro.h
