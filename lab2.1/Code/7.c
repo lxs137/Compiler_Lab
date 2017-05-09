@@ -18,7 +18,7 @@ NID(702)
         assert(child_1_info != NULL);
 
         assert(child->other_info == NULL);
-	    Alloc(child->other_info, child_1_info);
+	Alloc(child->other_info, child_1_info);
     }
 END
 NSD(702)
@@ -36,7 +36,7 @@ NID(703)
     if (childNum == 2)
     {
         D_child_1_info;
-	    Alloc(child->other_info, child_1_info);
+	Alloc(child->other_info, child_1_info);
     }
 END
 NSD(703)
@@ -61,7 +61,7 @@ END
 NID(704)
     if (childNum ==  1 || childNum == 2)
     {
-	    Alloc(child->other_info, parent->other_info);
+	Alloc(child->other_info, parent->other_info);
     }
 END
 NSD(704)
@@ -105,7 +105,7 @@ NID(707)
     if (childNum == 1)
     {
         D_parent_info;
-	    Alloc(child->other_info, parent_info);
+	Alloc(child->other_info, parent_info);
     }
 END
 NSD(707)
@@ -117,7 +117,7 @@ NID(708)
     if (childNum == 1 || childNum == 2)
     {
         D_parent_info;
-	    Alloc(child->other_info, parent_info);
+	Alloc(child->other_info, parent_info);
     }
 END
 NSD(708)
@@ -135,7 +135,7 @@ NID(709)
     if (childNum == 2)
     {
         D_parent_info;
-	    Alloc(child->other_info, parent_info);
+	Alloc(child->other_info, parent_info);
     }
 END
 NSD(709)
@@ -187,7 +187,7 @@ NID(711)
     if (childNum == 2)
     {
         D_parent_info;
-	    Alloc(child->other_info, parent_info);
+	Alloc(child->other_info, parent_info);
     }
 END
 NSD(711)
@@ -197,7 +197,7 @@ NSD(711)
     if (((FunctionNode *)child_2_info->node)->paramTypeInfo == NULL)
     {
         ((FunctionNode *)child_2_info->node)->paramTypeInfo = child_1_info;
-	    info = child_2_info;
+	info = child_2_info;
     }
     else
     {
@@ -219,7 +219,7 @@ NID(712)
     if (childNum == 1 || childNum == 2)
     {
         D_parent_info;
-	    Alloc(child->other_info, parent_info);
+	Alloc(child->other_info, parent_info);
     }
 END
 NSD(712)
@@ -236,8 +236,8 @@ NSD(712)
     if (((FunctionNode *)child_2_info->node)->paramTypeInfo == NULL)
     {
         ((FunctionNode *)child_2_info->node)->paramTypeInfo = i;
-	    info = child_2_info;
-	    info->nextInfo = NULL;
+	info = child_2_info;
+	info->nextInfo = NULL;
     }
     else
     {
