@@ -1,4 +1,5 @@
 #include "SDTAction.h"
+#include "Assert.h"
 #include "4.h"
 
 /* FuncParamType */
@@ -385,9 +386,10 @@ ID(412)
     if (childNum == 2)
     {
         D_parent_info;
-        assert(parent_info != NULL);
-        assert(parent_info->typeKind == FunctionType);
-        assert(parent_info->node != NULL);
+	AssertFunctionTypeInfo(parent_info);
+        /* assert(parent_info != NULL); */
+        /* assert(parent_info->typeKind == FunctionType); */
+        /* assert(parent_info->node != NULL); */
         /* assert(parent_info->nextInfo == NULL); */
 
         FunctionNode *fn = parent_info->node;
@@ -408,8 +410,10 @@ ID(412)
         info->nextInfo = NULL;
         ((FunctionNode *)returnTypeInfo->node)->returnTypeInfo = info;
         child->other_info = ((FunctionNode *)parent_info->node)->returnTypeInfo;
+#ifdef function_type_debug_print
         printTypeInfo(child->other_info);
         printf(" (ID(412))\n");
+#endif
     }
 }
 
