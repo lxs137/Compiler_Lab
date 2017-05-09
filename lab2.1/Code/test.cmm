@@ -1,3 +1,7 @@
-data Either
-data Maybe a = Nothing
-	       Just a
+let f = (Int a, Int b) -> Func(Int -> Int) {
+    Int c = 1
+    let h = (Int a) -> Int {
+        return a + 1
+    }
+    return g
+}
