@@ -1,5 +1,5 @@
 Func(Int -> Float -> Int) f
-Func() ->Int g
+Func(Int) g
 g()
 f(_, 1.0)
 g(1, 1.0)

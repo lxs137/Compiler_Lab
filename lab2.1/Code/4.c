@@ -413,19 +413,17 @@ ID(412)
     }
 }
 
-SD(413)
-{
+/* SD(413) */
+/* { */
+NSD(413)
     D_parent_info;
-    parent->other_info = ((FunctionNode *)parent_info->node)->returnTypeInfo;
-}
+    /* parent->other_info = ((FunctionNode *)parent_info->node)->returnTypeInfo; */
+    OverWrite(parent->other_info, ((FunctionNode *)parent_info->node)->returnTypeInfo);
+/* } */
+END
 
 void initActionTable4()
 {
-    /* IS(408); */
-    /* registerIAction(408, pro408IAction); */
-    /* SS(401, 407, 408); */
     IS(407, 408, 410, 411, 412);
     SS(401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413);
-    /* registerSAction(408, pro408SAction); */
-    /* registerSAction(407, pro407SAction); */
 }
