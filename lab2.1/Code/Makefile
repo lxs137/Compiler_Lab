@@ -1,6 +1,3 @@
-# GNU make手册：http://www.gnu.org/software/make/manual/make.html
-# ************ 遇到不明白的地方请google以及阅读手册 *************
-
 # 编译器设定和编译选项
 CC = gcc -fprofile-arcs -ftest-coverage
 FLEX = flex
@@ -35,23 +32,29 @@ syntax-c: $(YFILE)
 # 定义的一些伪目标
 .PHONY: clean test
 
+ACTIONFILES = $(shell find ./ -name "[1-9]*.c")
+SUBDIRS = $(shell find ./ -maxdepth 1 -type d -name "Test*")
+
 debug:
 	cp DebugMacroCopy.h DebugMacro.h
 	make
 	./parser test.cmm
 
 coverage:
-	cp AllDebugMacro.h DebugMacro.h
 	make
-	@ for subdir in $(SUBDIRS); do \
-	    make runAbstract; \
+	for subdir in $(SUBDIRS); do \
+	    ehco "$$subdir"; \
+	    (cd $$subdir && make runAbstract); \
 	done;
-	make clean
+	for file in $(ACTIONFILES); do \
+	    gcov -f -n $$file >> coverage.output; \
+	done;
+	! grep -q :0.00% coverage.output
 
 clean:
 	- @ for subdir in $(SUBDIRS); do \
-		echo "Clean in $$subdir"; \
-	    (cd $$subdir && make clean); \
+	    	echo "Clean in $$subdir"; \
+	    	(cd $$subdir && make clean); \
 	  done;
 	- @ rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output
 	- @ rm *.gcno
