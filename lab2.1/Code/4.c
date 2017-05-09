@@ -64,8 +64,9 @@ NSD(401)
 /*     ; */
 /* 由于要兼容不同写法的函数类型 */
 /* 真正的语法树稍有调整，不再有FuncParam这种节点 */
-SD(402)
-{
+/* SD(402) */
+/* { */
+NSD(402)
     /* type begin */
     D_type_info;
     type_info->typeKind = FunctionType;
@@ -82,10 +83,11 @@ SD(402)
     type_info->node = node;
     type_info->nextInfo = NULL;
     /* type end */
-    assert(parent->other_info == NULL);
-    /* 类型信息不能删除，直到销毁语法树 */
-    /* 故在销毁语法树时才回收 */
-    parent->other_info = type_info;
+    /* assert(parent->other_info == NULL); */
+    /* /1* 类型信息不能删除，直到销毁语法树 *1/ */
+    /* /1* 故在销毁语法树时才回收 *1/ */
+    /* parent->other_info = type_info; */
+    Alloc(parent->other_info, type_info);
 
 #ifdef function_type_debug_print
     D_parent_info;
@@ -98,8 +100,9 @@ SD(402)
 /*     : LP VarList RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", GROUP_4 + 3, 2, $2, $5); } */
 /*     | LP RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", GROUP_4 + 4, 1, $4); } */
 /*     ; */
-SD(403)
-{
+/* SD(403) */
+/* { */
+NSD(403)
     D_child_1_info;
 
     TypeInfo *returnTypeInfo = child_1_info;
@@ -120,9 +123,10 @@ SD(403)
     assert(child_2_info->nextInfo == NULL);
     ((FunctionNode *)(returnTypeInfo->node))->returnTypeInfo = child_2_info;
 
-    assert(parent->other_info == NULL);
-    /* 分配的资源由SD(408)回收 */
-    parent->other_info = child_1_info;
+    /* assert(parent->other_info == NULL); */
+    /* /1* 分配的资源由SD(408)回收 *1/ */
+    /* parent->other_info = child_1_info; */
+    Alloc(parent->other_info, child_1_info);
 
     /* 回收SD(405) / SD(406)释放的资源 */
     child_1_info = NULL;
