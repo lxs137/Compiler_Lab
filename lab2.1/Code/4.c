@@ -132,8 +132,9 @@ NSD(403)
     child_1_info = NULL;
 }
 
-SD(404)
-{
+/* SD(404) */
+/* { */
+NSD(404)
     /* type begin */
     D_type_info;
     type_info->typeKind = FunctionType;
@@ -151,17 +152,19 @@ SD(404)
     type_info->nextInfo = NULL;
     /* type end */
 
-    assert(parent->other_info == NULL);
-    /* 分配的资源由SD(408)回收 */
-    parent->other_info = type_info;
+    /* assert(parent->other_info == NULL); */
+    /* /1* 分配的资源由SD(408)回收 *1/ */
+    /* parent->other_info = type_info; */
+    Alloc(parent->other_info, type_info);
 }
 
 /* VarList */
 /*     : ParamDec COMMA VarList { $$ = new_parent_node("VarList", GROUP_4 + 5, 2, $1, $3); } */
 /*     | ParamDec { $$ = new_parent_node("VarList", GROUP_4 + 6, 1, $1); } */
 /*     ; */
-SD(405)
-{
+/* SD(405) */
+/* { */
+NSD(405)
     D_child_1_info;
     assert(child_1_info != NULL);
     assert(child_1_info->typeKind != 0);
@@ -189,16 +192,18 @@ SD(405)
     type_info->nextInfo = NULL;
     /* type end */
     assert(parent->other_info == NULL);
-    /* 分配的资源由SD(403)回收 */
-    parent->other_info = type_info;
+    /* /1* 分配的资源由SD(403)回收 *1/ */
+    /* parent->other_info = type_info; */
+    Alloc(parent->other_info, type_info);
 
     D_child_1;
     /* 回收SD(407)分配的资源 */
     child_1->other_info = NULL;
 }
 
-SD(406)
-{
+/* SD(406) */
+/* { */
+NSD(406)
     D_parent_info;
 
     D_child_1_info;
@@ -220,9 +225,10 @@ SD(406)
     type_info->node = node;
     type_info->nextInfo = NULL;
     /* type end */
-    assert(parent->other_info == NULL);
-    /* 分配的资源由SD(403)回收 */
-    parent->other_info = type_info;
+    /* assert(parent->other_info == NULL); */
+    /* /1* 分配的资源由SD(403)回收 *1/ */
+    /* parent->other_info = type_info; */
+    Alloc(parent->other_info, type_info);
 
     D_child_1;
     /* 回收SD(407)释放的资源 */
@@ -232,8 +238,9 @@ SD(406)
 /* ParamDec */
 /*     : Specifier VarDec { $$ = new_parent_node("ParamDec", GROUP_4 + 7, 2, $1, $2); } */
 /*     ; */
-ID(407)
-{
+/* ID(407) */
+/* { */
+NID(407)
     if (childNum == 2)
     {
         D_child_1_info;
@@ -241,9 +248,11 @@ ID(407)
         assert(child_1_info->node != NULL);
         assert(child_1_info->nextInfo == NULL);
 
-        assert(child->other_info == NULL);
-        /* 分配的资源不回收直到语法树销毁 */
-        child->other_info = child_1_info;
+        /* assert(child->other_info == NULL); */
+        /* /1* 分配的资源不回收直到语法树销毁 *1/ */
+        /* child->other_info = child_1_info; */
+	Alloc(child->other_info, child_1_info);
+	Noalloc(child->other_info);
     }
 }
 SD(407)
