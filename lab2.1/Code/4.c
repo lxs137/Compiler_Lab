@@ -10,8 +10,9 @@
 /*     ; */
 /* 由于要兼容不同写法的函数类型 */
 /* 真正的语法树稍有调整，不再有FuncParam这种节点 */
-SD(401)
-{
+/* SD(401) */
+/* { */
+NSD(401)
     D_child_1;
     D_child_2;
     D_child_1_info;
@@ -35,10 +36,11 @@ SD(401)
     type_info->node = node;
     type_info->nextInfo = NULL;
     /* type end */
-    assert(parent->other_info == NULL);
-    /* 类型信息不能删除，直到销毁语法树 */
-    /* 故在销毁语法树时才回收 */
-    parent->other_info = type_info;
+    /* assert(parent->other_info == NULL); */
+    /* /1* 类型信息不能删除，直到销毁语法树 *1/ */
+    /* /1* 故在销毁语法树时才回收 *1/ */
+    /* parent->other_info = type_info; */
+    Alloc(parent->other_info, type_info);
 
 #ifdef function_type_debug_print
     D_parent_info;
@@ -188,7 +190,7 @@ SD(405)
 
     D_child_1;
     /* 回收SD(407)分配的资源 */
-    child_1->other_info == NULL;
+    child_1->other_info = NULL;
 }
 
 SD(406)
@@ -220,7 +222,7 @@ SD(406)
 
     D_child_1;
     /* 回收SD(407)释放的资源 */
-    child_1->other_info == NULL;
+    child_1->other_info = NULL;
 }
 
 /* ParamDec */
