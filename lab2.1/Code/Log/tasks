@@ -28,3 +28,4 @@ deallocPointer(void **pointer)
 
 解决makeAbstract不输出log的问题
 预计需要1个单位时间
+完成需要1个单位时间
