@@ -1,24 +1,31 @@
 make[1]: Entering directory '/home/Compiler_Lab/lab2.1/Code'
+rm: cannot remove '*.gcno': No such file or directory
+Makefile:44: recipe for target 'clean' failed
+make[1]: [clean] Error 1 (ignored)
+rm: cannot remove '*.gcda': No such file or directory
+Makefile:44: recipe for target 'clean' failed
+make[1]: [clean] Error 1 (ignored)
 flex -o ./lex.yy.c ./lexical.l
 bison -o ./syntax.tab.c -d -t -v ./syntax.y
 ./syntax.y: warning: 1 shift/reduce conflict [-Wconflicts-sr]
-gcc -c ./syntax.tab.c -o ./syntax.tab.o
-gcc -std=c99 -ggdb   -c -o SDTAction.o SDTAction.c
-gcc -std=c99 -ggdb   -c -o main.o main.c
+gcc -fprofile-arcs -ftest-coverage -c ./syntax.tab.c -o ./syntax.tab.o
+gcc -fprofile-arcs -ftest-coverage -std=c99 -ggdb -fprofile-arcs -ftest-coverage   -c -o SDTAction.o SDTAction.c
+gcc -fprofile-arcs -ftest-coverage -std=c99 -ggdb -fprofile-arcs -ftest-coverage   -c -o main.o main.c
 In file included from main.c:4:0:
 ./lex.yy.c: In function 'yy_init_buffer':
 ./lex.yy.c:1864:9: warning: implicit declaration of function 'fileno' [-Wimplicit-function-declaration]
          b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
          ^
-gcc -std=c99 -ggdb   -c -o 7.o 7.c
-gcc -std=c99 -ggdb   -c -o 8.o 8.c
-gcc -std=c99 -ggdb   -c -o symbol_table.o symbol_table.c
-gcc -std=c99 -ggdb   -c -o syntax_tree.o syntax_tree.c
-gcc -std=c99 -ggdb   -c -o 4.o 4.c
-gcc -std=c99 -ggdb   -c -o GodelNumber.o GodelNumber.c
-gcc -std=c99 -ggdb   -c -o 10.o 10.c
-gcc -std=c99 -ggdb   -c -o jsw_rbtree.o jsw_rbtree.c
-gcc -std=c99 -ggdb   -c -o 9.o 9.c
-gcc -std=c99 -ggdb   -c -o 3.o 3.c
-gcc -o parser ./SDTAction.o ./main.o ./7.o ./8.o ./symbol_table.o ./syntax_tree.o ./4.o ./GodelNumber.o ./10.o ./jsw_rbtree.o ./9.o ./syntax.tab.o ./3.o -lfl -ly
+gcc -fprofile-arcs -ftest-coverage -std=c99 -ggdb -fprofile-arcs -ftest-coverage   -c -o 7.o 7.c
+gcc -fprofile-arcs -ftest-coverage -std=c99 -ggdb -fprofile-arcs -ftest-coverage   -c -o 8.o 8.c
+gcc -fprofile-arcs -ftest-coverage -std=c99 -ggdb -fprofile-arcs -ftest-coverage   -c -o symbol_table.o symbol_table.c
+gcc -fprofile-arcs -ftest-coverage -std=c99 -ggdb -fprofile-arcs -ftest-coverage   -c -o syntax_tree.o syntax_tree.c
+gcc -fprofile-arcs -ftest-coverage -std=c99 -ggdb -fprofile-arcs -ftest-coverage   -c -o 4.o 4.c
+gcc -fprofile-arcs -ftest-coverage -std=c99 -ggdb -fprofile-arcs -ftest-coverage   -c -o GodelNumber.o GodelNumber.c
+gcc -fprofile-arcs -ftest-coverage -std=c99 -ggdb -fprofile-arcs -ftest-coverage   -c -o 10.o 10.c
+gcc -fprofile-arcs -ftest-coverage -std=c99 -ggdb -fprofile-arcs -ftest-coverage   -c -o jsw_rbtree.o jsw_rbtree.c
+gcc -fprofile-arcs -ftest-coverage -std=c99 -ggdb -fprofile-arcs -ftest-coverage   -c -o 9.o 9.c
+gcc -fprofile-arcs -ftest-coverage -std=c99 -ggdb -fprofile-arcs -ftest-coverage   -c -o 3.o 3.c
+gcc -fprofile-arcs -ftest-coverage -std=c99 -ggdb -fprofile-arcs -ftest-coverage   -c -o Pointer.o Pointer.c
+gcc -fprofile-arcs -ftest-coverage -o parser ./SDTAction.o ./main.o ./7.o ./8.o ./symbol_table.o ./syntax_tree.o ./4.o ./GodelNumber.o ./10.o ./jsw_rbtree.o ./9.o ./syntax.tab.o ./3.o ./Pointer.o -lfl -ly
 make[1]: Leaving directory '/home/Compiler_Lab/lab2.1/Code'

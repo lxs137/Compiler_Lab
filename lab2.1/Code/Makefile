@@ -2,10 +2,11 @@
 # ************ 遇到不明白的地方请google以及阅读手册 *************
 
 # 编译器设定和编译选项
-CC = gcc
+CC = gcc -fprofile-arcs -ftest-coverage
 FLEX = flex
 BISON = bison
-CFLAGS = -std=c99 -ggdb
+CFLAGS = -std=c99 -ggdb -fprofile-arcs -ftest-coverage
+LDFLAGS = -fprofile-arcs -ftest-coverage
 
 # 编译目标：src目录下的所有.c文件
 CFILES = $(shell find ./ -name "*.c")
@@ -39,12 +40,22 @@ debug:
 	make
 	./parser test.cmm
 
+coverage:
+	cp AllDebugMacro.h DebugMacro.h
+	make
+	@ for subdir in $(SUBDIRS); do \
+	    make runAbstract; \
+	done;
+	make clean
+
 clean:
 	- @ for subdir in $(SUBDIRS); do \
 		echo "Clean in $$subdir"; \
 	    (cd $$subdir && make clean); \
 	  done;
 	- @ rm -f parser lex.yy.c syntax.tab.c syntax.tab.h syntax.output
+	- @ rm *.gcno
+	- @ rm *.gcda
 	- @ rm -f $(OBJS) $(OBJS:.o=.d)
 	- @ rm -f $(LFC) $(YFC) $(YFC:.c=.h)
 	- @ rm -f core
