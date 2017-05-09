@@ -255,8 +255,9 @@ NID(407)
 	Noalloc(child->other_info);
     }
 }
-SD(407)
-{
+/* SD(407) */
+/* { */
+NSD(407)
     D_child_1_info;
     assert(child_1_info != NULL);
     assert(child_1_info->typeKind != 0);
@@ -264,9 +265,10 @@ SD(407)
     /* 由于Specifer->other_info与VarDec->other_info共享同一块内存 */
     /* 所以当VarDec->other_in->nextInfofo被赋予变量名称时，Specifier->other_info->nextInfo也不再为空 */
     /* assert(child_1_info->nextInfo == NULL); */
-    assert(parent->other_info == NULL);
-    /* 分配的资源由SD(405) / SD(406)回收 */
-    parent->other_info = child_1_info;
+    /* assert(parent->other_info == NULL); */
+    /* /1* 分配的资源由SD(405) / SD(406)回收 *1/ */
+    /* parent->other_info = child_1_info; */
+    Alloc(parent->other_info, child_1_info);
 
     D_child_2;
     D_child_2_info;
@@ -287,8 +289,9 @@ ID(408)
         createInnerSymbolTable();
     }
 }
-SD(408)
-{
+/* SD(408) */
+/* { */
+NSD(408)
     gotoOuterSymbolTable();
 
     D_child_1_info;
@@ -299,9 +302,10 @@ SD(408)
     assert(node->returnTypeInfo != NULL);
     assert(child_1_info->nextInfo == NULL);
 
-    assert(parent->other_info == NULL);
-    /* 分配的资源不回收直到语法树被销毁 */
-    parent->other_info = child_1_info;
+    /* assert(parent->other_info == NULL); */
+    /* /1* 分配的资源不回收直到语法树被销毁 *1/ */
+    /* parent->other_info = child_1_info; */
+    Alloc(parent->other_info, child_1_info);
 
     D_child_1;
     /* 回收SD(403) / SD(404)分配的资源 */
