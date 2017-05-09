@@ -39,7 +39,6 @@ SUBDIRS = $(shell find ./ -maxdepth 1 -type d -name "Test*")
 coverageAbstract:
 	make
 	for subdir in $(SUBDIRS); do \
-	    ehco "$$subdir"; \
 	    (cd $$subdir && make runAbstract); \
 	done;
 	for file in $(ACTIONFILES); do \
