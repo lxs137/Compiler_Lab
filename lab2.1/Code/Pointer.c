@@ -8,14 +8,14 @@ bool isChildProduction(AST_node *node, int proNum)
     node = node->first_child;
     if (node == NULL)
     {
-	return false;
+	    return false;
     }
     for (; node != NULL; node = node->next_brother)
     {
-	if (node->proNum == proNum)
-	{
-	    return true;
-	}
+	    if (node->proNum == proNum)
+	    {
+	        return true;
+	    }
     }
     return false;
 }
@@ -46,16 +46,16 @@ void alloc(int proNum, AllocatorRole role, void **pointer, void *value)
 
     if (pl == NULL)
     {
-	pl = newPl;
+	    pl = newPl;
     }
     else
     {
-	PointerLog *tmp = pl;
-	while (tmp->nextPointerLog != NULL)
-	{
-	    tmp = tmp->nextPointerLog;
-	}
-	tmp->nextPointerLog = newPl;
+	    PointerLog *tmp = pl;
+	    while (tmp->nextPointerLog != NULL)
+	    {
+	        tmp = tmp->nextPointerLog;
+	    }
+	    tmp->nextPointerLog = newPl;
     }
 }
 
@@ -67,11 +67,11 @@ void overwrite(int proNum, AllocatorRole role, void **pointer, void *value)
     PointerLog *tmp;
     for (tmp = pl; tmp != NULL; tmp = tmp->nextPointerLog)
     {
-	if (tmp->pointer == pointer && tmp->deallocProNum == UNALLOC)
-	{
-	    tmp->deallocProNum = OVERWRITE;
-	    break;
-	}
+	    if (tmp->pointer == pointer && tmp->deallocProNum == UNALLOC)
+	    {
+	        tmp->deallocProNum = OVERWRITE;
+	        break;
+	    }
     }
     assert(tmp != NULL);
 
@@ -100,15 +100,15 @@ void dealloc(int proNum, void **pointer, AST_node *parent)
     PointerLog *tmp;
     for (tmp = pl; tmp != NULL; tmp = tmp->nextPointerLog)
     {
-	if (tmp->pointer == pointer && tmp->deallocProNum == UNALLOC)
-	{
-	    assert(tmp->role != IRole || tmp->allocProNum == proNum);
-	    assert(tmp->role != SRole || isChildProduction(parent, tmp->allocProNum) == true);
-	    tmp->deallocProNum = proNum;
+	    if (tmp->pointer == pointer && tmp->deallocProNum == UNALLOC)
+	    {
+	        assert(tmp->role != IRole || tmp->allocProNum == proNum);
+	        assert(tmp->role != SRole || isChildProduction(parent, tmp->allocProNum) == true);
+	        tmp->deallocProNum = proNum;
 
-	    *pointer = NULL;
-	    return;
-	}
+	        *pointer = NULL;
+	        return;
+	    }
     }
     assert(0);
 }
@@ -118,6 +118,6 @@ void printPointerLog()
     PointerLog *tmp;
     for (tmp = pl; tmp != NULL; tmp = tmp->nextPointerLog)
     {
-	printf("%p alloc: %d dealloc: %d.\n", tmp->pointer, tmp->allocProNum, tmp->deallocProNum);
+	    printf("%p alloc: %d dealloc: %d.\n", tmp->pointer, tmp->allocProNum, tmp->deallocProNum);
     }
 }

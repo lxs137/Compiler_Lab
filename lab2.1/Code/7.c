@@ -1,8 +1,3 @@
-/* TypeId作为整个ADT的名称，需要借给ADTParamList使用，同时继承到ADTHeader，方便借给ConstructorDecList使用 */
-/* ConstructorDecList会把借来的TypeId借给它的子节点使用 */
-/* ConstructorDecList在综合的时候已经不需要借来的TypeId信息，把这个域换成类型信息 */
-/* 所以，一些确定的分配规则是不可能的，不要想了，实现起来代价也太大 */
-
 #include "SDTAction.h"
 #include "7.h"
 
@@ -23,7 +18,7 @@ NID(702)
         assert(child_1_info != NULL);
 
         assert(child->other_info == NULL);
-	Alloc(child->other_info, child_1_info);
+	    Alloc(child->other_info, child_1_info);
     }
 END
 NSD(702)
@@ -66,7 +61,7 @@ END
 NID(704)
     if (childNum ==  1 || childNum == 2)
     {
-	Alloc(child->other_info, parent->other_info);
+	    Alloc(child->other_info, parent->other_info);
     }
 END
 NSD(704)
@@ -110,7 +105,7 @@ NID(707)
     if (childNum == 1)
     {
         D_parent_info;
-	Alloc(child->other_info, parent_info);
+	    Alloc(child->other_info, parent_info);
     }
 END
 NSD(707)
@@ -122,7 +117,7 @@ NID(708)
     if (childNum == 1 || childNum == 2)
     {
         D_parent_info;
-	Alloc(child->other_info, parent_info);
+	    Alloc(child->other_info, parent_info);
     }
 END
 NSD(708)
@@ -192,7 +187,7 @@ NID(711)
     if (childNum == 2)
     {
         D_parent_info;
-	Alloc(child->other_info, parent_info);
+	    Alloc(child->other_info, parent_info);
     }
 END
 NSD(711)
@@ -202,7 +197,7 @@ NSD(711)
     if (((FunctionNode *)child_2_info->node)->paramTypeInfo == NULL)
     {
         ((FunctionNode *)child_2_info->node)->paramTypeInfo = child_1_info;
-	info = child_2_info;
+	    info = child_2_info;
     }
     else
     {
@@ -224,7 +219,7 @@ NID(712)
     if (childNum == 1 || childNum == 2)
     {
         D_parent_info;
-	Alloc(child->other_info, parent_info);
+	    Alloc(child->other_info, parent_info);
     }
 END
 NSD(712)
