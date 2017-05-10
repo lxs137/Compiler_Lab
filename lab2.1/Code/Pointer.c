@@ -131,9 +131,21 @@ void dealloc(int proNum, void **pointer, AST_node *parent)
     assert(0);
 }
 
-void assign(int proNum, void **pointer)
+void assignFieldOf(int proNum, void **pointer)
 {
-    /* check write-copy here */
+    PointerLog *tmp;
+    for (tmp = pl; tmp != NULL; tmp = tmp->nextPointerLog)
+    {
+	if (tmp->pointer == pointer)
+	{
+	    if (tmp->sharePointer != NULL)
+	    {
+		printf("Assing To Share Memory.\n");
+		return;
+	    }
+	}
+    }
+    assert(0);
 }
 
 void printPointerLog()
