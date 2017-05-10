@@ -7,8 +7,9 @@
 /*     : Specifier DecList { $$ = new_parent_node("VarDef", GROUP_9 + 1, 2, $1, $2); } */
 /*     | PatternMatching { $$ = new_parent_node("VarDef", GROUP_9 + 2, 1, $1); } */
 /*     ; */
-ID(901)
-{
+NID(901)
+/* ID(901) */
+/* { */
     if (childNum == 2)
     {
         D_child_1_info;
@@ -17,9 +18,10 @@ ID(901)
         assert(child_1_info->node != NULL);
         assert(child_1_info->nextInfo == NULL);
 
-        assert(child->other_info == NULL);
-        /* 分配的资源由SD(901)回收 */
-        child->other_info = child_1_info;
+        /* assert(child->other_info == NULL); */
+        /* /1* 分配的资源由SD(901)回收 *1/ */
+        /* child->other_info = child_1_info; */
+	Alloc(child->other_info, child_1_info);
     }
 }
 SD(901)
@@ -39,8 +41,9 @@ SD(901)
 /*     : Dec { $$ = new_parent_node("DecList", GROUP_9 + 3, 1, $1); } */
 /*     | Dec COMMA DecList { $$ = new_parent_node("DecList", GROUP_9 + 4, 2, $1, $3); } */
 /*     ; */
-ID(903)
-{
+NID(903)
+/* ID(903) */
+/* { */
     if (childNum == 1)
     {
         D_parent_info;
@@ -49,9 +52,10 @@ ID(903)
         assert(parent_info->node != NULL);
         assert(parent_info->nextInfo == NULL);
 
-        assert(child->other_info == NULL);
-        /* 分配的资源由SD(903)回收 */
-        child->other_info = parent_info;
+        /* assert(child->other_info == NULL); */
+        /* /1* 分配的资源由SD(903)回收 *1/ */
+        /* child->other_info = parent_info; */
+	Alloc(child->other_info, parent_info);
     }
 }
 SD(903)
