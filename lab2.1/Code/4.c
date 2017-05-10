@@ -44,7 +44,7 @@ NSD(401)
     printTypeInfo(parent_info);
     printf("\n");
 #endif
-}
+END
 
 /* FuncType */
 /*     : FUNC LP FuncParamType RP { */ 
@@ -89,7 +89,7 @@ NSD(402)
     printTypeInfo(parent_info);
     printf("\n");
 #endif
-}
+END
 
 /* FuncDec */
 /*     : LP VarList RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", GROUP_4 + 3, 2, $2, $5); } */
@@ -120,7 +120,7 @@ NSD(403)
 
     D_child_1;
     Dealloc(child_1->other_info);
-}
+END
 
 NSD(404)
     /* type begin */
@@ -141,7 +141,7 @@ NSD(404)
     /* type end */
 
     Alloc(parent->other_info, type_info);
-}
+END
 
 /* VarList */
 /*     : ParamDec COMMA VarList { $$ = new_parent_node("VarList", GROUP_4 + 5, 2, $1, $3); } */
@@ -180,7 +180,7 @@ NSD(405)
 
     D_child_1;
     Dealloc(child_1->other_info);
-}
+END
 
 NSD(406)
     D_parent_info;
@@ -209,7 +209,7 @@ NSD(406)
 
     D_child_1;
     Dealloc(child_1->other_info);
-}
+END
 
 /* ParamDec */
 /*     : Specifier VarDec { $$ = new_parent_node("ParamDec", GROUP_4 + 7, 2, $1, $2); } */
@@ -225,7 +225,7 @@ NID(407)
 	Alloc(child->other_info, child_1_info);
 	Noalloc(child->other_info);
     }
-}
+END
 NSD(407)
     D_child_1_info;
     assert(child_1_info != NULL);
@@ -242,7 +242,7 @@ NSD(407)
 #ifdef st_debug_print
     printf("add VarDec: %s in symbol table. (SD(407))\n", (char *)((TypeInfo *)child_2_info)->nextInfo);
 #endif
-}
+END
 
 /* FuncBody */
 /*     : FuncDec CompSt { $$ = new_parent_node("FuncBody", GROUP_4 + 8, 2, $1, $2); } */
@@ -275,7 +275,7 @@ NSD(408)
     printTypeInfo(parent_info);
     printf("\n");
 #endif
-}
+END
 
 /* FuncCall */
 /*     : Exp LP RP { $$ = new_parent_node("FuncCall", GROUP_4 + 9, 1, $1); } */
@@ -297,7 +297,7 @@ NSD(409)
     printTypeInfo(parent->other_info);
     printf("\n");
 #endif
-}
+END
 
 NID(410)
     if (childNum == 2)
@@ -305,7 +305,7 @@ NID(410)
         D_child_1_info;
 	Alloc(child->other_info, child_1_info);
     }
-}
+END
 NSD(410)
     D_child_2_info;
     Alloc(parent->other_info, child_2_info);
@@ -313,7 +313,7 @@ NSD(410)
     printTypeInfo(parent->other_info);
     printf(" (SD(410))\n");
 #endif
-}
+END
 
 /* Args */
 /*     : Exp COMMA Args { $$ = new_parent_node("Args", GROUP_4 + 11, 2, $1, $3); } */
@@ -328,11 +328,11 @@ NID(411)
         /* child->other_info = ((FunctionNode *)parent_info->node)->returnTypeInfo; */
 	Alloc(child->other_info, ((FunctionNode *)parent_info->node)->returnTypeInfo);
     }
-}
+END
 NSD(411)
     D_child_2_info;
     OverWrite(parent->other_info, child_2_info);
-}
+END
 
 NID(412)
     if (childNum == 2)
@@ -364,11 +364,11 @@ NID(412)
         printf(" (ID(412))\n");
 #endif
     }
-}
+END
 NSD(412)
     D_child_2_info;
     OverWrite(parent->other_info, child_2_info);
-}
+END
 
 NSD(413)
     D_parent_info;
