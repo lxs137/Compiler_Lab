@@ -11,8 +11,6 @@
 /*     ; */
 /* 由于要兼容不同写法的函数类型 */
 /* 真正的语法树稍有调整，不再有FuncParam这种节点 */
-/* SD(401) */
-/* { */
 NSD(401)
     D_child_1;
     D_child_2;
@@ -37,10 +35,7 @@ NSD(401)
     type_info->node = node;
     type_info->nextInfo = NULL;
     /* type end */
-    /* assert(parent->other_info == NULL); */
-    /* /1* 类型信息不能删除，直到销毁语法树 *1/ */
-    /* /1* 故在销毁语法树时才回收 *1/ */
-    /* parent->other_info = type_info; */
+
     Alloc(parent->other_info, type_info);
     Noalloc(parent->other_info);
 
@@ -85,10 +80,7 @@ NSD(402)
     type_info->node = node;
     type_info->nextInfo = NULL;
     /* type end */
-    /* assert(parent->other_info == NULL); */
-    /* /1* 类型信息不能删除，直到销毁语法树 *1/ */
-    /* /1* 故在销毁语法树时才回收 *1/ */
-    /* parent->other_info = type_info; */
+
     Alloc(parent->other_info, type_info);
     Noalloc(parent->other_info);
 
@@ -103,8 +95,6 @@ NSD(402)
 /*     : LP VarList RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", GROUP_4 + 3, 2, $2, $5); } */
 /*     | LP RP DEDUCT Specifier { $$ = new_parent_node("FuncDec", GROUP_4 + 4, 1, $4); } */
 /*     ; */
-/* SD(403) */
-/* { */
 NSD(403)
     D_child_1_info;
 
@@ -126,19 +116,12 @@ NSD(403)
     assert(child_2_info->nextInfo == NULL);
     ((FunctionNode *)(returnTypeInfo->node))->returnTypeInfo = child_2_info;
 
-    /* assert(parent->other_info == NULL); */
-    /* /1* 分配的资源由SD(408)回收 *1/ */
-    /* parent->other_info = child_1_info; */
     Alloc(parent->other_info, child_1_info);
 
-    /* 回收SD(405) / SD(406)释放的资源 */
-    /* child_1_info = NULL; */
     D_child_1;
     Dealloc(child_1->other_info);
 }
 
-/* SD(404) */
-/* { */
 NSD(404)
     /* type begin */
     D_type_info;
@@ -157,9 +140,6 @@ NSD(404)
     type_info->nextInfo = NULL;
     /* type end */
 
-    /* assert(parent->other_info == NULL); */
-    /* /1* 分配的资源由SD(408)回收 *1/ */
-    /* parent->other_info = type_info; */
     Alloc(parent->other_info, type_info);
 }
 
@@ -167,8 +147,6 @@ NSD(404)
 /*     : ParamDec COMMA VarList { $$ = new_parent_node("VarList", GROUP_4 + 5, 2, $1, $3); } */
 /*     | ParamDec { $$ = new_parent_node("VarList", GROUP_4 + 6, 1, $1); } */
 /*     ; */
-/* SD(405) */
-/* { */
 NSD(405)
     D_child_1_info;
     assert(child_1_info != NULL);
@@ -197,18 +175,13 @@ NSD(405)
     type_info->nextInfo = NULL;
     /* type end */
     assert(parent->other_info == NULL);
-    /* /1* 分配的资源由SD(403)回收 *1/ */
-    /* parent->other_info = type_info; */
+
     Alloc(parent->other_info, type_info);
 
     D_child_1;
-    /* 回收SD(407)分配的资源 */
-    /* child_1->other_info = NULL; */
     Dealloc(child_1->other_info);
 }
 
-/* SD(406) */
-/* { */
 NSD(406)
     D_parent_info;
 
@@ -231,22 +204,16 @@ NSD(406)
     type_info->node = node;
     type_info->nextInfo = NULL;
     /* type end */
-    /* assert(parent->other_info == NULL); */
-    /* /1* 分配的资源由SD(403)回收 *1/ */
-    /* parent->other_info = type_info; */
+
     Alloc(parent->other_info, type_info);
 
     D_child_1;
-    /* 回收SD(407)释放的资源 */
-    /* child_1->other_info = NULL; */
     Dealloc(child_1->other_info);
 }
 
 /* ParamDec */
 /*     : Specifier VarDec { $$ = new_parent_node("ParamDec", GROUP_4 + 7, 2, $1, $2); } */
 /*     ; */
-/* ID(407) */
-/* { */
 NID(407)
     if (childNum == 2)
     {
@@ -255,15 +222,10 @@ NID(407)
         assert(child_1_info->node != NULL);
         assert(child_1_info->nextInfo == NULL);
 
-        /* assert(child->other_info == NULL); */
-        /* /1* 分配的资源不回收直到语法树销毁 *1/ */
-        /* child->other_info = child_1_info; */
 	Alloc(child->other_info, child_1_info);
 	Noalloc(child->other_info);
     }
 }
-/* SD(407) */
-/* { */
 NSD(407)
     D_child_1_info;
     assert(child_1_info != NULL);
@@ -271,10 +233,6 @@ NSD(407)
     assert(child_1_info->node !=  NULL);
     /* 由于Specifer->other_info与VarDec->other_info共享同一块内存 */
     /* 所以当VarDec->other_in->nextInfofo被赋予变量名称时，Specifier->other_info->nextInfo也不再为空 */
-    /* assert(child_1_info->nextInfo == NULL); */
-    /* assert(parent->other_info == NULL); */
-    /* /1* 分配的资源由SD(405) / SD(406)回收 *1/ */
-    /* parent->other_info = child_1_info; */
     Alloc(parent->other_info, child_1_info);
 
     D_child_2;
@@ -296,8 +254,6 @@ ID(408)
         createInnerSymbolTable();
     }
 }
-/* SD(408) */
-/* { */
 NSD(408)
     gotoOuterSymbolTable();
 
@@ -305,18 +261,13 @@ NSD(408)
     assert(child_1_info != NULL);
     assert(child_1_info->typeKind == FunctionType);
     FunctionNode *node = (FunctionNode *)child_1_info->node;
-    /* node->paramTypeInfo可以有两种情况，不好判断 */
     assert(node->returnTypeInfo != NULL);
     assert(child_1_info->nextInfo == NULL);
 
-    /* assert(parent->other_info == NULL); */
-    /* /1* 分配的资源不回收直到语法树被销毁 *1/ */
-    /* parent->other_info = child_1_info; */
     Alloc(parent->other_info, child_1_info);
+    Noalloc(parent->other_info);
 
     D_child_1;
-    /* 回收SD(403) / SD(404)分配的资源 */
-    /* child_1->other_info = NULL; */
     Dealloc(child_1->other_info);
 
 #ifdef function_type_debug_print
@@ -330,21 +281,16 @@ NSD(408)
 /*     : Exp LP RP { $$ = new_parent_node("FuncCall", GROUP_4 + 9, 1, $1); } */
 /*     | Exp LP Args RP { $$ = new_parent_node("FuncCall", GROUP_4 + 10, 2, $1, $3); } */
 /*     ; */
-/* SD(409) */
-/* { */
 NSD(409)
     D_child_1_info;
     assert(child_1_info->typeKind == FunctionType);
-    /* assert(child_1_info->nextInfo == NULL); */
     FunctionNode *node = (FunctionNode *)child_1_info->node;
     if (node->paramTypeInfo == NULL)
     {
-        /* parent->other_info = node->returnTypeInfo; */
 	Alloc(parent->other_info, node->returnTypeInfo);
     }
     else
     {
-        /* parent->other_info = child_1_info; */
 	Alloc(parent->other_info, child_1_info);
     }
 #ifdef exp_type_debug_print
@@ -353,21 +299,15 @@ NSD(409)
 #endif
 }
 
-/* ID(410) */
-/* { */
 NID(410)
     if (childNum == 2)
     {
         D_child_1_info;
-        /* child->other_info = child_1_info; */
 	Alloc(child->other_info, child_1_info);
     }
 }
-/* SD(410) */
-/* { */
 NSD(410)
     D_child_2_info;
-    /* parent->other_info = child_2_info; */
     Alloc(parent->other_info, child_2_info);
 #ifdef function_type_debug_print
     printTypeInfo(parent->other_info);
@@ -381,8 +321,6 @@ NSD(410)
 /*     | Exp { $$ = new_parent_node("Args", GROUP_4 + 13, 0); } */
 /*     ; */
 
-/* ID(411) */
-/* { */
 NID(411)
     if (childNum == 2)
     {
@@ -391,33 +329,16 @@ NID(411)
 	Alloc(child->other_info, ((FunctionNode *)parent_info->node)->returnTypeInfo);
     }
 }
-/* SDS(411, 412) */
-/* { */
-/*     D_child_2_info; */
-/*     parent->other_info = child_2_info; */
-/* } */
 NSD(411)
     D_child_2_info;
-    /* Alloc(parent->other_info, child_2_info); */
-    OverWrite(parent->other_info, child_2_info);
-}
-NSD(412)
-    D_child_2_info;
-    /* Alloc(parent->other_info, child_2_info); */
     OverWrite(parent->other_info, child_2_info);
 }
 
-/* ID(412) */
-/* { */
 NID(412)
     if (childNum == 2)
     {
         D_parent_info;
 	AssertFunctionTypeInfo(parent_info);
-        /* assert(parent_info != NULL); */
-        /* assert(parent_info->typeKind == FunctionType); */
-        /* assert(parent_info->node != NULL); */
-        /* assert(parent_info->nextInfo == NULL); */
 
         FunctionNode *fn = parent_info->node;
         TypeInfo *paramTypeInfo = fn->paramTypeInfo;
@@ -436,7 +357,7 @@ NID(412)
         info->node = node;
         info->nextInfo = NULL;
         ((FunctionNode *)returnTypeInfo->node)->returnTypeInfo = info;
-        /* child->other_info = ((FunctionNode *)parent_info->node)->returnTypeInfo; */
+
 	Alloc(child->other_info, ((FunctionNode *)parent_info->node)->returnTypeInfo);
 #ifdef function_type_debug_print
         printTypeInfo(child->other_info);
@@ -444,14 +365,14 @@ NID(412)
 #endif
     }
 }
+NSD(412)
+    D_child_2_info;
+    OverWrite(parent->other_info, child_2_info);
+}
 
-/* SD(413) */
-/* { */
 NSD(413)
     D_parent_info;
-    /* parent->other_info = ((FunctionNode *)parent_info->node)->returnTypeInfo; */
     OverWrite(parent->other_info, ((FunctionNode *)parent_info->node)->returnTypeInfo);
-/* } */
 END
 
 void initActionTable4()
