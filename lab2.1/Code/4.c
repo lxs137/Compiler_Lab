@@ -130,7 +130,9 @@ NSD(403)
     Alloc(parent->other_info, child_1_info);
 
     /* 回收SD(405) / SD(406)释放的资源 */
-    child_1_info = NULL;
+    /* child_1_info = NULL; */
+    D_child_1;
+    Dealloc(child_1->other_info);
 }
 
 /* SD(404) */
@@ -199,7 +201,8 @@ NSD(405)
 
     D_child_1;
     /* 回收SD(407)分配的资源 */
-    child_1->other_info = NULL;
+    /* child_1->other_info = NULL; */
+    Dealloc(child_1->other_info);
 }
 
 /* SD(406) */
@@ -233,7 +236,8 @@ NSD(406)
 
     D_child_1;
     /* 回收SD(407)释放的资源 */
-    child_1->other_info = NULL;
+    /* child_1->other_info = NULL; */
+    Dealloc(child_1->other_info);
 }
 
 /* ParamDec */
