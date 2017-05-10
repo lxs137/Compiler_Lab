@@ -396,11 +396,13 @@ NID(411)
 /* } */
 NSD(411)
     D_child_2_info;
-    Alloc(parent->other_info, child_2_info);
+    /* Alloc(parent->other_info, child_2_info); */
+    OverWrite(parent->other_info, child_2_info);
 }
 NSD(412)
     D_child_2_info;
-    Alloc(parent->other_info, child_2_info);
+    /* Alloc(parent->other_info, child_2_info); */
+    OverWrite(parent->other_info, child_2_info);
 }
 
 /* ID(412) */

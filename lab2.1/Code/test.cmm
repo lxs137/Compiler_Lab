@@ -1,11 +1,6 @@
-let f = (Int a, Int b) -> Func(Int -> Int) {
-    Int c = 1
-    let h = (Int a) -> Int {
-        return a + 1
-    }
-    let g = (Int d) -> Int {
-        Int e = 1
-        return a + b + c + h(d) + e
-    }
-    return g
-}
+Func(Int -> Float -> Int) f
+Func(Int) g
+g()
+f(_, 1.0)
+f(1, 1.0)
+f()
