@@ -171,8 +171,9 @@ SD(906)
 /* VarDec */
 /*     : LOWERID { $$ = new_parent_node("VarDec", GROUP_9 + 7, 1, $1); } */
 /*     ; */
-SD(907)
-{
+NSD(907)
+/* SD(907) */
+/* { */
     D_parent_info;
     assert(parent_info != NULL);
     assert(parent_info->typeKind != 0);
@@ -184,7 +185,8 @@ SD(907)
     TypeInfo *info = (TypeInfo *)malloc(sizeof(TypeInfo));
     memcpy(info, parent_info, sizeof(TypeInfo));
     info->nextInfo = child_1->str + 4;
-    parent->other_info = info;
+    /* parent->other_info = info; */
+    Alloc(parent->other_info, info);
 
 #ifdef exp_type_debug_print
     printTypeInfo(parent_info);
@@ -196,10 +198,12 @@ SD(907)
 /* Using Variables */
 /* VarUse */
 /*     : LOWERID { $$ = new_parent_node("VarUse", GROUP_9 + 8, 1, $1); } */
-SD(908)
-{
+/* SD(908) */
+/* { */
+NSD(908)
     D_child_1;
-    parent->other_info = child_1->str + 4;
+    /* parent->other_info = child_1->str + 4; */
+    Alloc(parent->other_info, child_1->str + 4);
 }
 
 void initActionTable9()
