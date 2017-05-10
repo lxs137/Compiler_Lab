@@ -26,6 +26,7 @@ typedef struct PL
     AllocatorRole role;
     int deallocProNum;
     void **pointer;
+    void **sharePointer;
     struct PL *nextPointerLog;
 } PointerLog;
 
@@ -37,11 +38,16 @@ void alloc(int proNum, AllocatorRole role, void **pointer, void *value)
     assert(*pointer == NULL);
     *pointer = value;
 
+    PointerLog *tmp = pl;
+    while (tmp->nextPointerLog != NULL && tmp->pointer != &value) {}
+    void **sharePointer = tmp->pointer;
+
     PointerLog *newPl = (PointerLog *)malloc(sizeof(PointerLog));
     newPl->allocProNum = proNum;
     newPl->role = role;
     newPl->deallocProNum = UNALLOC;
     newPl->pointer = pointer;
+    newPl->sharePointer = sharePointer;
     newPl->nextPointerLog = NULL;
 
     if (pl == NULL)
