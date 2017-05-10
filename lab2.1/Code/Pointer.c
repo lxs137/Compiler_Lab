@@ -39,7 +39,7 @@ void alloc(int proNum, AllocatorRole role, void **pointer, void *value)
     *pointer = value;
 
     PointerLog *tmp = pl;
-    while (tmp->nextPointerLog != NULL && tmp->pointer != &value) {}
+    while (tmp != NULL && tmp->nextPointerLog != NULL && tmp->pointer != &value) {}
     void **sharePointer = tmp->pointer;
 
     PointerLog *newPl = (PointerLog *)malloc(sizeof(PointerLog));
