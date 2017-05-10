@@ -66,8 +66,9 @@ SD(903)
     child_1->other_info = NULL;
 }
 
-ID(904)
-{
+NID(904)
+/* ID(904) */
+/* { */
     if (childNum == 1 | childNum == 2)
     {
         D_parent_info;
@@ -76,9 +77,10 @@ ID(904)
         assert(parent_info->node != NULL);
         assert(parent_info->nextInfo == NULL);
 
-        assert(child->other_info == NULL);
-        /* 分配的资源由SD(904)回收 */
-        child->other_info = parent_info;
+        /* assert(child->other_info == NULL); */
+        /* /1* 分配的资源由SD(904)回收 *1/ */
+        /* child->other_info = parent_info; */
+	Alloc(child->other_info, parent_info);
     }
 }
 SD(904)
@@ -98,8 +100,9 @@ SD(904)
 /*     : VarDec { $$ = new_parent_node("Dec", GROUP_9 + 5, 1, $1); } */
 /*     | VarDec ASSIGNOP Exp { $$ = new_parent_node("Dec", GROUP_9 + 6, 2, $1, $3); } */
 /*     ; */
-ID(905)
-{
+NID(905)
+/* ID(905) */
+/* { */
     if (childNum == 1)
     {
         D_parent_info;
@@ -108,9 +111,10 @@ ID(905)
         assert(parent_info->node != NULL);
         assert(parent_info->nextInfo == NULL);
 
-        assert(child->other_info == NULL);
-        /* 分配的资源不回收直到语法树销毁 */
-        child->other_info = parent_info;
+        /* assert(child->other_info == NULL); */
+        /* /1* 分配的资源不回收直到语法树销毁 *1/ */
+        /* child->other_info = parent_info; */
+	Alloc(child->other_info, parent_info);
     }
 }
 SD(905)
@@ -124,8 +128,9 @@ SD(905)
 #endif
 }
 
-ID(906)
-{
+NID(906)
+/* ID(906) */
+/* { */
     if (childNum == 1)
     {
         D_parent_info;
@@ -134,9 +139,10 @@ ID(906)
         assert(parent_info->node != NULL);
         assert(parent_info->nextInfo == NULL);
 
-        assert(child->other_info == NULL);
-        /* 分配的资源不回收直到语法树销毁 */
-        child->other_info = parent_info;
+        /* assert(child->other_info == NULL); */
+        /* /1* 分配的资源不回收直到语法树销毁 *1/ */
+        /* child->other_info = parent_info; */
+	Alloc(child->other_info, parent_info);
     }
 }
 SD(906)
