@@ -310,7 +310,8 @@ NSD(408)
 
     D_child_1;
     /* 回收SD(403) / SD(404)分配的资源 */
-    child_1->other_info = NULL;
+    /* child_1->other_info = NULL; */
+    Dealloc(child_1->other_info);
 
 #ifdef function_type_debug_print
     D_parent_info;
@@ -323,19 +324,22 @@ NSD(408)
 /*     : Exp LP RP { $$ = new_parent_node("FuncCall", GROUP_4 + 9, 1, $1); } */
 /*     | Exp LP Args RP { $$ = new_parent_node("FuncCall", GROUP_4 + 10, 2, $1, $3); } */
 /*     ; */
-SD(409)
-{
+/* SD(409) */
+/* { */
+NSD(409)
     D_child_1_info;
     assert(child_1_info->typeKind == FunctionType);
     /* assert(child_1_info->nextInfo == NULL); */
     FunctionNode *node = (FunctionNode *)child_1_info->node;
     if (node->paramTypeInfo == NULL)
     {
-        parent->other_info = node->returnTypeInfo;
+        /* parent->other_info = node->returnTypeInfo; */
+	Alloc(parent->other_info, node->returnTypeInfo);
     }
     else
     {
-        parent->other_info = child_1_info;
+        /* parent->other_info = child_1_info; */
+	Alloc(parent->other_info, child_1_info);
     }
 #ifdef exp_type_debug_print
     printTypeInfo(parent->other_info);
@@ -343,18 +347,22 @@ SD(409)
 #endif
 }
 
-ID(410)
-{
+/* ID(410) */
+/* { */
+NID(410)
     if (childNum == 2)
     {
         D_child_1_info;
-        child->other_info = child_1_info;
+        /* child->other_info = child_1_info; */
+	Alloc(child->other_info, child_1_info);
     }
 }
-SD(410)
-{
+/* SD(410) */
+/* { */
+NSD(410)
     D_child_2_info;
-    parent->other_info = child_2_info;
+    /* parent->other_info = child_2_info; */
+    Alloc(parent->other_info, child_2_info);
 #ifdef function_type_debug_print
     printTypeInfo(parent->other_info);
     printf(" (SD(410))\n");
@@ -367,22 +375,33 @@ SD(410)
 /*     | Exp { $$ = new_parent_node("Args", GROUP_4 + 13, 0); } */
 /*     ; */
 
-ID(411)
-{
+/* ID(411) */
+/* { */
+NID(411)
     if (childNum == 2)
     {
         D_parent_info;
-        child->other_info = ((FunctionNode *)parent_info->node)->returnTypeInfo;
+        /* child->other_info = ((FunctionNode *)parent_info->node)->returnTypeInfo; */
+	Alloc(child->other_info, ((FunctionNode *)parent_info->node)->returnTypeInfo);
     }
 }
-SDS(411, 412)
-{
+/* SDS(411, 412) */
+/* { */
+/*     D_child_2_info; */
+/*     parent->other_info = child_2_info; */
+/* } */
+NSD(411)
     D_child_2_info;
-    parent->other_info = child_2_info;
+    Alloc(parent->other_info, child_2_info);
+}
+NSD(412)
+    D_child_2_info;
+    Alloc(parent->other_info, child_2_info);
 }
 
-ID(412)
-{
+/* ID(412) */
+/* { */
+NID(412)
     if (childNum == 2)
     {
         D_parent_info;
@@ -409,7 +428,8 @@ ID(412)
         info->node = node;
         info->nextInfo = NULL;
         ((FunctionNode *)returnTypeInfo->node)->returnTypeInfo = info;
-        child->other_info = ((FunctionNode *)parent_info->node)->returnTypeInfo;
+        /* child->other_info = ((FunctionNode *)parent_info->node)->returnTypeInfo; */
+	Alloc(child->other_info, ((FunctionNode *)parent_info->node)->returnTypeInfo);
 #ifdef function_type_debug_print
         printTypeInfo(child->other_info);
         printf(" (ID(412))\n");
