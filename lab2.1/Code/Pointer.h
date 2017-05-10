@@ -8,6 +8,7 @@
 #define OverWrite(p1, p2) overwrite(proNum, allocatorRole, (void **)&(p1), (void *)(p2))
 #define Noalloc(p) noalloc(proNum, (void **)&(p), parent)
 #define Dealloc(p) assert((p) != NULL); dealloc(proNum, (void **)&(p), parent)
+#define AssignFieldOf(p, field, value) assignFieldOf(proNum, (void **)&(p)); (p)->field = value;
 
 typedef enum {true, false} bool;
 typedef enum {IRole, SRole} AllocatorRole;
@@ -19,6 +20,7 @@ void alloc(int proNum, AllocatorRole role, void **pointer, void *value);
 void overwrite(int proNum, AllocatorRole role, void **pointer, void *value);
 void noalloc(int proNum, void **pointer, AST_node *parent);
 void dealloc(int proNum, void **pointer, AST_node *parent);
+void assignFieldOf(int proNum, void **pointer);
 void printPointerLog();
 
 #endif
