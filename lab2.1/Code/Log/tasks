@@ -52,3 +52,6 @@ deallocPointer(void **pointer)
 开发写时复制系统
 对写操作给出一定的提示
 writeFieldOf()
+
+引入gtest进行必要的单元测试
+预计1个时间单位
