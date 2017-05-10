@@ -1,6 +1,10 @@
 #include <gtest/gtest.h>
-TEST(MathTest, TwoPlusTwoEqualsFour) {
-    EXPECT_EQ(2 + 2, 4);
+#include "../Pointer.h"
+#include  "../SDTAction.h"
+
+TEST(PointerTest, checkSharePointer) {
+    void memory;
+    Alloc()
 }
 
 int main(int argc, char **argv) {
