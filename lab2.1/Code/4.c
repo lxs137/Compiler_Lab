@@ -42,6 +42,7 @@ NSD(401)
     /* /1* 故在销毁语法树时才回收 *1/ */
     /* parent->other_info = type_info; */
     Alloc(parent->other_info, type_info);
+    Noalloc(parent->other_info);
 
 #ifdef function_type_debug_print
     D_parent_info;
@@ -89,6 +90,7 @@ NSD(402)
     /* /1* 故在销毁语法树时才回收 *1/ */
     /* parent->other_info = type_info; */
     Alloc(parent->other_info, type_info);
+    Noalloc(parent->other_info);
 
 #ifdef function_type_debug_print
     D_parent_info;
