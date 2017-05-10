@@ -119,6 +119,11 @@ void dealloc(int proNum, void **pointer, AST_node *parent)
     assert(0);
 }
 
+void assign(int proNum, void **pointer)
+{
+    /* check write-copy here */
+}
+
 void printPointerLog()
 {
     PointerLog *tmp;
