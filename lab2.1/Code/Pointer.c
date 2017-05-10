@@ -40,7 +40,15 @@ void alloc(int proNum, AllocatorRole role, void **pointer, void *value)
 
     PointerLog *tmp = pl;
     while (tmp != NULL && tmp->nextPointerLog != NULL && tmp->pointer != &value) {}
-    void **sharePointer = tmp->pointer;
+    void **sharePointer;
+    if (tmp != NULL)
+    {
+	sharePointer = tmp->sharePointer;
+    }
+    else
+    {
+	sharePointer = NULL;
+    }
 
     PointerLog *newPl = (PointerLog *)malloc(sizeof(PointerLog));
     newPl->allocProNum = proNum;
@@ -50,6 +58,7 @@ void alloc(int proNum, AllocatorRole role, void **pointer, void *value)
     newPl->sharePointer = sharePointer;
     newPl->nextPointerLog = NULL;
 
+    sharePointer = NULL;
     if (pl == NULL)
     {
 	pl = newPl;
