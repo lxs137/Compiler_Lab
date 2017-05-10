@@ -8,3 +8,5 @@ f()
 () -> Int {
     return 1
 }
+
+Func(Int) k, l

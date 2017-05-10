@@ -170,7 +170,11 @@ SD(907)
 
     D_child_1;
     /* 分配的资源不回收直到语法树销毁 */
-    parent_info->nextInfo = child_1->str + 4;
+    /* parent_info->nextInfo = child_1->str + 4; */
+    TypeInfo *info = (TypeInfo *)malloc(sizeof(TypeInfo));
+    memcpy(info, parent_info, sizeof(TypeInfo));
+    info->nextInfo = child_1->str + 4;
+    parent->other_info = info;
 
 #ifdef exp_type_debug_print
     printTypeInfo(parent_info);
