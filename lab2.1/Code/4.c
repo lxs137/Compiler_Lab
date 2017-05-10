@@ -22,12 +22,14 @@ NSD(401)
     D_type_info;
     type_info->typeKind = FunctionType;
     /* node begin */
-    assert(child_1_info != NULL);
-    assert(child_1_info->typeKind != 0);
-    assert(child_1_info->node != NULL);
-    assert(child_2_info != NULL);
-    assert(child_2_info->typeKind != 0);
-    assert(child_2_info->node != NULL);
+    /* assert(child_1_info != NULL); */
+    /* assert(child_1_info->typeKind != 0); */
+    /* assert(child_1_info->node != NULL); */
+    AssertTypeInfo(child_1_info);
+    /* assert(child_2_info != NULL); */
+    /* assert(child_2_info->typeKind != 0); */
+    /* assert(child_2_info->node != NULL); */
+    AssertTypeInfo(child_2_info);
     FunctionNode *node = (FunctionNode *)malloc(sizeof(FunctionNode));
     node->paramTypeInfo = child_1_info;
     node->returnTypeInfo = child_2_info;
