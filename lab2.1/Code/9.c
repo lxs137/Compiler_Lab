@@ -90,17 +90,20 @@ NID(904)
 	Alloc(child->other_info, parent_info);
     }
 }
-SD(904)
-{
+NSD(904)
+/* SD(904) */
+/* { */
     D_child_1;
-    assert(child_1->other_info != NULL);
-    /* 回收ID(904)分配的资源 */
-    child_1->other_info = NULL;
+    /* assert(child_1->other_info != NULL); */
+    /* /1* 回收ID(904)分配的资源 *1/ */
+    /* child_1->other_info = NULL; */
+    Dealloc(child_1->other_info);
 
     D_child_2;
-    assert(child_2->other_info != NULL);
-    /* 回收ID(904)分配的资源 */
-    child_2->other_info = NULL;
+    /* assert(child_2->other_info != NULL); */
+    /* /1* 回收ID(904)分配的资源 *1/ */
+    /* child_2->other_info = NULL; */
+    Dealloc(child_2->other_info);
 }
 
 /* Dec */
