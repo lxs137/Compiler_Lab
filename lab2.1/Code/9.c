@@ -197,9 +197,9 @@ NSD(907)
     TypeInfo *info = (TypeInfo *)malloc(sizeof(TypeInfo));
     memcpy(info, parent_info, sizeof(TypeInfo));
     info->nextInfo = child_1->str + 4;
-    /* parent->other_info = info; */
+    parent->other_info = info;
 
-    Alloc(parent->other_info, info);
+    /* Alloc(parent->other_info, info); */
     /* OverWrite(parent->other_info, info); */
 
 #ifdef exp_type_debug_print
