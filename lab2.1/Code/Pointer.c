@@ -39,7 +39,10 @@ void alloc(int proNum, AllocatorRole role, void **pointer, void *value)
     *pointer = value;
 
     PointerLog *tmp = pl;
-    while (tmp != NULL && tmp->nextPointerLog != NULL && tmp->pointer != &value) {}
+    while (tmp != NULL && tmp->nextPointerLog != NULL && tmp->pointer != &value)
+    {
+	tmp = tmp->nextPointerLog;
+    }
     void **sharePointer;
     if (tmp != NULL)
     {
