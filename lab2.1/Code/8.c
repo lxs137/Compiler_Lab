@@ -1,4 +1,5 @@
 #include "SDTAction.h"
+#include "Pointer.h"
 #include "8.h"
 
 /* Specifiers */
@@ -11,25 +12,24 @@
 /*     | FuncType { $$ = $1; } */
 /*     ; */
 
-SD(801)
-{
+/* SD(801) */
+/* { */
+NSD(801)
     D_child_1;
 
-    assert(parent->other_info == NULL);
     D_type_info;
-    parent->other_info = type_info;
-    D_parent_info;
-
-    parent_info->typeKind = BuildInType;
+    type_info->typeKind = BuildInType;
     if (strcmp(child_1->str, "INT"))
     {
-        parent_info->node = (void *)Int;
+	type_info->node = (void *)Int;
     }
     else
     {
-        parent_info->node = (void *)Float;
+	type_info->node = (void *)Float;
     }
-    parent_info->nextInfo = NULL;
+    type_info->nextInfo = NULL;
+
+    Alloc(parent->other_info, type_info);
 }
 
 SD(802)
