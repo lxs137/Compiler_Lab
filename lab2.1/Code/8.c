@@ -31,8 +31,6 @@ NSD(801)
 }
 
 NSD(802)
-/* SD(802) */
-/* { */
     D_type_info;
     type_info->typeKind = BuildInType;
     type_info->node = (void *)Let;

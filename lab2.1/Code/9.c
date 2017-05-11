@@ -20,9 +20,7 @@ NID(901)
 }
 NSD(901)
     D_child_1;
-    assert(child_1->other_info != NULL);
-    /* 回收SD(801)-SD(805)分配的资源 */
-    child_1->other_info = NULL;
+    Dealloc(child_1->other_info);
 
     D_child_2;
     Dealloc(child_2->other_info);
