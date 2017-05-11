@@ -67,9 +67,6 @@ NSD(402)
     FunctionNode *node = (FunctionNode *)malloc(sizeof(FunctionNode));
     node->paramTypeInfo = NULL;
     D_child_1_info;
-    /* assert(child_1_info != NULL); */
-    /* assert(child_1_info->typeKind != 0); */
-    /* assert(child_1_info->node != NULL); */
     AssertTypeInfo(child_1_info);
     assert(child_1_info->nextInfo == NULL);
     node->returnTypeInfo = child_1_info;
@@ -141,14 +138,10 @@ END
 /*     ; */
 NSD(405)
     D_child_1_info;
-    /* assert(child_1_info != NULL); */
-    /* assert(child_1_info->typeKind != 0); */
     AssertTypeInfo(child_1_info);
     /* assert(child_1_info->nextInfo == NULL); */
 
     D_child_2_info;
-    /* assert(child_2_info != NULL); */
-    /* assert(child_2_info->typeKind == FunctionType); */
     AssertFunctionTypeInfo(child_2_info);
     FunctionNode *node = (FunctionNode *)child_2_info->node;
     assert(node != NULL);
@@ -179,9 +172,6 @@ NSD(406)
     D_parent_info;
 
     D_child_1_info;
-    /* assert(child_1_info != NULL); */
-    /* assert(child_1_info->typeKind != 0); */
-    /* assert(child_1_info->node != NULL); */
     AssertTypeInfo(child_1_info);
     /* assert(child_1_info->nextInfo == NULL); */
 
@@ -212,9 +202,7 @@ NID(407)
     if (childNum == 2)
     {
         D_child_1_info;
-        assert(child_1_info != NULL);
-        assert(child_1_info->node != NULL);
-        assert(child_1_info->nextInfo == NULL);
+	AssertTypeInfo(child_1_info);
 
 	Alloc(child->other_info, child_1_info);
 	/* Noalloc(child->other_info); */
@@ -222,9 +210,6 @@ NID(407)
 END
 NSD(407)
     D_child_1_info;
-    /* assert(child_1_info != NULL); */
-    /* assert(child_1_info->typeKind != 0); */
-    /* assert(child_1_info->node !=  NULL); */
     AssertTypeInfo(child_1_info);
     /* 由于Specifer->other_info与VarDec->other_info共享同一块内存 */
     /* 所以当VarDec->other_in->nextInfofo被赋予变量名称时，Specifier->other_info->nextInfo也不再为空 */
@@ -253,8 +238,6 @@ NSD(408)
     gotoOuterSymbolTable();
 
     D_child_1_info;
-    /* assert(child_1_info != NULL); */
-    /* assert(child_1_info->typeKind == FunctionType); */
     AssertFunctionTypeInfo(child_1_info);
     FunctionNode *node = (FunctionNode *)child_1_info->node;
     assert(node->returnTypeInfo != NULL);
@@ -279,7 +262,8 @@ END
 /*     ; */
 NSD(409)
     D_child_1_info;
-    assert(child_1_info->typeKind == FunctionType);
+    /* assert(child_1_info->typeKind == FunctionType); */
+    AssertFunctionTypeInfo(child_1_info);
     FunctionNode *node = (FunctionNode *)child_1_info->node;
     if (node->paramTypeInfo == NULL)
     {
@@ -321,7 +305,6 @@ NID(411)
     if (childNum == 2)
     {
         D_parent_info;
-        /* child->other_info = ((FunctionNode *)parent_info->node)->returnTypeInfo; */
 	Alloc(child->other_info, ((FunctionNode *)parent_info->node)->returnTypeInfo);
     }
 END

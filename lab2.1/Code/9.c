@@ -51,7 +51,6 @@ NID(904)
     if (childNum == 1 | childNum == 2)
     {
         D_parent_info;
-        assert(parent_info != NULL);
 	AssertTypeInfo(parent_info);
         assert(parent_info->nextInfo == NULL);
 
@@ -96,7 +95,6 @@ NID(906)
     if (childNum == 1)
     {
         D_parent_info;
-        assert(parent_info != NULL);
 	AssertTypeInfo(parent_info);
         assert(parent_info->nextInfo == NULL);
 
@@ -136,14 +134,12 @@ NSD(907)
     assert(parent_info->nextInfo == NULL);
 
     D_child_1;
-    /* 分配的资源不回收直到语法树销毁 */
-    /* parent_info->nextInfo = child_1->str + 4; */
-    /* AssignFieldOf(parent_info, nextInfo, child_1->str + 4); */
 
     TypeInfo *info = (TypeInfo *)malloc(sizeof(TypeInfo));
     memcpy(info, parent_info, sizeof(TypeInfo));
     info->nextInfo = child_1->str + 4;
     OverWrite(parent->other_info, info);
+    Noalloc(parent->other_info);
 
 #ifdef exp_type_debug_print
     printTypeInfo(parent_info);
