@@ -9,35 +9,22 @@
 /*     | PatternMatching { $$ = new_parent_node("VarDef", GROUP_9 + 2, 1, $1); } */
 /*     ; */
 NID(901)
-/* ID(901) */
-/* { */
     if (childNum == 2)
     {
         D_child_1_info;
-        /* assert(child_1_info != NULL); */
-        /* assert(child_1_info->typeKind != 0); */
-        /* assert(child_1_info->node != NULL); */
 	AssertTypeInfo(child_1_info);
         assert(child_1_info->nextInfo == NULL);
 
-        /* assert(child->other_info == NULL); */
-        /* /1* 分配的资源由SD(901)回收 *1/ */
-        /* child->other_info = child_1_info; */
 	Alloc(child->other_info, child_1_info);
     }
 }
 NSD(901)
-/* SD(901) */
-/* { */
     D_child_1;
     assert(child_1->other_info != NULL);
     /* 回收SD(801)-SD(805)分配的资源 */
     child_1->other_info = NULL;
 
     D_child_2;
-    /* assert(child_2->other_info != NULL); */
-    /* /1* 回收ID(901)回收的资源 *1/ */
-    /* child_2->other_info = NULL; */
     Dealloc(child_2->other_info);
 }
 
@@ -46,63 +33,36 @@ NSD(901)
 /*     | Dec COMMA DecList { $$ = new_parent_node("DecList", GROUP_9 + 4, 2, $1, $3); } */
 /*     ; */
 NID(903)
-/* ID(903) */
-/* { */
     if (childNum == 1)
     {
         D_parent_info;
-        /* assert(parent_info != NULL); */
-        /* assert(parent_info->typeKind != 0); */
-        /* assert(parent_info->node != NULL); */
 	AssertTypeInfo(parent_info);
         assert(parent_info->nextInfo == NULL);
 
-        /* assert(child->other_info == NULL); */
-        /* /1* 分配的资源由SD(903)回收 *1/ */
-        /* child->other_info = parent_info; */
 	Alloc(child->other_info, parent_info);
     }
 }
 NSD(903)
-/* SD(903) */
-/* { */
     D_child_1;
-    /* assert(child_1->other_info != NULL); */
-    /* /1* 回收由ID(903)分配的资源 *1/ */
-    /* child_1->other_info = NULL; */
     Dealloc(child_1->other_info);
 }
 
 NID(904)
-/* ID(904) */
-/* { */
     if (childNum == 1 | childNum == 2)
     {
         D_parent_info;
         assert(parent_info != NULL);
-        assert(parent_info->typeKind != 0);
-        assert(parent_info->node != NULL);
+	AssertTypeInfo(parent_info);
         assert(parent_info->nextInfo == NULL);
 
-        /* assert(child->other_info == NULL); */
-        /* /1* 分配的资源由SD(904)回收 *1/ */
-        /* child->other_info = parent_info; */
 	Alloc(child->other_info, parent_info);
     }
 }
 NSD(904)
-/* SD(904) */
-/* { */
     D_child_1;
-    /* assert(child_1->other_info != NULL); */
-    /* /1* 回收ID(904)分配的资源 *1/ */
-    /* child_1->other_info = NULL; */
     Dealloc(child_1->other_info);
 
     D_child_2;
-    /* assert(child_2->other_info != NULL); */
-    /* /1* 回收ID(904)分配的资源 *1/ */
-    /* child_2->other_info = NULL; */
     Dealloc(child_2->other_info);
 }
 
@@ -111,17 +71,12 @@ NSD(904)
 /*     | VarDec ASSIGNOP Exp { $$ = new_parent_node("Dec", GROUP_9 + 6, 2, $1, $3); } */
 /*     ; */
 NID(905)
-/* ID(905) */
-/* { */
     if (childNum == 1)
     {
         D_parent_info;
 	AssertTypeInfo(parent_info);
         assert(parent_info->nextInfo == NULL);
 
-        /* assert(child->other_info == NULL); */
-        /* /1* 分配的资源不回收直到语法树销毁 *1/ */
-        /* child->other_info = parent_info; */
 	Alloc(child->other_info, parent_info);
 	Noalloc(child->other_info);
     }
@@ -138,20 +93,13 @@ SD(905)
 }
 
 NID(906)
-/* ID(906) */
-/* { */
     if (childNum == 1)
     {
         D_parent_info;
         assert(parent_info != NULL);
-        /* assert(parent_info->typeKind != 0); */
-        /* assert(parent_info->node != NULL); */
 	AssertTypeInfo(parent_info);
         assert(parent_info->nextInfo == NULL);
 
-        /* assert(child->other_info == NULL); */
-        /* /1* 分配的资源不回收直到语法树销毁 *1/ */
-        /* child->other_info = parent_info; */
 	Alloc(child->other_info, parent_info);
     }
 }
@@ -182,11 +130,8 @@ SD(906)
 /*     : LOWERID { $$ = new_parent_node("VarDec", GROUP_9 + 7, 1, $1); } */
 /*     ; */
 NSD(907)
-/* SD(907) */
-/* { */
     D_parent_info;
     assert(parent_info != NULL);
-    /* assert(parent_info->typeKind != 0); */
     AssertTypeInfo(parent_info);
     assert(parent_info->nextInfo == NULL);
 
@@ -198,10 +143,6 @@ NSD(907)
     TypeInfo *info = (TypeInfo *)malloc(sizeof(TypeInfo));
     memcpy(info, parent_info, sizeof(TypeInfo));
     info->nextInfo = child_1->str + 4;
-    /* parent->other_info = info; */
-    /* printTypeInfo(parent->other_info); */
-
-    /* Alloc(parent->other_info, info); */
     OverWrite(parent->other_info, info);
 
 #ifdef exp_type_debug_print
@@ -214,11 +155,8 @@ NSD(907)
 /* Using Variables */
 /* VarUse */
 /*     : LOWERID { $$ = new_parent_node("VarUse", GROUP_9 + 8, 1, $1); } */
-/* SD(908) */
-/* { */
 NSD(908)
     D_child_1;
-    /* parent->other_info = child_1->str + 4; */
     Alloc(parent->other_info, child_1->str + 4);
 }
 
