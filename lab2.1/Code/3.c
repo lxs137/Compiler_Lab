@@ -31,6 +31,8 @@ SD(310)
 
 void initActionTable3()
 {
-    registerIAction(310, pro310IAction);
-    registerSAction(310, pro310SAction);
+    /* registerIAction(310, pro310IAction); */
+    /* registerSAction(310, pro310SAction); */
+    IS(310);
+    SS(310);
 }
