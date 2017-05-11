@@ -40,7 +40,7 @@
 %token <type_node> SEMI COMMA DOT
 %token <type_node> LP RP LB RB LC RC
 
-%type <type_node> ArrayType ReferType FuncCall
+%type <type_node> ArrayType ReferType FuncCall ADTType
 %type <type_node> ADTHeader ADTParamList ADTParam PatternMatching PatternMatchingParamList
 %type <type_node> ConstructorId TypeId TypeIdList ConstructorDec ConstructorDecList ADTDef
 %type <type_node> FuncType FuncParamType FuncBody
@@ -213,6 +213,9 @@ TypeIdList
 TypeId
     : UPPERID { $$ = new_parent_node("TypeId", GROUP_7 + 14, 1, $1); }
     ;
+ADTType
+    : TypeId LB ADTParamList RB { $$ = new_parent_node("ADTType", GROUP_7 + 15, 2, $1, $3); }
+    ;
 /* pattern matching */
 PatternMatching
     : LET LP ConstructorId PatternMatchingParamList RP ASSIGNOP VarDec { 
@@ -238,6 +241,7 @@ Specifier
     | ReferType { $$ = new_parent_node("Specifier", GROUP_8 + 5, 1, $1); }
     /* 为了照顾函数类型定义的一种语法糖，不得不这样写 */
     | FuncType { $$ = $1; }
+    | ADTType { $$ = new_parent_node("Specifier", GROUP_8 + 7, 1, $1); }
     ;
 
 /* Local Definitions */
