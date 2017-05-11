@@ -4,7 +4,6 @@
 
 TEST(PointerTest, checkSharePointer) {
     void memory;
-    Alloc()
 }
 
 int main(int argc, char **argv) {
