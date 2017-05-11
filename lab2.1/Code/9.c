@@ -21,6 +21,7 @@ NID(901)
 NSD(901)
     D_child_1;
     Dealloc(child_1->other_info);
+    /* child_1->other_info = NULL; */
 
     D_child_2;
     Dealloc(child_2->other_info);

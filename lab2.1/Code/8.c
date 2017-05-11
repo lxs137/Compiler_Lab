@@ -82,8 +82,7 @@ SD(805)
     parent->other_info = child_1_info;
 }
 
-SD(806)
-{
+NSD(806)
     D_child_1_info;
     assert(child_1_info->typeKind == FunctionType);
     FunctionNode *node = (FunctionNode *)child_1_info->node;
@@ -92,7 +91,8 @@ SD(806)
     assert(child_1_info->nextInfo == NULL);
 
     assert(parent->other_info == NULL);
-    parent->other_info = child_1_info;
+    /* parent->other_info = child_1_info; */
+    Alloc(parent->other_info, child_1_info);
 }
 
 void initActionTable8()

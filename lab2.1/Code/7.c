@@ -15,9 +15,6 @@ NID(702)
     if (childNum == 2)
     {
         D_child_1_info;
-        assert(child_1_info != NULL);
-
-        assert(child->other_info == NULL);
 	Alloc(child->other_info, child_1_info);
     }
 END
