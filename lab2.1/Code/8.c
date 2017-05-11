@@ -30,16 +30,14 @@ NSD(801)
     Alloc(parent->other_info, type_info);
 }
 
-SD(802)
-{
-    assert(parent->other_info == NULL);
+NSD(802)
+/* SD(802) */
+/* { */
     D_type_info;
-    parent->other_info = type_info;
-    D_parent_info;
-
-    parent_info->typeKind = BuildInType;
-    parent_info->node = (void *)Let;
-    parent_info->nextInfo = NULL;
+    type_info->typeKind = BuildInType;
+    type_info->node = (void *)Let;
+    type_info->nextInfo = NULL;
+    Alloc(parent->other_info, type_info);
 }
 
 SD(803)
