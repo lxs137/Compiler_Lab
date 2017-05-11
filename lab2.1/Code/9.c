@@ -78,7 +78,7 @@ NID(905)
         assert(parent_info->nextInfo == NULL);
 
 	Alloc(child->other_info, parent_info);
-	Noalloc(child->other_info);
+	/* Noalloc(child->other_info); */
     }
 }
 SD(905)

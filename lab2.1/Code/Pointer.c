@@ -97,7 +97,7 @@ void overwrite(int proNum, AllocatorRole role, void **pointer, void *value)
 	    break;
 	}
     }
-    /* assert(tmp != NULL); */
+    assert(tmp != NULL);
 
     *pointer = NULL;
     alloc(proNum, role, pointer, value);

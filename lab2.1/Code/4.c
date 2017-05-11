@@ -217,7 +217,7 @@ NID(407)
         assert(child_1_info->nextInfo == NULL);
 
 	Alloc(child->other_info, child_1_info);
-	Noalloc(child->other_info);
+	/* Noalloc(child->other_info); */
     }
 END
 NSD(407)
