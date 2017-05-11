@@ -116,15 +116,14 @@ NID(905)
     if (childNum == 1)
     {
         D_parent_info;
-        assert(parent_info != NULL);
-        assert(parent_info->typeKind != 0);
-        assert(parent_info->node != NULL);
+	AssertTypeInfo(parent_info);
         assert(parent_info->nextInfo == NULL);
 
         /* assert(child->other_info == NULL); */
         /* /1* 分配的资源不回收直到语法树销毁 *1/ */
         /* child->other_info = parent_info; */
 	Alloc(child->other_info, parent_info);
+	Noalloc(child->other_info);
     }
 }
 SD(905)
@@ -145,8 +144,9 @@ NID(906)
     {
         D_parent_info;
         assert(parent_info != NULL);
-        assert(parent_info->typeKind != 0);
-        assert(parent_info->node != NULL);
+        /* assert(parent_info->typeKind != 0); */
+        /* assert(parent_info->node != NULL); */
+	AssertTypeInfo(parent_info);
         assert(parent_info->nextInfo == NULL);
 
         /* assert(child->other_info == NULL); */
@@ -186,7 +186,8 @@ NSD(907)
 /* { */
     D_parent_info;
     assert(parent_info != NULL);
-    assert(parent_info->typeKind != 0);
+    /* assert(parent_info->typeKind != 0); */
+    AssertTypeInfo(parent_info);
     assert(parent_info->nextInfo == NULL);
 
     D_child_1;
