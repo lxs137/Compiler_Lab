@@ -78,4 +78,8 @@ void initTable();
 
 void initTable_lxs();
 
+int nextVarIndex = 1;
+int nextLabelIndex = 1;
+int nextFuncIndex = 1;
+
 #endif

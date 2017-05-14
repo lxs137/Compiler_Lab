@@ -266,6 +266,10 @@ SD(16)
     /* child_1_info = type_info; */
     parent->first_child->other_info = type_info;
 
+    /* IR tag */
+    parent->IRIndex = nextVarIndex;
+    nextVarIndex++;
+
     if (!stackIsEmpty())
     {
         int add_result = stackAddRegion(parent->first_child->str + 4, type_info);
@@ -579,6 +583,10 @@ SD(54)
         parent_info->sValid = 0;
         return;
     }
+
+    /* IR tag */
+    AST_node *child_ = getSymbol(child_1->str + 4);
+    parent->IRIndex = child_->IRIndex;
 
     parent_info->sType = child->type;
     parent_info->sDimension = child->dimension - parent_info->iDimension;
