@@ -1,0 +1,45 @@
+FUNCTION f1 :
+PARAM t1
+PARAM t2
+t3 := t1 + t2
+RETURN t3
+
+FUNCTION f2 :
+PARAM t4
+PARAM t5
+IF t4 > t5 GOTO l1
+RETURN #1
+LABEL l1 :
+RETURN #0
+
+FUNCTION f3 :
+PARAM t6
+PARAM t7
+DEC t8 8
+t9 := t8 + #0
+*t9 := t6
+t10 := t8 + #4
+*t10 := t7
+t11 := *t9
+WRITE t11
+t12 := *t10
+WRITE t12
+RETURN #0
+
+FUNCTION main :
+ARG #1
+ARG #2
+t13 := CALL f1
+ARG #1
+ARG #2
+t14 := CALL f2
+WRITE t14
+ARG #2
+ARG #1
+t15 := CALL f2
+WRITE t15
+ARG #1
+ARG #2
+t16 := CALL f3
+READ t17
+RETURN #0
