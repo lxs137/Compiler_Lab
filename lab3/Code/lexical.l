@@ -53,52 +53,52 @@ ws [ \t\n]
 }
 "<"    {
     print_loc_info("RELOP-less");
-    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "RELOP");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "<");
     return RELOP;
 }
 ">"    {
     print_loc_info("RELOP-more");
-    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "RELOP");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, ">");
     return RELOP;
 }
 "<="    {
     print_loc_info("RELOP-less_equal");
-    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "RELOP");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "<=");
     return RELOP;
 }
 ">="    {
     print_loc_info("RELOP-more_equal");
-    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "RELOP");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, ">=");
     return RELOP;
 }
 "=="    {
     print_loc_info("RELOP-equal");
-    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "RELOP");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "==");
     return RELOP;
 }
 "!="    {
     print_loc_info("RELOP-not_equal");
-    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "RELOP");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "!=");
     return RELOP;
 }
 "+"    {
     print_loc_info("PLUS");
-    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "PLUS");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "+");
     return PLUS;
 }
 "-"    {
     print_loc_info("MINUS");
-    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "MINUS");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "-");
     return MINUS;
 }
 "*"    {
     print_loc_info("STAR");
-    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "STAR");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "*");
     return STAR;
 }
 "/"    {
     print_loc_info("DIV");
-    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "DIV");
+    yylval.type_node = new_token_node(yylloc.first_line, yylloc.first_column, "/");
     return DIV;
 }
 "&&"    {

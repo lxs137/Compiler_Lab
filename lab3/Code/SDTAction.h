@@ -4,6 +4,7 @@
 #include "syntax_tree.h"
 #include "symbol_table.h"
 #include "for_each.h"
+#include "Generation.h"
 
 #define I(proNum) sdtIActionTable[proNum] = pro##proNum##IAction;
 #define IS(...) FOR_EACH(I, __VA_ARGS__)
@@ -78,8 +79,8 @@ void initTable();
 
 void initTable_lxs();
 
-int nextVarIndex = 1;
-int nextLabelIndex = 1;
-int nextFuncIndex = 1;
+extern int nextVarIndex;
+extern int nextLabelIndex;
+extern int nextFuncIndex;
 
 #endif

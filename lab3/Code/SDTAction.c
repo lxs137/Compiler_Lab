@@ -5,6 +5,10 @@
 #include <inttypes.h>
 // #define SDT_DEBUG_PRINT
 
+int nextVarIndex = 1;
+int nextLabelIndex = 1;
+int nextFuncIndex = 1;
+
 void traversalTreePerformAction(AST_node *parent)
 {
     int proNum = parent->proNum;
@@ -192,7 +196,17 @@ ID(38)
     }
 }
 
-IDS(39, 40, 41, 42, 43, 44, 45, 46)
+ID(39)
+{
+    if (childNum == 1 || childNum == 3)
+    {
+        TypeInfo *type_info = (TypeInfo *)malloc(sizeof(TypeInfo));
+        type_info->iDimension = 0;
+        child->other_info = type_info;
+    }
+}
+
+IDS(40, 41, 42, 43, 44, 45, 46)
 {
     if (childNum == 1 || childNum == 3)
     {
@@ -267,7 +281,7 @@ SD(16)
     parent->first_child->other_info = type_info;
 
     /* IR tag */
-    parent->IRIndex = nextVarIndex;
+    child_1->IRIndex = nextVarIndex;
     nextVarIndex++;
 
     if (!stackIsEmpty())
@@ -352,6 +366,14 @@ SD(39)
     D_child_1_info;
     D_child_3_info;
 
+    /* IR tag */
+    D_child_1;
+    D_child_3;
+    gen("%c%d", 'v', child_1->IRIndex);
+    gen("%s", " := ");
+    gen("%c%d\n", 'v', child_3->IRIndex);
+    parent->IRIndex = nextVarIndex++;
+
     /* 检查赋值号左边不是左值 */
     if ((intptr_t)child_1_info->nextInfo == 0)
     {
@@ -402,8 +424,46 @@ SD(39)
     }
 }
 
-SDS(40, 41)
+SDS(40)
 {
+    /* IR tag */
+    parent->IRIndex = nextVarIndex++;
+    D_child_1;
+    D_child_3;
+    gen("v%d := v%d && v%d\n", parent->IRIndex, child_1->IRIndex, child_3->IRIndex);
+
+    D_parent_info;
+    parent_info->nextInfo = (void*)0;
+    parent_info->sValid = 1;
+    parent_info->sType = "int";
+    parent_info->sDimension = 0;
+
+    D_child_1_info;
+    D_child_3_info;
+    int v = child_1_info->sValid && child_3_info->sValid;
+    if (v)
+    {
+        v &= strcmp(child_1_info->sType, "int");
+        v &= strcmp(child_3_info->sType, "int");
+        v &= child_1_info->sDimension == 0;
+        v &= child_3_info->sDimension == 0;
+    }
+    if (!v)
+    {
+        D_child_1;
+        printf("Error type 7 at Line %d: Type mismatched for operands.\n",
+                child_1->loc_line);
+    }
+}
+
+SD(41)
+{
+    /* IR tag */
+    parent->IRIndex = nextVarIndex++;
+    D_child_1;
+    D_child_3;
+    gen("v%d := v%d || v%d\n", parent->IRIndex, child_1->IRIndex, child_3->IRIndex);
+
     D_parent_info;
     parent_info->nextInfo = (void*)0;
     parent_info->sValid = 1;
@@ -430,6 +490,13 @@ SDS(40, 41)
 
 SD(42)
 {
+    /* IR tag */
+    parent->IRIndex = nextVarIndex++;
+    D_child_1;
+    D_child_2;
+    D_child_3;
+    gen("v%d := v%d %s v%d\n", parent->IRIndex, child_1->IRIndex, child_2->str, child_3->IRIndex);
+
     D_parent_info;
     parent_info->nextInfo = (void*)0;
 
@@ -457,6 +524,13 @@ SD(42)
 
 SDS(43, 44, 45, 46)
 {
+    /* IR tag */
+    parent->IRIndex = nextVarIndex++;
+    D_child_1;
+    D_child_2;
+    D_child_3;
+    gen("v%d := v%d %s v%d\n", parent->IRIndex, child_1->IRIndex, child_2->str, child_3->IRIndex);
+
     D_parent_info;
     parent_info->nextInfo = (void*)0;
 
@@ -524,6 +598,11 @@ SD(47)
 
 SD(48)
 {
+    /* IR tag */
+    parent->IRIndex = nextVarIndex++;
+    D_child_2;
+    gen("v%d := -v%d\n", parent->IRIndex, child_2->IRIndex);
+
     TypeInfo* exp = (TypeInfo*)(parent->other_info);
     TypeInfo* exp_ = (TypeInfo*)(parent->first_child->next_brother->other_info);
     exp->sValid = 1;
@@ -534,6 +613,11 @@ SD(48)
 
 SD(49)
 {
+    /* IR tag */
+    parent->IRIndex = nextVarIndex++;
+    D_child_2;
+    gen("v%d := !v%d\n", parent->IRIndex, child_2->IRIndex);
+
     D_parent_info;
     parent_info->nextInfo = (void*)0;
     parent_info->sValid = 1;
@@ -550,6 +634,16 @@ SD(49)
 
 SD(52)
 {
+    /* IR tag */
+    int tmpVarIndex = nextVarIndex++;
+    D_child_3;
+    D_child_1;
+    gen("v%d := v%d * %d\n", tmpVarIndex, child_3->IRIndex, 4);
+    int tmpVarIndex2 = nextVarIndex++;
+    gen("v%d := v%d + v%d\n", tmpVarIndex2, child_1->IRIndex, tmpVarIndex);
+    parent->IRIndex = nextVarIndex++;
+    gen("v%d := *v%d\n", parent->IRIndex, tmpVarIndex2);
+
     D_parent_info;
     parent_info->nextInfo = (void*)1;
 
@@ -603,16 +697,21 @@ SD(54)
 
 SDS(55, 56)
 {
+    parent->IRIndex = nextVarIndex++;
+    D_child_1;
+
     D_parent_info;
     parent_info->nextInfo = (void*)0;
     parent_info->sValid = 1;
     if (parent->first_child->str[0] == 'I')
     {
         parent_info->sType = "int";
+        gen("v%d := %s\n", parent->IRIndex, child_1->str + 4);
     }
     else
     {
         parent_info->sType = "float";
+        gen("v%d := %s\n", parent->IRIndex, child_1->str + 6);
     }
     parent_info->sDimension = 0;
 }
