@@ -1,0 +1,12 @@
+Func(Int -> Float -> Int) f
+Func(Int) g
+g()
+f(_, 1.0)
+f(1, 1.0)
+f()
+
+() -> Int {
+    return 1
+}
+
+Func(Int) k, l

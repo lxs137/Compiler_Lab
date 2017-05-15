@@ -1,0 +1,8 @@
+unary(BuildInType 1->BuildInType 2)
+unary(BuildInType 2->unary(BuildInType 1->BuildInType 2))
+nullary(BuildInType 2)
+unary(BuildInType 1->unary(BuildInType 2->BuildInType 2)) (ID(412))
+unary(BuildInType 2->BuildInType 2) (SD(410))
+unary(BuildInType 2->BuildInType 2) (SD(410))
+nullary(BuildInType 2)
+nullary(BuildInType 2)

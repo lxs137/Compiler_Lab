@@ -1,0 +1,31 @@
+.PHONY: compileAbstract compileDetail runAbstract runDetail testAbstract testDetail checkMemoryAbStract checkMemoryDetail clean updateExpect
+
+compileAbstract:
+	@ $(call compileAbstractTemplate)
+
+compileDetail:
+	@ $(call compileDetailTemplate)
+
+runAbstract:
+	@ $(call runAbstractTemplate, $(objects))
+
+runDetail:
+	@ $(call runDetailTemplate, $(objects))
+
+testAbstract:
+	@ $(call testAbstractTemplate, $(objects))
+
+testDetail:
+	@ $(call testDetailTemplate, $(objects))
+
+checkMemoryAbstract:
+	@ $(call checkMemoryAbstractTemplate, $(objects))
+
+checkMemoryDetail:
+	@ $(call checkMemoryDetailTemplate, $(objects))
+
+clean:
+	@ $(call cleanTemplate)
+
+updateExpect:
+	@ $(call updateExpectTemplate, $(objects), '.')
