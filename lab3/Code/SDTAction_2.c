@@ -385,6 +385,22 @@ SD(29)
 
 ID(30)
 {
+    if(childNum == 0)
+    {
+        parent->labelIndex = nextLabelIndex;
+        nextLabelIndex += 3;
+    }
+    if(childNum == 5)
+    {
+        D_child_3;
+        gen("IF v%d == 0 GOTO l%d\n", child_3->IRIndex, parent->labelIndex + 1);
+    }
+    if(childNum == 7)
+    {
+        gen("GOTO l%d\n", parent->labelIndex + 2);
+        gen("LABEL l%d :\n", parent->labelIndex + 1);
+    }
+
     if(childNum == 3)
     {
         TypeInfo *exp = (TypeInfo*)malloc(sizeof(TypeInfo));
@@ -398,6 +414,10 @@ ID(30)
         stmt_->sValid = stmt->sValid;
         child->other_info = stmt_;
     }
+}
+SD(30)
+{
+    gen("LABEL l%d :\n", parent->labelIndex + 2);
 }
 
 SD(28)
@@ -549,5 +569,5 @@ SD(53)
 void initTable_lxs()
 {
     IS(6, 10, 11, 18, 20, 22, 23, 24, 27, 28, 29, 30, 31, 50, 51, 53, 57, 58, 59);
-    SS(10, 11, 12, 13, 18, 19, 20, 21, 22, 28, 29, 50, 51, 53, 57, 58);
+    SS(10, 11, 12, 13, 18, 19, 20, 21, 22, 28, 29, 30, 50, 51, 53, 57, 58);
 }
