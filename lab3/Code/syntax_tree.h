@@ -11,6 +11,7 @@ typedef struct syntax_tree_node
     int proNum;
     void *other_info;
     int IRIndex;
+    int labelIndex;
 } AST_node;
 
 AST_node *new_token_node(int line, int column, char *string);

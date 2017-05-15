@@ -329,6 +329,11 @@ ID(28)
 
 IDS(29, 31)
 {
+    if(childNum == 0)
+    {
+        nextLabelIndex += 3;
+    }
+
     if(childNum == 3)
     {
         TypeInfo *exp = (TypeInfo*)malloc(sizeof(TypeInfo));
@@ -336,12 +341,19 @@ IDS(29, 31)
     }
     else if(childNum == 5)
     {
+        gen("LABEL l%d :\n", 1);
         TypeInfo *stmt_ = (TypeInfo*)malloc(sizeof(TypeInfo));
         TypeInfo *stmt = (TypeInfo*)(parent->other_info);
         stmt_->sType = stmt->sType;
         stmt_->sValid = stmt->sValid;
         child->other_info = stmt_;
     }
+}
+
+SD(29)
+{
+    D_child_3;
+    gen("IF v%d == 0 GOTO l%d\n", child_3->IRIndex, 1);
 }
 
 ID(30)
