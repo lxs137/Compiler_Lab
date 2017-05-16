@@ -49,6 +49,7 @@ Program
         print_child_node($$, 0);
         initTable();
         initTable_lxs();
+        IR_list = new_IR_list();
         globalSymbolTable = newSymbolTable();
         globalFuncSymbolTable = newFuncSymbolTable();
         globalStructStack = newStructStack();

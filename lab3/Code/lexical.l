@@ -15,15 +15,6 @@
     yycolumn += yyleng;
 
     void print_loc_info(char* name);
-    enum RelopType
-    {
-        less = 0,
-        more,
-        less_equal,
-        more_equal,
-        equal,
-        not_equal
-    };
 %}
 
 %option yylineno
