@@ -1,48 +1,53 @@
 #ifndef Generation_H
 #define Generation_H
 
-#define gen printf
+#define gen printf 
 
-// enum Relop {
-//     Less = 0,
-//     More,
-//     Less_equal,
-//     More_equal,
-//     Equal,
-//     Not_equal
-// };
+typedef struct {
+    enum Value_kind {
+        Variable = 0, // 普通变量或临时变量, v1
+        Constant,     // 立即数, #1
+        Address,      // 地址, &x
+        Content,      // 地址中的内容, *x  
+    } kind;
 
-// enum Operation {
-//     ADD = 0,
-//     SUB,
-//     MUL,
-//     DIV
-// };
+    char *content;
 
-enum IR_kind{
+} Value;
+
+char* value2str(Value*);
+Value* str2value(char*);
+
+enum IR_kind {
     Label = 0, // "LABEL target :"
     Fun,       // "FUNCTION target :"
+    Calculate, // "target := arg1 u.op arg2"
+    Assign,    // "target := arg1"    "target := &arg1" 
+               // "target := *arg1"   "*target := arg1"
+    Goto,      // "GOTO target"
+    GotoRel,   // "IF arg1 u.relop arg2 GOTO target"
+    Return,    // "RETURN target"
+    Dec,       // "DEC target arg1"
+    Arg,       // "ARG target"
+    Call,      // "target := CALL arg1"
+    Param,     // "PARAM target"
     Read,      // "READ target"
     Write,     // "WRITE teaget"
-    Cal,       // "target := arg1 u.op arg2"
-    Assign,    //
-    Return,    // ""
-    Dec,
-    Arg,
 };
 
-typedef struct ir_code {
+typedef struct {
     IR_kind kind;
 
-    char *target;
+    Value *target;
     union {
         char* op;
-        char* relop;
+        char* relop;  
     }u;
-    char *arg1;
-    char *arg2;
+    Value *arg1;
+    Value *arg2;
 }IR;
 
+void free_IR(void *val);
 list_t *new_IR_list();
 void del_IR_list();
 void traverse_IR_list(void (*action)(IR*));

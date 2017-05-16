@@ -11,18 +11,30 @@
  * Allocate a new list_t. NULL on failure.
  */
 
-list_t *
-list_new() {
+list_t *list_new(void (*free_f)(void*)) {
   list_t *self;
   if (!(self = LIST_MALLOC(sizeof(list_t))))
     return NULL;
   self->head = NULL;
   self->tail = NULL;
-  self->free = NULL;
+  self->free = free_f;
   self->match = NULL;
   self->len = 0;
   return self;
 }
+
+// list_t *
+// list_new() {
+//   list_t *self;
+//   if (!(self = LIST_MALLOC(sizeof(list_t))))
+//     return NULL;
+//   self->head = NULL;
+//   self->tail = NULL;
+//   self->free = NULL;
+//   self->match = NULL;
+//   self->len = 0;
+//   return self;
+// }
 
 /*
  * Free the list.
@@ -36,7 +48,8 @@ list_destroy(list_t *self) {
 
   while (len--) {
     next = curr->next;
-    if (self->free) self->free(curr->val);
+    if (self->free) 
+      self->free(curr->val);
     LIST_FREE(curr);
     curr = next;
   }
@@ -211,7 +224,7 @@ list_remove(list_t *self, list_node_t *node) {
 // Copyright (c) 2010 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#include "list.h"
+// #include "list.h"
 
 /*
  * Allocate a new list_iterator_t. NULL on failure.
@@ -277,7 +290,7 @@ list_iterator_destroy(list_iterator_t *self) {
 // Copyright (c) 2010 TJ Holowaychuk <tj@vision-media.ca>
 //
 
-#include "list.h"
+// #include "list.h"
 
 /*
  * Allocates a new list_node_t. NULL on failure.
