@@ -1,42 +1,51 @@
 #ifndef Generation_H
 #define Generation_H
 
-#define gen printf 
+#define gen printf
+
+#include "list.h"
+
+typedef enum value_kind{
+    Variable = 0,     // 普通变量, v1
+    Temp = 1,         // 临时变量, t1
+    L = 2,        // label, l1
+    F = 3,          // Function, f1
+    Constant = 4,     // 立即数, #1
+    Address = 5,      // 地址, &x
+    Content = 6,      // 地址中的内容, *x 
+} ValueKind; 
 
 typedef struct {
-    enum Value_kind {
-        Variable = 0, // 普通变量或临时变量, v1
-        Constant,     // 立即数, #1
-        Address,      // 地址, &x
-        Content,      // 地址中的内容, *x  
-    } kind;
-
-    char *content;
-
+    ValueKind kind;
+    union {
+        int no;     // 变量标号
+        int value;  // 立即数的值
+    } u;
+    char *str;
 } Value;
 
-char* value2str(Value*);
-Value* str2value(char*);
+Value* new_value(int kind, int value);
+void free_value(Value*);
 
-enum IR_kind {
-    Label = 0, // "LABEL target :"
-    Fun,       // "FUNCTION target :"
-    Calculate, // "target := arg1 u.op arg2"
-    Assign,    // "target := arg1"    "target := &arg1" 
-               // "target := *arg1"   "*target := arg1"
-    Goto,      // "GOTO target"
-    GotoRel,   // "IF arg1 u.relop arg2 GOTO target"
-    Return,    // "RETURN target"
-    Dec,       // "DEC target arg1"
-    Arg,       // "ARG target"
-    Call,      // "target := CALL arg1"
-    Param,     // "PARAM target"
-    Read,      // "READ target"
-    Write,     // "WRITE teaget"
-};
+typedef enum ir_kind{
+    Label = 0,      // "LABEL target :"
+    Fun = 1,        // "FUNCTION target :"
+    Calculate = 2,  // "target := arg1 u.op arg2"
+    Assign = 3,     // "target := arg1"    "target := &arg1" 
+                    // "target := *arg1"   "*target := arg1"
+    Goto = 4,       // "GOTO target"
+    GotoRel = 5,    // "IF arg1 u.relop arg2 GOTO target"
+    Return = 6,     // "RETURN target"
+    Dec = 7,        // "DEC target arg1"
+    Arg = 8,        // "ARG target"
+    Call = 9,       // "target := CALL arg1"
+    Param = 10,     // "PARAM target"
+    Read = 11,      // "READ target"
+    Write = 12,     // "WRITE teaget"
+} IRKind;
 
 typedef struct {
-    IR_kind kind;
+    IRKind kind;
 
     Value *target;
     union {
@@ -47,11 +56,13 @@ typedef struct {
     Value *arg2;
 }IR;
 
+list_t *IR_list;
+
+IR* gen_IR(int kind, Value *target, ...);
 void free_IR(void *val);
 list_t *new_IR_list();
 void del_IR_list();
 void traverse_IR_list(void (*action)(IR*));
-
 void print_IR(IR*);
 
 #endif

@@ -1,19 +1,97 @@
-#include "list.h";
+#include "list.h"
+#include "Generation.h"
+#include <stdarg.h>
+#include <stdio.h>
 
-list_t *IR_list;
+Value* new_value(int kind, int value) 
+{
+    Value *new_value = (Value*)malloc(sizeof(Value));
+    new_value->kind = kind;
+    if(kind == 4)
+        new_value->u.value = value;
+    else
+        new_value->u.no = value;
+    char *value_str = (char*)malloc(sizeof(char) * 10);
+    switch(kind)
+    {
+        case 0:
+            sprintf(value_str, "v%d", value);
+            break;
+        case 1:
+            sprintf(value_str, "t%d", value);
+            break;
+        case 2:
+            sprintf(value_str, "l%d", value);
+            break;
+        case 3:
+            sprintf(value_str, "f%d", value);
+            break;
+        case 4:
+            sprintf(value_str, "#%d", value);
+            break;
+        case 5:
+            sprintf(value_str, "&%d", value);
+            break;
+        case 6:
+            sprintf(value_str, "*%d", value);
+            break;
+    }
+    new_value->str = value_str;
+    return new_value;
+}
+
+void free_value(Value *value)
+{
+    if(value == NULL)
+        return;
+    free(value->str);
+    free(value);
+}
+
+IR* printf_IR(int kind, Value *target, ...)
+{
+    if(kind < 0 || kind >12)
+        return NULL;
+    IR *ir = (IR*)malloc(sizeof(IR));
+    ir->kind = kind;
+    ir->target = target;
+    ir->arg1 = NULL;
+    ir->arg2 = NULL;
+    ir->u.op = NULL;
+    va_list ap;
+    va_start(ap, target);
+    switch(kind)
+    {
+        case 0:case 1:case 4:case 6:case 8:case 10:case 11:case 12:
+            break;
+        case 3:case 7: case 9:
+            ir->arg1 = va_arg(ap, Value*);
+            break;
+        case 2:
+            ir->arg1 = va_arg(ap, Value*);
+            ir->arg2 = va_arg(ap, Value*);
+            ir->u.op = va_arg(ap, char*);
+            break;
+        case 5:
+            ir->arg1 = va_arg(ap, Value*);
+            ir->arg2 = va_arg(ap, Value*);
+            ir->u.relop = va_arg(ap, char*);
+            break;
+    }
+    va_end(ap);
+    list_rpush(IR_list, list_node_new(ir));
+    return ir;
+}
 
 void free_IR(void *val)
 {
     if(val == NULL)
         return;
-    else
-    {
-        IR *ir = (Value*)val;
-        free(ir->target);
-        free(ir->arg1);
-        free(ir->arg2);
-        free(ir);
-    }
+    IR *ir = (IR*)val;
+    free_value(ir->target);
+    free_value(ir->arg1);
+    free_value(ir->arg2);
+    free(ir);
 }
 
 list_t *new_IR_list()
@@ -38,93 +116,52 @@ void traverse_IR_list(void (*action)(IR*))
     list_iterator_destroy(it);
 }
 
-char* value2str(Value *value)
-{
-    if(value == NULL)
-        return NULL;
-    else
-        return value->content;
-}
-
-Value* str2value(char *str) 
-{
-    if(str == NULL)
-        return NULL;
-    else
-    {
-        Value *value = (Value*)malloc(sizeof(Value));
-        if(str[0] == '*')
-        {
-            value->kind = 3;
-            // value->u.name = str + 1;
-        }
-        else if(str[0] == '&')
-        {
-            value->kind = 2;
-            // value->u.name = str + 1;
-        }
-        else if(str[0] == '#')
-        {
-            value->kind = 1;
-            // value->u.value = atoi(str + 1);
-        }
-        else
-        {
-            value->kind = 0;
-            // value->u.name = str;
-        }
-        value->content = str;
-        return value;
-    }
-}
-
-
 void print_IR(IR *ir)
 {
     switch(ir->kind)
     {
         case 0:
-            gen("LABEL %s :\n", value2str(ir->target));
+            printf("LABEL %s :\n", ir->target->str);
             break;
         case 1:
-            gen("FUNCTION %s :\n", value2str(ir->target));
+            printf("FUNCTION %s :\n", ir->target->str);
             break;
         case 2:
-            gen("%s := %s %s %s\n", value2str(ir->target), 
-                value2str(ir->arg1), ir->u.op, value2str(ir->arg2));
+            printf("%s := %s %s %s\n", ir->target->str, 
+                ir->arg1->str, ir->u.op, ir->arg2->str);
             break;
         case 3:
         {
-            gen("%s := %s\n", value2str(ir->target), value2str(ir->arg1));
+            printf("%s := %s\n", ir->target->str, ir->arg1->str);
             break;
         }
         case 4:
-            gen("GOTO %s\n", value2str(ir->target));
+            printf("GOTO %s\n", ir->target->str);
             break;
         case 5:
-            gen("IF %s %s %s GOTO %s\n", value2str(ir->arg1),
-                ir->u.relop, value2str(ir->arg2), value2str(ir->target));
+            printf("IF %s %s %s GOTO %s\n", ir->arg1->str,
+                ir->u.relop, ir->arg2->str, ir->target->str);
             break;
         case 6:
-            gen("RETURN %s\n", value2str(ir->target));
+            printf("RETURN %s\n", ir->target->str);
             break;
         case 7:
-            gen("DEC %s %d\n", );
+            printf("DEC %s %d\n", ir->target->str, ir->arg1->u.value);
             break;
         case 8:
-            gen("ARG %s\n", value2str(ir->target));
+            printf("ARG %s\n", ir->target->str);
             break;
         case 9:
-            gen("%s := CALL %s\n", value2str(ir->target), value2str(ir->arg1));
+            printf("%s := CALL %s\n", ir->target->str, ir->arg1->str);
             break;
         case 10:
-            gen("PARAM %s\n", value2str(ir->target));
+            printf("PARAM %s\n", ir->target->str);
             break;
         case 11:
-            gen("READ %s\n", value2str(ir->target));
+            printf("READ %s\n", ir->target->str);
             break;
         case 12:
-            gen("WRITE %s\n", value2str(ir->target));
+            printf("WRITE %s\n", ir->target->str);
             break;
     }
 }
