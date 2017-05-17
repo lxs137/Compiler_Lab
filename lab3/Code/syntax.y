@@ -58,6 +58,7 @@ Program
         findUndefinedFunction();
         clean_up_syntax_tree($$);
         cleanUpSymbolTable();
+        del_IR_list();
     }
     ;
 ExtDefList

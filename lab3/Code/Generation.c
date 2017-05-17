@@ -48,7 +48,7 @@ void free_value(Value *value)
     free(value);
 }
 
-IR* printf_IR(int kind, Value *target, ...)
+IR* gen_IR(int kind, Value *target, ...)
 {
     if(kind < 0 || kind >12)
         return NULL;
