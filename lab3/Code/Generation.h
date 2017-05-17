@@ -5,18 +5,18 @@
 
 #include "list.h"
 
-typedef enum value_kind{
-    Variable = 0,     // 普通变量, v1
-    Temp = 1,         // 临时变量, t1
+enum ValueKind {
+    V = 0,     // 普通变量, v1
+    T = 1,         // 临时变量, t1
     L = 2,        // label, l1
     F = 3,          // Function, f1
-    Constant = 4,     // 立即数, #1
+    Const = 4,     // 立即数, #1
     Address = 5,      // 地址, &x
     Content = 6,      // 地址中的内容, *x 
-} ValueKind; 
+}; 
 
 typedef struct {
-    ValueKind kind;
+    enum ValueKind kind;
     union {
         int no;     // 变量标号
         int value;  // 立即数的值
@@ -27,7 +27,7 @@ typedef struct {
 Value* new_value(int kind, int value);
 void free_value(Value*);
 
-typedef enum ir_kind{
+enum IRKind{
     Label = 0,      // "LABEL target :"
     Fun = 1,        // "FUNCTION target :"
     Calculate = 2,  // "target := arg1 u.op arg2"
@@ -42,10 +42,10 @@ typedef enum ir_kind{
     Param = 10,     // "PARAM target"
     Read = 11,      // "READ target"
     Write = 12,     // "WRITE teaget"
-} IRKind;
+};
 
 typedef struct {
-    IRKind kind;
+    enum IRKind kind;
 
     Value *target;
     union {
