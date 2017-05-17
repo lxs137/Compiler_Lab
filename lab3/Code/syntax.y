@@ -49,14 +49,18 @@ Program
         print_child_node($$, 0);
         initTable();
         initTable_lxs();
+        IR_list = new_IR_list();
+        
         globalSymbolTable = newSymbolTable();
         globalFuncSymbolTable = newFuncSymbolTable();
         globalStructStack = newStructStack();
         traversalTreePerformAction($$);
-        //printSymbolTable(globalSymbolTable);
-        findUndefinedFunction();
+        traverse_IR_list(print_IR);
+        // printSymbolTable(globalSymbolTable);
+        // findUndefinedFunction();
         clean_up_syntax_tree($$);
         cleanUpSymbolTable();
+        del_IR_list();
     }
     ;
 ExtDefList
