@@ -197,6 +197,7 @@ ID(57)
         TypeInfo* exp = (TypeInfo*)malloc(sizeof(TypeInfo));
         exp->iDimension = 0;
         child->other_info = exp;
+        child->IRIndex = nextVarIndex++;
     }
     else if(childNum == 2)
     {
@@ -208,6 +209,7 @@ ID(57)
             param->type = exp->sType;
             param->dimension = exp->sDimension;
             param->next = NULL;
+            param->p = parent->first_child;
             args->param_num++;
             Symbol *param_list = args->param_list;
             if(param_list == NULL)
@@ -234,7 +236,8 @@ ID(58)
         /* Demons Add */
         exp->iDimension = 0;
         /* Demons end */
-        child->other_info = exp; 
+        child->other_info = exp;
+        child->IRIndex = nextVarIndex++; 
     }
 }
 
