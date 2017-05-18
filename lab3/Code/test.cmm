@@ -1,10 +1,11 @@
-int func(int a, int b, int c)
+int func(int a[5], int b, int c)
 {
     return b;
 }
 int main()
 {
     int x;
+    int y[10];
     x = 1;
     while (x > 0)
     {
@@ -12,5 +13,5 @@ int main()
     }
     x = 0;
 
-    func(x = 2, x, x);
+    func(y, x, x);
 }

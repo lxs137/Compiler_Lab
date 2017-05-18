@@ -298,8 +298,15 @@ SD(50)
             arg_list = arg_list->next;
             i++;
         }
-        for(i = i - 1; i >= 0; i--)
-            gen_IR(Arg, new_value(V, node_array[i]->IRIndex));
+        TypeInfo *cur_type;
+        for(i = i - 1; i >= 0; i--) 
+        {
+            cur_type = (TypeInfo*)(node_array[i]->other_info);
+            if(cur_type->sDimension > 0)
+                gen_IR(Arg, new_value(Address, node_array[i]->IRIndex));
+            else
+                gen_IR(Arg, new_value(V, node_array[i]->IRIndex));
+        }
     }
     int place_index = parent->IRIndex;
     AST_node *function = (AST_node*)(findFuncSymbol(func_id)->p);

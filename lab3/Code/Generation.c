@@ -30,10 +30,10 @@ Value* new_value(int kind, int value)
             sprintf(value_str, "#%d", value);
             break;
         case 5:
-            sprintf(value_str, "&%d", value);
+            sprintf(value_str, "&v%d", value);
             break;
         case 6:
-            sprintf(value_str, "*%d", value);
+            sprintf(value_str, "*v%d", value);
             break;
     }
     new_value->str = value_str;
