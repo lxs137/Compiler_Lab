@@ -445,6 +445,7 @@ ID(28)
         TypeInfo *exp = (TypeInfo*)malloc(sizeof(TypeInfo));
         exp->iDimension = 0;
         child->other_info = exp;
+        child->IRIndex = nextVarIndex++;
     }
 }
 
@@ -567,6 +568,10 @@ SD(28)
             || strcmp(exp->sType, stmt->sType) != 0)
             printf("Error type 8 at Line %d: Unmatch return value type.\n", parent->loc_line);
     }
+
+// IR Generation
+    gen_IR(Return, new_value(V, parent->first_child->next_brother->IRIndex));
+// end
 
 }
 
