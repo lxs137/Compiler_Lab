@@ -368,9 +368,10 @@ SD(39)
     /* IR tag */
     D_child_1;
     D_child_3;
-    gen("%c%d", 'v', child_1->IRIndex);
-    gen("%s", " := ");
-    gen("%c%d\n", 'v', child_3->IRIndex);
+    /* gen("%c%d", 'v', child_1->IRIndex); */
+    /* gen("%s", " := "); */
+    /* gen("%c%d\n", 'v', child_3->IRIndex); */
+    gen_IR(Assign, new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex));
     parent->IRIndex = nextVarIndex++;
 
     /* 检查赋值号左边不是左值 */
@@ -429,7 +430,8 @@ SDS(40)
     parent->IRIndex = nextVarIndex++;
     D_child_1;
     D_child_3;
-    gen("v%d := v%d && v%d\n", parent->IRIndex, child_1->IRIndex, child_3->IRIndex);
+    /* gen("v%d := v%d && v%d\n", parent->IRIndex, child_1->IRIndex, child_3->IRIndex); */
+    gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex), "&&");
 
     D_parent_info;
     parent_info->nextInfo = (void*)0;
@@ -461,7 +463,8 @@ SD(41)
     parent->IRIndex = nextVarIndex++;
     D_child_1;
     D_child_3;
-    gen("v%d := v%d || v%d\n", parent->IRIndex, child_1->IRIndex, child_3->IRIndex);
+    /* gen("v%d := v%d || v%d\n", parent->IRIndex, child_1->IRIndex, child_3->IRIndex); */
+    gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex), "||");
 
     D_parent_info;
     parent_info->nextInfo = (void*)0;
@@ -494,7 +497,8 @@ SD(42)
     D_child_1;
     D_child_2;
     D_child_3;
-    gen("v%d := v%d %s v%d\n", parent->IRIndex, child_1->IRIndex, child_2->str, child_3->IRIndex);
+    /* gen("v%d := v%d %s v%d\n", parent->IRIndex, child_1->IRIndex, child_2->str, child_3->IRIndex); */
+    gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex), child_2->str);
 
     D_parent_info;
     parent_info->nextInfo = (void*)0;
@@ -528,7 +532,8 @@ SDS(43, 44, 45, 46)
     D_child_1;
     D_child_2;
     D_child_3;
-    gen("v%d := v%d %s v%d\n", parent->IRIndex, child_1->IRIndex, child_2->str, child_3->IRIndex);
+    /* gen("v%d := v%d %s v%d\n", parent->IRIndex, child_1->IRIndex, child_2->str, child_3->IRIndex); */
+    gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex), child_2->str);
 
     D_parent_info;
     parent_info->nextInfo = (void*)0;
@@ -600,7 +605,8 @@ SD(48)
     /* IR tag */
     parent->IRIndex = nextVarIndex++;
     D_child_2;
-    gen("v%d := -v%d\n", parent->IRIndex, child_2->IRIndex);
+    /* gen("v%d := -v%d\n", parent->IRIndex, child_2->IRIndex); */
+    gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(V, child_2->IRIndex), "-");
 
     TypeInfo* exp = (TypeInfo*)(parent->other_info);
     TypeInfo* exp_ = (TypeInfo*)(parent->first_child->next_brother->other_info);
@@ -615,7 +621,8 @@ SD(49)
     /* IR tag */
     parent->IRIndex = nextVarIndex++;
     D_child_2;
-    gen("v%d := !v%d\n", parent->IRIndex, child_2->IRIndex);
+    /* gen("v%d := !v%d\n", parent->IRIndex, child_2->IRIndex); */
+    gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(V, child_2->IRIndex), "!");
 
     D_parent_info;
     parent_info->nextInfo = (void*)0;
@@ -637,11 +644,14 @@ SD(52)
     int tmpVarIndex = nextVarIndex++;
     D_child_3;
     D_child_1;
-    gen("v%d := v%d * %d\n", tmpVarIndex, child_3->IRIndex, 4);
+    /* gen("v%d := v%d * %d\n", tmpVarIndex, child_3->IRIndex, 4); */
+    gen_IR(Calculate, new_value(V, tmpVarIndex), new_value(V, child_3->IRIndex), new_value(Const, 4), "*");
     int tmpVarIndex2 = nextVarIndex++;
-    gen("v%d := v%d + v%d\n", tmpVarIndex2, child_1->IRIndex, tmpVarIndex);
+    /* gen("v%d := v%d + v%d\n", tmpVarIndex2, child_1->IRIndex, tmpVarIndex); */
+    gen_IR(Calculate, new_value(V, tmpVarIndex2), new_value(V, child_1->IRIndex), new_value(V, tmpVarIndex), "+");
     parent->IRIndex = nextVarIndex++;
-    gen("v%d := *v%d\n", parent->IRIndex, tmpVarIndex2);
+    /* gen("v%d := *v%d\n", parent->IRIndex, tmpVarIndex2); */
+    gen_IR(Assign, new_value(V, parent->IRIndex), new_value(V, tmpVarIndex2));
 
     D_parent_info;
     parent_info->nextInfo = (void*)1;
@@ -705,12 +715,14 @@ SDS(55, 56)
     if (parent->first_child->str[0] == 'I')
     {
         parent_info->sType = "int";
-        gen("v%d := %s\n", parent->IRIndex, child_1->str + 4);
+        /* gen("v%d := %s\n", parent->IRIndex, child_1->str + 4); */
+        gen_IR(Assign, new_value(V, parent->IRIndex), new_value(Const, atoi(child_1->str + 4)));
     }
     else
     {
         parent_info->sType = "float";
-        gen("v%d := %s\n", parent->IRIndex, child_1->str + 6);
+        /* gen("v%d := %s\n", parent->IRIndex, child_1->str + 6); */
+        gen_IR(Assign, new_value(V, parent->IRIndex), new_value(Const, atof(child_1->str + 6)));
     }
     parent_info->sDimension = 0;
 }
