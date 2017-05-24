@@ -177,24 +177,26 @@ void generate_jump_target(int label_count, int func_count)
     while ((node = list_iterator_next(it))) 
     {
         ir = (IR*)(node->val);
-        assert(func_index < func_count && label_index < label_count);
         if(ir->kind == Fun) {
             func_target[ir->target->u.no - 1] = node;
+            assert(func_index < func_count);
             func_index++;
         }
         else if(ir->kind == Label) {
             label_target[ir->target->u.no - 1] = node;
+            assert(label_index < label_count);
             label_index++;
         }
     }
     list_iterator_destroy(it);
 }
 
+// 控制流优化
 void peep_hole_control(list_node_t *cur_node)
 {
     IR *ir = (IR*)(cur_node->val);
     list_node_t *n_n_node;
-    IR *n_n_ir;
+    IR *n_n_ir = NULL;
     if(ir->kind == Goto) 
     {
         // remove ir whose kind is not Label
@@ -203,7 +205,8 @@ void peep_hole_control(list_node_t *cur_node)
             list_node_t *n_node, *rm_node;
             n_node = rm_node = cur_node->next;
             IR *n_ir = (IR*)(n_node->val);
-            while(n_ir->kind != Label) {
+            while(n_ir->kind != Label) 
+            {
                 n_node = n_node->next;
                 list_remove(IR_list, rm_node);
                 if(n_node == NULL)
@@ -212,23 +215,47 @@ void peep_hole_control(list_node_t *cur_node)
                     n_ir = (IR*)(n_node->val);
             }
         }
-        // end
-        n_n_node =  label_target[ir->target->u.no - 1]->next;
-        if(n_n_node == NULL)
-            return;
-        n_n_ir = (IR*)(n_n_node->val);
-        if(n_n_ir->kind == Goto) {
-            ir->target->u.no = n_n_ir->target->u.no;
-        }
     }
-    else if(ir->kind == GotoRel)
+    if(ir->kind == Goto || ir->kind == GotoRel)
     {
-        n_n_node = label_target[ir->target->u.no - 1]->next;
-        if(n_n_node == NULL)
-            return;
-        n_n_ir = (IR*)(n_n_node->val);
-        if(n_n_ir->kind == Goto) {
-            ir->target->value = n_n_ir->target->value;
-        }
+        do 
+        {        
+            if(n_n_ir != NULL) {
+                ir->target->u.no = n_n_ir->target->u.no;
+                ir->target->str = n_n_ir->target->str;
+            }
+            n_n_node = label_target[ir->target->u.no - 1]->next;
+            if(n_n_node == NULL)
+                break;
+            n_n_ir = (IR*)(n_n_node->val);
+        } while(n_n_ir->kind == Goto);
     }
+}
+
+void peep_hole()
+{
+    generate_example_ir();
+    traverse_IR_list(print_IR);
+    printf(">>>>>>>>>>>>>>>>>>>>\n");
+    generate_jump_target(3, 0);
+    traverse_IR_list(peep_hole_control);
+    traverse_IR_list(print_IR);
+    free(label_target);
+    free(func_target);
+}
+
+void generate_example_ir()
+{
+    printf("*****************\n");
+    del_IR_list();
+    IR_list = new_IR_list();
+    
+    gen_IR(Goto, new_value(L, 1));
+    gen_IR(Label, new_value(L, 1));
+    gen_IR(Goto, new_value(L, 2));
+    gen_IR(Label, new_value(L, 2));
+    gen_IR(Goto, new_value(L, 3));
+    gen_IR(Write, new_value(V, 1));
+    gen_IR(Label, new_value(L, 3));
+    gen_IR(Calculate, new_value(V, 1), new_value(V, 2), new_value(V, 3), "*");
 }
