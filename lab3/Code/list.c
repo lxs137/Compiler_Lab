@@ -306,3 +306,20 @@ list_node_new(void *val) {
   self->val = val;
   return self;
 }
+
+void list_insert_at_next(list_t *self, list_node_t *at, list_node_t *new_node)
+{
+  if(at->next == NULL) {
+    at->next = new_node;
+    new_node->prev = at;
+    new_node->next = NULL;
+    self->tail = new_node;
+  }
+  else {
+    new_node->next = at->next;
+    new_node->prev = at;
+    at->next->prev = new_node;
+    at->next = new_node;
+  }
+  self->len++;
+}

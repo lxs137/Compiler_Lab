@@ -56,6 +56,7 @@ Program
         globalStructStack = newStructStack();
         traversalTreePerformAction($$);
         traverse_IR_list(print_IR);
+        generate_jump_target(nextLabelIndex, nextFuncIndex);
         // printSymbolTable(globalSymbolTable);
         // printFuncSymbolTable(globalFuncSymbolTable);
         // findUndefinedFunction();

@@ -2,6 +2,7 @@
 #include "Generation.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include <assert.h>
 
 Value* new_value(int kind, int value) 
 {
@@ -105,19 +106,20 @@ void del_IR_list()
     list_destroy(IR_list);
 }
 
-void traverse_IR_list(void (*action)(IR*))
+void traverse_IR_list(void (*action)(list_node_t*))
 {
     list_node_t *node;
     list_iterator_t *it = list_iterator_new(IR_list, LIST_HEAD);
     while ((node = list_iterator_next(it))) 
     {
-        action((IR*)node->val);
+        action(node);
     }
     list_iterator_destroy(it);
 }
 
-void print_IR(IR *ir)
+void print_IR(list_node_t *ir_node)
 {
+    IR *ir = (IR*)(ir_node->val);
     switch(ir->kind)
     {
         case 0:
@@ -161,5 +163,55 @@ void print_IR(IR *ir)
         case 12:
             printf("WRITE %s\n", ir->target->str);
             break;
+    }
+}
+
+void generate_jump_target(int label_count, int func_count)
+{
+    label_target = (list_node_t**)malloc(sizeof(list_node_t*) * label_count);
+    func_target = (list_node_t**)malloc(sizeof(list_node_t*) * func_count);
+    int label_index = 0, func_index = 0;
+    list_node_t *node;
+    IR *ir;
+    list_iterator_t *it = list_iterator_new(IR_list, LIST_HEAD);
+    while ((node = list_iterator_next(it))) 
+    {
+        ir = (IR*)(node->val);
+        assert(func_index < func_count && label_index < label_count);
+        if(ir->kind == Fun) {
+            func_target[ir->target->u.no - 1] = node;
+            func_index++;
+        }
+        else if(ir->kind == Label) {
+            label_target[ir->target->u.no - 1] = node;
+            label_index++;
+        }
+    }
+    list_iterator_destroy(it);
+}
+
+void peep_hole(list_node_t *cur_node)
+{
+    IR *ir = (IR*)(cur_node->val);
+    list_node_t *n_n_node;
+    IR *n_n_ir;
+    if(ir->kind == Goto) 
+    {
+        n_n_node =  label_target[ir->target->u.no - 1]->next;
+        n_n_ir = (IR*)(n_n_node->val);
+        if(n_n_ir->kind == Goto) {
+            ir->target->u.no = n_n_ir->target->u.no;
+        }
+        else if(n_n_ir->kind == GotoRel) {
+
+        }
+    }
+    else if(ir->kind == GotoRel)
+    {
+        n_n_node = label_target[ir->target->u.no - 1]->next;
+        n_n_ir = (IR*)(n_n_node->val);
+        if(n_n_ir->kind == Goto) {
+            ir->target->value = n_n_ir->target->value;
+        }
     }
 }
