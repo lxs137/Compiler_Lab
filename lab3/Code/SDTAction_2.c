@@ -31,9 +31,14 @@ ID(6)
 
 // IR Generation
         AST_node *func_id = parent->first_child->next_brother->first_child;
-        func_id->IRIndex = nextFuncIndex++;
+        if(strcmp(func_id->str + 4, "main") == 0) {
+            IR *ir = gen_IR(Fun, new_value(F, 0));
+        }
+        else {
+            func_id->IRIndex = nextFuncIndex++;
+            gen_IR(Fun, new_value(F, func_id->IRIndex));
+        }
         FuncInfo *function = findFuncSymbol(func_id->str + 4);
-        gen_IR(Fun, new_value(F, func_id->IRIndex));
         Symbol *param = function->param_list;
         while(param != NULL) 
         {

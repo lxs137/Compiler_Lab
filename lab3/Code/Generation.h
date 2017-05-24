@@ -58,8 +58,21 @@ typedef struct {
 
 list_t *IR_list;
 
-list_node_t **label_target;
-list_node_t **func_target;
+typedef struct {
+    list_node_t *target;
+    int goto_count;
+    int goto_rel_count;
+} JumpTarget;
+JumpTarget *label_jump;
+
+typedef struct {
+    list_node_t *target;
+    int call_count;
+} CalTarget;
+CalTarget *func_jump;
+
+// list_node_t **label_target;
+// list_node_t **func_target;
 
 IR* gen_IR(int kind, Value *target, ...);
 void free_IR(void *val);
