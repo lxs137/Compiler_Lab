@@ -69,6 +69,9 @@ void traverse_IR_list(void (*action)(list_node_t*));
 void print_IR(list_node_t *ir_node);
 
 void generate_jump_target(int label_count, int func_count);
-void peep_hole(list_node_t *ir_node);
+// 控制流优化
+void peep_hole_control(list_node_t *ir_node);
+// 消除不可达代码
+void peep_hole_inaccess(list_node_t *ir_node);
 
 #endif

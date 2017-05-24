@@ -190,25 +190,42 @@ void generate_jump_target(int label_count, int func_count)
     list_iterator_destroy(it);
 }
 
-void peep_hole(list_node_t *cur_node)
+void peep_hole_control(list_node_t *cur_node)
 {
     IR *ir = (IR*)(cur_node->val);
     list_node_t *n_n_node;
     IR *n_n_ir;
     if(ir->kind == Goto) 
     {
+        // remove ir whose kind is not Label
+        if(cur_node->next != NULL) 
+        {
+            list_node_t *n_node, *rm_node;
+            n_node = rm_node = cur_node->next;
+            IR *n_ir = (IR*)(n_node->val);
+            while(n_ir->kind != Label) {
+                n_node = n_node->next;
+                list_remove(IR_list, rm_node);
+                if(n_node == NULL)
+                    break;
+                else
+                    n_ir = (IR*)(n_node->val);
+            }
+        }
+        // end
         n_n_node =  label_target[ir->target->u.no - 1]->next;
+        if(n_n_node == NULL)
+            return;
         n_n_ir = (IR*)(n_n_node->val);
         if(n_n_ir->kind == Goto) {
             ir->target->u.no = n_n_ir->target->u.no;
-        }
-        else if(n_n_ir->kind == GotoRel) {
-
         }
     }
     else if(ir->kind == GotoRel)
     {
         n_n_node = label_target[ir->target->u.no - 1]->next;
+        if(n_n_node == NULL)
+            return;
         n_n_ir = (IR*)(n_n_node->val);
         if(n_n_ir->kind == Goto) {
             ir->target->value = n_n_ir->target->value;
