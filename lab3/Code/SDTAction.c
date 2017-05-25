@@ -315,7 +315,7 @@ SD(16)
 
     if (!stackIsEmpty())
     {
-        int add_result = stackAddRegion(parent->first_child->str + 4, type_info);
+        int add_result = stackAddRegion(parent->first_child->str + 4, parent->first_child);
         if (add_result == -1)
         {
             printf("Error type 15 at Line: %d: Redefine field \"%s\" in struct.\n", 
@@ -332,7 +332,7 @@ SD(16)
     else if(isDefineFunction())
     {
         if(addTempFuncParam(parent->first_child->str + 4, type_info->sType,
-            type_info->sDimension) == 0)
+            type_info->sDimension, parent->first_child) == 0)
             printf("Error type 3 at Line %d: Redefined variable \"%s\".\n", 
                     child_1->loc_line, 
                     child_1->str + 4);

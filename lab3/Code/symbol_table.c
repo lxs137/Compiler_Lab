@@ -57,16 +57,13 @@ int insertSymbol(SymbolTable *st, const char *name, int kind,
 {
     int ret;
     
-    Symbol *symbol = calloc(1, sizeof(Symbol));
+    Symbol *symbol = (Symbol*)calloc(1, sizeof(Symbol));
     symbol->name = name;
     symbol->kind = kind;
     symbol->type = type;
     symbol->dimension = dimension;
     symbol->next = next_detail;
-    if(p == NULL)
-        symbol->p = malloc(sizeof(TypeInfo));
-    else
-        symbol->p = p;
+    symbol->p = p;
     
     ret = jsw_rbinsert(st, (void *)symbol);
     if (ret == 0)
@@ -266,7 +263,7 @@ int funcDefineEnd(int line)
 }
 
 int addTempFuncParam(const char *param_name,
-    const char *param_type, int param_dimension)
+    const char *param_type, int param_dimension, void *p)
 {
     // create a new param symbol
     Symbol *param = (Symbol*)malloc(sizeof(Symbol));
@@ -274,6 +271,7 @@ int addTempFuncParam(const char *param_name,
     param->kind = 2;
     param->type = param_type;
     param->dimension = param_dimension;
+    param->p = p;
     param->next = NULL;
     globalFuncSymbolTable->cur_def_func->param_num += 1;
     // 检测在同一函数参数列表中是否重名的参数
@@ -337,7 +335,7 @@ int addTempFuncParam(const char *param_name,
     // 参数名和之前函数的定义名字完全不一致
     else if(param_exist == NULL) {       
         insertSymbol(globalSymbolTable, param_name, 2, param_type,
-           param_dimension, NULL, NULL);
+           param_dimension, NULL, p);
         return 1;
     }
 }
@@ -401,8 +399,6 @@ void freeTempParamList(Symbol *param_list)
     {
         cur_param = param_list;
         param_list = param_list->next;
-        cur_node = (AST_node*)(cur_param->p);
-        free(cur_node);
         free(cur_param);
     } 
 }
@@ -479,11 +475,11 @@ int stackIsEmpty()
     return globalStructStack->stack_top == NULL;
 }
 
-int stackAddRegion(const char *region_name, void *type_info)
+int stackAddRegion(const char *region_name, AST_node *p)
 {
     if(globalStructStack->isEmpty())
         return -2;
-    TypeInfo *region_info = (TypeInfo*)type_info;
+    TypeInfo *region_info = (TypeInfo*)(p->other_info);
     Symbol *symbol_in_table = getSymbolFull(region_name),
         *region_in_struct = findRegionInStruct(globalStructStack->stack_top->struct_symbol->name, region_name);
     if(symbol_in_table != NULL && region_in_struct == NULL)
@@ -491,7 +487,7 @@ int stackAddRegion(const char *region_name, void *type_info)
     else if(symbol_in_table != NULL && region_in_struct == symbol_in_table)
         return -1;
     insertSymbol(globalSymbolTable, region_name, 0, region_info->sType,
-        region_info->sDimension, NULL, type_info);
+        region_info->sDimension, NULL, p);
     Symbol *new_region = (Symbol*)findSymbol(globalSymbolTable, region_name);
 
     globalStructStack->stack_top->last_region->next = new_region;
@@ -499,7 +495,7 @@ int stackAddRegion(const char *region_name, void *type_info)
     return 1;
 }
 
-void stackPush(const char *struct_name, int is_anonymous)
+void stackPush(const char *struct_name, int is_anonymous, void *p)
 {
     if(is_anonymous){
         char *new_name = (char*)malloc(sizeof(char) * MAX_ANONYMOUS_STRUCT_LENGTH);
@@ -508,7 +504,7 @@ void stackPush(const char *struct_name, int is_anonymous)
         struct_name = new_name;
     }
     StackElement *element = (StackElement*)malloc(sizeof(StackElement));
-    insertSymbol(globalSymbolTable, struct_name, 1, NULL, 0, NULL, NULL);
+    insertSymbol(globalSymbolTable, struct_name, 1, NULL, 0, NULL, p);
     element->struct_symbol = (Symbol*)findSymbol(globalSymbolTable, struct_name);
     element->last_region = element->struct_symbol;
     element->down = globalStructStack->stack_top;

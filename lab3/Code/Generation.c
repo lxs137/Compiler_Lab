@@ -2,6 +2,7 @@
 #include "Generation.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 #include <assert.h>
 
 Value* new_value(int kind, int value) 
@@ -25,11 +26,13 @@ Value* new_value(int kind, int value)
             sprintf(value_str, "l%d", value);
             break;
         case 3:
+        {
             if(value == 0)
                 sprintf(value_str, "main");
             else
                 sprintf(value_str, "f%d", value);
             break;
+        }
         case 4:
             sprintf(value_str, "#%d", value);
             break;
@@ -98,10 +101,9 @@ void free_IR(void *val)
     free(ir);
 }
 
-list_t *new_IR_list()
+void new_IR_list()
 {
-    list_t *new_list = list_new(free_IR);
-    return new_list;
+    IR_list = list_new(free_IR);
 }
 
 void del_IR_list()
@@ -109,10 +111,10 @@ void del_IR_list()
     list_destroy(IR_list);
 }
 
-void traverse_IR_list(void (*action)(list_node_t*))
+void traverse_list(list_t *list, void (*action)(list_node_t*))
 {
     list_node_t *node;
-    list_iterator_t *it = list_iterator_new(IR_list, LIST_HEAD);
+    list_iterator_t *it = list_iterator_new(list, LIST_HEAD);
     while ((node = list_iterator_next(it))) 
     {
         action(node);
@@ -126,45 +128,45 @@ void print_IR(list_node_t *ir_node)
     switch(ir->kind)
     {
         case 0:
-            printf("LABEL %s :\n", ir->target->str);
+            gen("LABEL %s :\n", ir->target->str);
             break;
         case 1:
-            printf("FUNCTION %s :\n", ir->target->str);
+            gen("FUNCTION %s :\n", ir->target->str);
             break;
         case 2:
-            printf("%s := %s %s %s\n", ir->target->str, 
+            gen("%s := %s %s %s\n", ir->target->str, 
                 ir->arg1->str, ir->u.op, ir->arg2->str);
             break;
         case 3:
-            printf("%s := %s\n", ir->target->str, ir->arg1->str);
+            gen("%s := %s\n", ir->target->str, ir->arg1->str);
             break;
         case 4:
-            printf("GOTO %s\n", ir->target->str);
+            gen("GOTO %s\n", ir->target->str);
             break;
         case 5:
-            printf("IF %s %s %s GOTO %s\n", ir->arg1->str,
+            gen("IF %s %s %s GOTO %s\n", ir->arg1->str,
                 ir->u.relop, ir->arg2->str, ir->target->str);
             break;
         case 6:
-            printf("RETURN %s\n", ir->target->str);
+            gen("RETURN %s\n", ir->target->str);
             break;
         case 7:
-            printf("DEC %s %d\n", ir->target->str, ir->arg1->u.value);
+            gen("DEC %s %d\n", ir->target->str, ir->arg1->u.value);
             break;
         case 8:
-            printf("ARG %s\n", ir->target->str);
+            gen("ARG %s\n", ir->target->str);
             break;
         case 9:
-            printf("%s := CALL %s\n", ir->target->str, ir->arg1->str);
+            gen("%s := CALL %s\n", ir->target->str, ir->arg1->str);
             break;
         case 10:
-            printf("PARAM %s\n", ir->target->str);
+            gen("PARAM %s\n", ir->target->str);
             break;
         case 11:
-            printf("READ %s\n", ir->target->str);
+            gen("READ %s\n", ir->target->str);
             break;
         case 12:
-            printf("WRITE %s\n", ir->target->str);
+            gen("WRITE %s\n", ir->target->str);
             break;
     }
 }
@@ -173,13 +175,15 @@ void generate_jump_target(int label_count, int func_count)
 {
     label_jump = (JumpTarget*)malloc(sizeof(JumpTarget) * label_count);
     for(int i = 0; i < label_count; i++) {
-        label_jump[i].target = NULL;
+        label_jump[i].target_ir = NULL;
+        label_jump[i].target_block = NULL;
         label_jump[i].goto_count = 0;
         label_jump[i].goto_rel_count = 0;
     }
     func_jump = (CalTarget*)malloc(sizeof(CalTarget) * func_count);
     for(int i = 0; i < func_count; i++) {
-        func_jump[i].target = NULL;
+        func_jump[i].target_ir = NULL;
+        func_jump[i].target_block = NULL;
         func_jump[i].call_count = 0;
     }
     int label_index = 0, func_index = 0;
@@ -193,12 +197,12 @@ void generate_jump_target(int label_count, int func_count)
             // 排除main函数
             if(ir->target->u.no == 0)
                 continue;
-            func_jump[ir->target->u.no - 1].target = node;
+            func_jump[ir->target->u.no - 1].target_ir = node;
             assert(func_index < func_count);
             func_index++;
         }
         else if(ir->kind == Label) {
-            label_jump[ir->target->u.no - 1].target = node;
+            label_jump[ir->target->u.no - 1].target_ir = node;
             assert(label_index < label_count);
             label_index++;
         }
@@ -259,7 +263,7 @@ void peep_hole_control(list_node_t *cur_node)
                 ir->target->u.no = n_n_ir->target->u.no;
                 ir->target->str = n_n_ir->target->str;
             }
-            n_n_node = label_jump[ir->target->u.no - 1].target->next;
+            n_n_node = label_jump[ir->target->u.no - 1].target_ir->next;
             if(n_n_node == NULL)
                 break;
             n_n_ir = (IR*)(n_n_node->val);
@@ -285,45 +289,162 @@ void peep_hole_inaccess(list_node_t *cur_node)
             || label_jump[l1 - 1].goto_rel_count > 1
             || label_jump[l1 - 1].goto_count > 0)
             return;
+        int i;
+        for(i = 0; i < 6; i++) {
+            if(strcmp(opposite_relop[i], ir->u.relop) == 0) 
+                break;
+        }
+        if(i == 6)
+            return;
+        else
+            ir->u.relop = opposite_relop[5 - i];
         ir->target->u.no = l2;
         free(ir->target->str);
         char *target_str = (char*)malloc(sizeof(char)*10);
         sprintf(target_str, "l%d", l2);
         ir->target->str = target_str;
-        for(int i = 0; i < 6; i++) {
-            if(strcmp(opposite_relop[i], ir->u.relop) == 0) {
-                ir->u.relop = opposite_relop[5 - i];
-                break;
-            }
-        }
-        list_remove(IR_list, n_node);
         list_remove(IR_list, n_node->next);
+        list_remove(IR_list, n_node);
     }
 }
 
 void peep_hole()
 {
-    // generate_example_ir();
-    // traverse_IR_list(print_IR);
+    generate_example_ir();
+    traverse_list(IR_list, print_IR);
     printf(">>>>>>>>>>>>>>>>>>>>\n");
-    // generate_jump_target(2, 0);
-    traverse_IR_list(peep_hole_control);
-    traverse_IR_list(peep_hole_inaccess);
-    traverse_IR_list(print_IR);
+    generate_jump_target(2, 1);
+    traverse_list(IR_list, peep_hole_control);
+    traverse_list(IR_list, peep_hole_inaccess);
+    traverse_list(IR_list, print_IR);
+    printf("<<<<<<<<<<<<<<<<<<<\n");
     free(label_jump);
     free(func_jump);
 }
+
+void free_basis_block(void *val)
+{
+    BasisBlock *block = (BasisBlock*)val;
+    CFG_edge *cur_edge, *rm_edge;
+    cur_edge = rm_edge = block->next;
+    while(cur_edge != NULL) {
+        rm_edge = cur_edge;
+        cur_edge = cur_edge->next;
+        free(rm_edge);
+    }
+    cur_edge = rm_edge = block->prev;
+    while(cur_edge != NULL) {
+        rm_edge = cur_edge;
+        cur_edge = cur_edge->next;
+        free(rm_edge);
+    }
+    free(block);
+}
+
+BasisBlock *new_basis_block()
+{
+    BasisBlock *block = (BasisBlock*)malloc(sizeof(BasisBlock));
+    block->first_ir = NULL;
+    block->last_ir = NULL;
+    block->ir_count = 0;
+    block->next = NULL;
+    block->prev = NULL;
+    block->next_count = 0;
+    block->prev_count = 0;
+    return block;
+}
+
+void new_block_list()
+{
+    block_list = list_new(free_basis_block);
+}
+
+void del_block_list()
+{
+    list_destroy(block_list);
+}
+
+void print_Block(list_node_t *block_node)
+{
+    BasisBlock *block = (BasisBlock*)(block_node->val);
+    printf("Block: \n");
+    printf("    first_ir: ");
+    print_IR(block->first_ir);
+    printf("    last_ir： ");
+    print_IR(block->last_ir);
+    printf("    count: %d\n", block->ir_count);
+}
+
+void generate_CFG()
+{
+    // cfg = (CFG*)malloc(sizeof(CFG));
+    // cfg->entry = new_basis_block();
+    // cfg->exit = new_basis_block();
+    new_block_list();
+
+    // generate Block list
+    BasisBlock *cur_block;
+    int ir_count = 0;
+
+    list_node_t *node;
+    list_iterator_t *it = list_iterator_new(IR_list, LIST_HEAD);
+    IR *ir;
+    while ((node = list_iterator_next(it))) 
+    {
+        ir = (IR*)(node->val);
+        ir_count++;
+        if(node == IR_list->head) {
+            cur_block = new_basis_block();
+            cur_block->first_ir = node;
+        }
+        else if(ir->kind == Fun || ir->kind == Label) {
+            cur_block->last_ir = node->prev;
+            cur_block->ir_count = ir_count - 1;
+            list_rpush(block_list, list_node_new(cur_block));
+            if(node->next != NULL) {
+                cur_block = new_basis_block();
+                cur_block->first_ir = node;
+                if(ir->kind == Fun) {
+                    label_jump[ir->target->u.no - 1].target_block = cur_block;
+                }
+                else {
+                    func_jump[ir->target->u.no - 1].target_block = cur_block;
+                }
+            }
+            ir_count = 1;
+        }
+        else if(ir->kind == Call || ir->kind == Goto || ir->kind == GotoRel) {
+            cur_block->last_ir = node;
+            cur_block->ir_count = ir_count;
+            list_rpush(block_list, list_node_new(cur_block));
+            if(node->next != NULL) {
+                cur_block = new_basis_block();
+                cur_block->first_ir = node->next;
+            }
+            ir_count = 0;
+        }
+    }
+    list_iterator_destroy(it);
+    cur_block->last_ir = IR_list->tail;
+    cur_block->ir_count = ir_count;
+    list_rpush(block_list, list_node_new(cur_block));
+    traverse_list(block_list, print_Block);
+
+}
+
 
 void generate_example_ir()
 {
     printf("*****************\n");
     del_IR_list();
-    IR_list = new_IR_list();
+    new_IR_list();
     
-    gen_IR(GotoRel, new_value(L, 1), new_value(V, 1), new_value(V, 2), "<");
+    gen_IR(Fun, new_value(F, 1));
+    gen_IR(GotoRel, new_value(L, 1), new_value(V, 1), new_value(V, 2), "==");
     // gen_IR(Label, new_value(L, 1));
     gen_IR(Goto, new_value(L, 2));
     gen_IR(Label, new_value(L, 1));
+    gen_IR(Assign, new_value(V, 1), new_value(Const, 2));
     // gen_IR(Goto, new_value(L, 3));
     gen_IR(Write, new_value(V, 1));
     gen_IR(Label, new_value(L, 2));

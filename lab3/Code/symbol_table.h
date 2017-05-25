@@ -64,9 +64,9 @@ typedef struct
 
     int (*isEmpty)(); //0为false, 1为true
     // 在结构体中时，定义一个新变量应调用这个函数，无需插入符号表
-    int (*addRegion)(const char *region_name, void *type_info); 
+    int (*addRegion)(const char *, AST_node *); 
 
-    void (*push)(const char *struct_name, int is_anonymous);
+    void (*push)(const char *, int, void*);
     Symbol* ((*pop)());
 
 } StructStack;
@@ -76,8 +76,8 @@ StructStack *newStructStack();
 //0为false, 1为true
 int stackIsEmpty();
 // 在结构体中时，定义一个新变量时应调用这个函数，无需插入符号表
-int stackAddRegion(const char *region_name, void *type_info);
-void stackPush(const char *struct_name, int is_anonymous);
+int stackAddRegion(const char *region_name, AST_node *p);
+void stackPush(const char *struct_name, int is_anonymous, void *p);
 Symbol *stackPop();
 Symbol *findRegionInStruct(const char *struct_name, const char *region_name);
 Symbol *getSymbolFull(const char *name);
@@ -114,7 +114,7 @@ void startDefineFunction(const char *name, int status, const char *return_type, 
 int funcDefineEnd(int line);
 // 返回1代表成功，返回0代表失败
 int addTempFuncParam(const char *param_name,
-    const char *param_type, int param_dimension);
+    const char *param_type, int param_dimension, void *p);
 // 清理临时参数列表
 void freeTempParamList(Symbol *param_list);
 

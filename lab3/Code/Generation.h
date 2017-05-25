@@ -3,7 +3,10 @@
 
 #define gen printf
 
+#include <stdio.h>
 #include "list.h"
+
+FILE *f_output;
 
 enum ValueKind {
     V = 0,     // 普通变量, v1
@@ -58,31 +61,56 @@ typedef struct {
 
 list_t *IR_list;
 
+IR* gen_IR(int kind, Value *target, ...);
+void free_IR(void *val);
+void new_IR_list();
+void del_IR_list();
+void traverse_list(list_t *list, void (*action)(list_node_t*));
+void print_IR(list_node_t *ir_node);
+
+void generate_jump_target(int label_count, int func_count);
+void peep_hole();
+
+typedef struct cfg_edge {
+    void *vertice;
+    struct cfg_edge *next;
+} CFG_edge;
+
+typedef struct basis_block {
+    list_node_t *first_ir, *last_ir;
+    int ir_count;
+    CFG_edge *next; // 后继节点
+    CFG_edge *prev; // 前驱节点
+    int next_count, prev_count;
+} BasisBlock;
+list_t *block_list;
+
 typedef struct {
-    list_node_t *target;
+    list_node_t *target_ir;
+    BasisBlock *target_block;
     int goto_count;
     int goto_rel_count;
 } JumpTarget;
 JumpTarget *label_jump;
 
 typedef struct {
-    list_node_t *target;
+    list_node_t *target_ir;
+    BasisBlock *target_block;
     int call_count;
 } CalTarget;
 CalTarget *func_jump;
 
-// list_node_t **label_target;
-// list_node_t **func_target;
+typedef struct control_flow_graph {
+    BasisBlock *entry;
+    BasisBlock *exit;
+} CFG;
+CFG *cfg;
 
-IR* gen_IR(int kind, Value *target, ...);
-void free_IR(void *val);
-list_t *new_IR_list();
-void del_IR_list();
-void traverse_IR_list(void (*action)(list_node_t*));
-void print_IR(list_node_t *ir_node);
-
-void generate_jump_target(int label_count, int func_count);
-void peep_hole();
+void free_basis_block(void *val);
+BasisBlock *new_basis_block();
+void new_block_list();
+void del_block_list();
+void generate_CFG();
 
 void generate_example_ir();
 
