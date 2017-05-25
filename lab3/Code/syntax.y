@@ -46,7 +46,7 @@
 Program
     : ExtDefList {
         $$ = new_parent_node("Program", 1, 1, $1);
-        print_child_node($$, 0);
+        // print_child_node($$, 0);
         initTable();
         initTable_lxs();
         new_IR_list();
@@ -56,7 +56,7 @@ Program
         globalStructStack = newStructStack();
         traversalTreePerformAction($$);
         traverse_list(IR_list, print_IR);
-        // generate_jump_target(nextLabelIndex - 1, nextFuncIndex - 1);
+        generate_jump_target(nextLabelIndex - 1, nextFuncIndex - 1);
         peep_hole();
         generate_CFG();
         // findUndefinedFunction();
