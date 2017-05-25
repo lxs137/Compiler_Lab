@@ -49,7 +49,7 @@ Program
         // print_child_node($$, 0);
         initTable();
         initTable_lxs();
-        IR_list = new_IR_list();
+        new_IR_list();
         
         globalSymbolTable = newSymbolTable();
         globalFuncSymbolTable = newFuncSymbolTable();
@@ -57,7 +57,7 @@ Program
         traversalTreePerformAction($$);
         traverse_IR_list(print_IR);
         // generate_jump_target(nextLabelIndex - 1, nextFuncIndex - 1);
-        // peep_hole();
+        peep_hole();
         // printSymbolTable(globalSymbolTable);
         // printFuncSymbolTable(globalFuncSymbolTable);
         // findUndefinedFunction();

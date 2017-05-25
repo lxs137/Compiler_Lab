@@ -2,6 +2,7 @@
 #include "Generation.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 #include <assert.h>
 
 Value* new_value(int kind, int value) 
@@ -98,10 +99,9 @@ void free_IR(void *val)
     free(ir);
 }
 
-list_t *new_IR_list()
+void new_IR_list()
 {
-    list_t *new_list = list_new(free_IR);
-    return new_list;
+    IR_list = list_new(free_IR);
 }
 
 void del_IR_list()
@@ -126,45 +126,45 @@ void print_IR(list_node_t *ir_node)
     switch(ir->kind)
     {
         case 0:
-            printf("LABEL %s :\n", ir->target->str);
+            gen("LABEL %s :\n", ir->target->str);
             break;
         case 1:
-            printf("FUNCTION %s :\n", ir->target->str);
+            gen("FUNCTION %s :\n", ir->target->str);
             break;
         case 2:
-            printf("%s := %s %s %s\n", ir->target->str, 
+            gen("%s := %s %s %s\n", ir->target->str, 
                 ir->arg1->str, ir->u.op, ir->arg2->str);
             break;
         case 3:
-            printf("%s := %s\n", ir->target->str, ir->arg1->str);
+            gen("%s := %s\n", ir->target->str, ir->arg1->str);
             break;
         case 4:
-            printf("GOTO %s\n", ir->target->str);
+            gen("GOTO %s\n", ir->target->str);
             break;
         case 5:
-            printf("IF %s %s %s GOTO %s\n", ir->arg1->str,
+            gen("IF %s %s %s GOTO %s\n", ir->arg1->str,
                 ir->u.relop, ir->arg2->str, ir->target->str);
             break;
         case 6:
-            printf("RETURN %s\n", ir->target->str);
+            gen("RETURN %s\n", ir->target->str);
             break;
         case 7:
-            printf("DEC %s %d\n", ir->target->str, ir->arg1->u.value);
+            gen("DEC %s %d\n", ir->target->str, ir->arg1->u.value);
             break;
         case 8:
-            printf("ARG %s\n", ir->target->str);
+            gen("ARG %s\n", ir->target->str);
             break;
         case 9:
-            printf("%s := CALL %s\n", ir->target->str, ir->arg1->str);
+            gen("%s := CALL %s\n", ir->target->str, ir->arg1->str);
             break;
         case 10:
-            printf("PARAM %s\n", ir->target->str);
+            gen("PARAM %s\n", ir->target->str);
             break;
         case 11:
-            printf("READ %s\n", ir->target->str);
+            gen("READ %s\n", ir->target->str);
             break;
         case 12:
-            printf("WRITE %s\n", ir->target->str);
+            gen("WRITE %s\n", ir->target->str);
             break;
     }
 }
@@ -303,10 +303,10 @@ void peep_hole_inaccess(list_node_t *cur_node)
 
 void peep_hole()
 {
-    // generate_example_ir();
-    // traverse_IR_list(print_IR);
+    generate_example_ir();
+    traverse_IR_list(print_IR);
     printf(">>>>>>>>>>>>>>>>>>>>\n");
-    // generate_jump_target(2, 0);
+    generate_jump_target(2, 1);
     traverse_IR_list(peep_hole_control);
     traverse_IR_list(peep_hole_inaccess);
     traverse_IR_list(print_IR);
@@ -314,16 +314,24 @@ void peep_hole()
     free(func_jump);
 }
 
+void new_block_list()
+{
+
+}
+
+
 void generate_example_ir()
 {
     printf("*****************\n");
     del_IR_list();
-    IR_list = new_IR_list();
+    new_IR_list();
     
-    gen_IR(GotoRel, new_value(L, 1), new_value(V, 1), new_value(V, 2), "<");
+    gen_IR(Fun, new_value(F, 1));
+    gen_IR(GotoRel, new_value(L, 1), new_value(V, 1), new_value(V, 2), "==");
     // gen_IR(Label, new_value(L, 1));
     gen_IR(Goto, new_value(L, 2));
     gen_IR(Label, new_value(L, 1));
+    gen_IR(Assign, new_value(V, 1), new_value(Const, 2));
     // gen_IR(Goto, new_value(L, 3));
     gen_IR(Write, new_value(V, 1));
     gen_IR(Label, new_value(L, 2));

@@ -3,7 +3,10 @@
 
 #define gen printf
 
+#include <stdio.h>
 #include "list.h"
+
+FILE *f_output;
 
 enum ValueKind {
     V = 0,     // 普通变量, v1
@@ -71,18 +74,32 @@ typedef struct {
 } CalTarget;
 CalTarget *func_jump;
 
-// list_node_t **label_target;
-// list_node_t **func_target;
-
 IR* gen_IR(int kind, Value *target, ...);
 void free_IR(void *val);
-list_t *new_IR_list();
+void new_IR_list();
 void del_IR_list();
 void traverse_IR_list(void (*action)(list_node_t*));
 void print_IR(list_node_t *ir_node);
 
 void generate_jump_target(int label_count, int func_count);
 void peep_hole();
+
+struct block;
+typedef struct cfg_edge {
+    struct block *vertice;
+    struct cfg_edge *next;
+} CFG_edge;
+
+typedef struct block {
+    IR *first, *last;
+    int ir_count;
+    CFG_edge *next; // 后继节点
+    CFG_edge *prev; // 前驱节点
+    int next_count, prev_count;
+} BasisBlcok;
+
+list_t *block_list;
+void new_block_list();
 
 void generate_example_ir();
 
