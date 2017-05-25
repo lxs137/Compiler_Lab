@@ -490,12 +490,14 @@ ID(31)
     }
     if (childNum == 3)
     {
-        gen("LABEL l%d :\n", parent->labelIndex);
+        /* gen("LABEL l%d :\n", parent->labelIndex); */
+        gen_IR(Label, new_value(L, parent->labelIndex));
     }
     if (childNum == 5)
     {
         D_child_3;
-        gen("IF v%d == 0 GOTO l%d\n", child_3->IRIndex, parent->labelIndex + 2);
+        /* gen("IF v%d == 0 GOTO l%d\n", child_3->IRIndex, parent->labelIndex + 2); */
+        gen_IR(GotoRel, new_value(L, parent->labelIndex + 2), new_value(V, child_3->IRIndex), new_value(Const, 0), "==");
     }
 
     if(childNum == 3)
