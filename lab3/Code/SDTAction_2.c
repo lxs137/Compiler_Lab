@@ -31,9 +31,14 @@ ID(6)
 
 // IR Generation
         AST_node *func_id = parent->first_child->next_brother->first_child;
-        func_id->IRIndex = nextFuncIndex++;
+        if(strcmp(func_id->str + 4, "main") == 0) {
+            IR *ir = gen_IR(Fun, new_value(F, 0));
+        }
+        else {
+            func_id->IRIndex = nextFuncIndex++;
+            gen_IR(Fun, new_value(F, func_id->IRIndex));
+        }
         FuncInfo *function = findFuncSymbol(func_id->str + 4);
-        gen_IR(Fun, new_value(F, func_id->IRIndex));
         Symbol *param = function->param_list;
         while(param != NULL) 
         {
@@ -445,6 +450,7 @@ ID(28)
         TypeInfo *exp = (TypeInfo*)malloc(sizeof(TypeInfo));
         exp->iDimension = 0;
         child->other_info = exp;
+        child->IRIndex = nextVarIndex++;
     }
 }
 
@@ -567,6 +573,10 @@ SD(28)
             || strcmp(exp->sType, stmt->sType) != 0)
             printf("Error type 8 at Line %d: Unmatch return value type.\n", parent->loc_line);
     }
+
+// IR Generation
+    gen_IR(Return, new_value(V, parent->first_child->next_brother->IRIndex));
+// end
 
 }
 

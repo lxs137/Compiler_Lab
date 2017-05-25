@@ -58,11 +58,32 @@ typedef struct {
 
 list_t *IR_list;
 
+typedef struct {
+    list_node_t *target;
+    int goto_count;
+    int goto_rel_count;
+} JumpTarget;
+JumpTarget *label_jump;
+
+typedef struct {
+    list_node_t *target;
+    int call_count;
+} CalTarget;
+CalTarget *func_jump;
+
+// list_node_t **label_target;
+// list_node_t **func_target;
+
 IR* gen_IR(int kind, Value *target, ...);
 void free_IR(void *val);
 list_t *new_IR_list();
 void del_IR_list();
-void traverse_IR_list(void (*action)(IR*));
-void print_IR(IR*);
+void traverse_IR_list(void (*action)(list_node_t*));
+void print_IR(list_node_t *ir_node);
+
+void generate_jump_target(int label_count, int func_count);
+void peep_hole();
+
+void generate_example_ir();
 
 #endif

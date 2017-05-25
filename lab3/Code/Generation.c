@@ -2,12 +2,13 @@
 #include "Generation.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include <assert.h>
 
 Value* new_value(int kind, int value) 
 {
     Value *new_value = (Value*)malloc(sizeof(Value));
     new_value->kind = kind;
-    if(kind == 4)
+    if(kind == Const)
         new_value->u.value = value;
     else
         new_value->u.no = value;
@@ -24,7 +25,10 @@ Value* new_value(int kind, int value)
             sprintf(value_str, "l%d", value);
             break;
         case 3:
-            sprintf(value_str, "f%d", value);
+            if(value == 0)
+                sprintf(value_str, "main");
+            else
+                sprintf(value_str, "f%d", value);
             break;
         case 4:
             sprintf(value_str, "#%d", value);
@@ -105,19 +109,20 @@ void del_IR_list()
     list_destroy(IR_list);
 }
 
-void traverse_IR_list(void (*action)(IR*))
+void traverse_IR_list(void (*action)(list_node_t*))
 {
     list_node_t *node;
     list_iterator_t *it = list_iterator_new(IR_list, LIST_HEAD);
     while ((node = list_iterator_next(it))) 
     {
-        action((IR*)node->val);
+        action(node);
     }
     list_iterator_destroy(it);
 }
 
-void print_IR(IR *ir)
+void print_IR(list_node_t *ir_node)
 {
+    IR *ir = (IR*)(ir_node->val);
     switch(ir->kind)
     {
         case 0:
@@ -162,4 +167,165 @@ void print_IR(IR *ir)
             printf("WRITE %s\n", ir->target->str);
             break;
     }
+}
+
+void generate_jump_target(int label_count, int func_count)
+{
+    label_jump = (JumpTarget*)malloc(sizeof(JumpTarget) * label_count);
+    for(int i = 0; i < label_count; i++) {
+        label_jump[i].target = NULL;
+        label_jump[i].goto_count = 0;
+        label_jump[i].goto_rel_count = 0;
+    }
+    func_jump = (CalTarget*)malloc(sizeof(CalTarget) * func_count);
+    for(int i = 0; i < func_count; i++) {
+        func_jump[i].target = NULL;
+        func_jump[i].call_count = 0;
+    }
+    int label_index = 0, func_index = 0;
+    list_node_t *node;
+    IR *ir;
+    list_iterator_t *it = list_iterator_new(IR_list, LIST_HEAD);
+    while ((node = list_iterator_next(it))) 
+    {
+        ir = (IR*)(node->val);
+        if(ir->kind == Fun) {
+            // 排除main函数
+            if(ir->target->u.no == 0)
+                continue;
+            func_jump[ir->target->u.no - 1].target = node;
+            assert(func_index < func_count);
+            func_index++;
+        }
+        else if(ir->kind == Label) {
+            label_jump[ir->target->u.no - 1].target = node;
+            assert(label_index < label_count);
+            label_index++;
+        }
+        else if(ir->kind == Call) {
+            func_jump[ir->target->u.no - 1].call_count++;
+        }
+        else if(ir->kind == Goto) {
+            label_jump[ir->target->u.no - 1].goto_count++;
+        }
+        else if(ir->kind == GotoRel) {
+            label_jump[ir->target->u.no - 1].goto_rel_count++;
+        }
+    }
+    list_iterator_destroy(it);
+}
+
+// 控制流优化
+void peep_hole_control(list_node_t *cur_node)
+{
+    IR *ir = (IR*)(cur_node->val);
+    list_node_t *n_n_node;
+    IR *n_n_ir;
+    if(ir->kind == Goto) 
+    {
+        // remove ir whose kind is not Label
+        if(cur_node->next != NULL) 
+        {
+            list_node_t *n_node, *rm_node;
+            n_node = rm_node = cur_node->next;
+            IR *n_ir = (IR*)(n_node->val);
+            while(n_ir->kind != Label) 
+            {
+                n_node = n_node->next;
+                list_remove(IR_list, rm_node);
+                if(n_node == NULL)
+                    break;
+                else
+                    n_ir = (IR*)(n_node->val);
+            }
+        }
+    }
+    if(ir->kind == Goto || ir->kind == GotoRel)
+    {
+        n_n_ir = NULL;
+        int jump_target;
+        do 
+        {        
+            if(n_n_ir != NULL) {
+                jump_target = n_n_ir->target->u.no;
+                if(ir->kind == Goto) {
+                    label_jump[jump_target].goto_count++;
+                    label_jump[ir->target->u.no].goto_count--;
+                }
+                else {
+                    label_jump[jump_target].goto_rel_count++;
+                    label_jump[ir->target->u.no].goto_rel_count--;
+                }               
+                ir->target->u.no = n_n_ir->target->u.no;
+                ir->target->str = n_n_ir->target->str;
+            }
+            n_n_node = label_jump[ir->target->u.no - 1].target->next;
+            if(n_n_node == NULL)
+                break;
+            n_n_ir = (IR*)(n_n_node->val);
+        } while(n_n_ir->kind == Goto);
+    }
+}
+
+char *opposite_relop[6] = {"==", ">=", ">", "<", "<=", "!="};
+// 消除不可达代码
+void peep_hole_inaccess(list_node_t *cur_node)
+{
+    IR *ir = (IR*)(cur_node->val);
+    if(ir->kind == GotoRel)
+    {
+        int l1 = ir->target->u.no, l2;
+        list_node_t *n_node = cur_node->next;
+        IR *n_ir;
+        if(n_node == NULL || (n_ir = (IR*)(n_node->val))->kind != Goto)
+            return;
+        l2 = n_ir->target->u.no;
+        if(n_node->next == NULL
+            ||((IR*)(n_node->next->val))->target->u.no != l1
+            || label_jump[l1 - 1].goto_rel_count > 1
+            || label_jump[l1 - 1].goto_count > 0)
+            return;
+        ir->target->u.no = l2;
+        free(ir->target->str);
+        char *target_str = (char*)malloc(sizeof(char)*10);
+        sprintf(target_str, "l%d", l2);
+        ir->target->str = target_str;
+        for(int i = 0; i < 6; i++) {
+            if(strcmp(opposite_relop[i], ir->u.relop) == 0) {
+                ir->u.relop = opposite_relop[5 - i];
+                break;
+            }
+        }
+        list_remove(IR_list, n_node);
+        list_remove(IR_list, n_node->next);
+    }
+}
+
+void peep_hole()
+{
+    // generate_example_ir();
+    // traverse_IR_list(print_IR);
+    printf(">>>>>>>>>>>>>>>>>>>>\n");
+    // generate_jump_target(2, 0);
+    traverse_IR_list(peep_hole_control);
+    traverse_IR_list(peep_hole_inaccess);
+    traverse_IR_list(print_IR);
+    free(label_jump);
+    free(func_jump);
+}
+
+void generate_example_ir()
+{
+    printf("*****************\n");
+    del_IR_list();
+    IR_list = new_IR_list();
+    
+    gen_IR(GotoRel, new_value(L, 1), new_value(V, 1), new_value(V, 2), "<");
+    // gen_IR(Label, new_value(L, 1));
+    gen_IR(Goto, new_value(L, 2));
+    gen_IR(Label, new_value(L, 1));
+    // gen_IR(Goto, new_value(L, 3));
+    gen_IR(Write, new_value(V, 1));
+    gen_IR(Label, new_value(L, 2));
+    gen_IR(Calculate, new_value(V, 1), new_value(V, 2), new_value(V, 3), "*");
 }

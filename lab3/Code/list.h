@@ -101,6 +101,9 @@ list_lpop(list_t *self);
 void
 list_remove(list_t *self, list_node_t *node);
 
+void list_insert_at_next(list_t *self, list_node_t *at, 
+  list_node_t *new_node);
+
 void
 list_destroy(list_t *self);
 
