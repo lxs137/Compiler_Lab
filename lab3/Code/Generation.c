@@ -303,10 +303,10 @@ void peep_hole_inaccess(list_node_t *cur_node)
 
 void peep_hole()
 {
-    generate_example_ir();
-    traverse_IR_list(print_IR);
+    // generate_example_ir();
+    // traverse_IR_list(print_IR);
     printf(">>>>>>>>>>>>>>>>>>>>\n");
-    generate_jump_target(2, 0);
+    // generate_jump_target(2, 0);
     traverse_IR_list(peep_hole_control);
     traverse_IR_list(peep_hole_inaccess);
     traverse_IR_list(print_IR);
