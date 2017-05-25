@@ -528,7 +528,15 @@ SD(42)
     D_child_2;
     D_child_3;
     /* gen("v%d := v%d %s v%d\n", parent->IRIndex, child_1->IRIndex, child_2->str, child_3->IRIndex); */
-    gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex), child_2->str);
+    /* gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex), child_2->str); */
+    int tmpIndex = nextLabelIndex;
+    nextLabelIndex += 3;
+    gen_IR(GotoRel, new_value(L, tmpIndex), new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex), child_2->str);
+    gen_IR(Assign, new_value(V, parent->IRIndex), new_value(Const, 0));
+    gen_IR(Goto, new_value(L, tmpIndex + 1));
+    gen_IR(Label, new_value(L, tmpIndex));
+    gen_IR(Assign, new_value(V, parent->IRIndex), new_value(Const, 1));
+    gen_IR(Label, new_value(L, tmpIndex + 1));
 
     D_parent_info;
     parent_info->nextInfo = (void*)0;
