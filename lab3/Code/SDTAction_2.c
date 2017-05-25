@@ -469,7 +469,8 @@ ID(29)
     {
         /* IR tag */
         D_child_3;
-        gen("IF v%d == 0 GOTO l%d\n", child_3->IRIndex, parent->labelIndex + 2);
+        /* gen("IF v%d == 0 GOTO l%d\n", child_3->IRIndex, parent->labelIndex + 2); */
+        gen_IR(GotoRel, new_value(L, parent->labelIndex + 2), new_value(V, child_3->IRIndex), new_value(Const, 0), "==");
 
         TypeInfo *stmt_ = (TypeInfo*)malloc(sizeof(TypeInfo));
         TypeInfo *stmt = (TypeInfo*)(parent->other_info);
@@ -488,12 +489,14 @@ ID(31)
     }
     if (childNum == 3)
     {
-        gen("LABEL l%d :\n", parent->labelIndex);
+        /* gen("LABEL l%d :\n", parent->labelIndex); */
+        gen_IR(Label, new_value(L, parent->labelIndex));
     }
     if (childNum == 5)
     {
         D_child_3;
-        gen("IF v%d == 0 GOTO l%d\n", child_3->IRIndex, parent->labelIndex + 2);
+        /* gen("IF v%d == 0 GOTO l%d\n", child_3->IRIndex, parent->labelIndex + 2); */
+        gen_IR(GotoRel, new_value(L, parent->labelIndex + 2), new_value(V, child_3->IRIndex), new_value(Const, 0), "==");
     }
 
     if(childNum == 3)
@@ -513,14 +516,17 @@ ID(31)
 
 SD(31)
 {
-    gen("GOTO l%d\n", parent->labelIndex);
-    gen("LABEL l%d :\n", parent->labelIndex + 2);
+    /* gen("GOTO l%d\n", parent->labelIndex); */
+    gen_IR(Goto, new_value(L, parent->labelIndex));
+    /* gen("LABEL l%d :\n", parent->labelIndex + 2); */
+    gen_IR(Label, new_value(L, parent->labelIndex + 2));
 }
 
 SD(29)
 {
     D_child_3;
-    gen("LABEL l%d :\n", parent->labelIndex + 2);
+    /* gen("LABEL l%d :\n", parent->labelIndex + 2); */
+    gen_IR(Label, new_value(L, parent->labelIndex + 2));
 }
 
 ID(30)
@@ -533,12 +539,15 @@ ID(30)
     if(childNum == 5)
     {
         D_child_3;
-        gen("IF v%d == 0 GOTO l%d\n", child_3->IRIndex, parent->labelIndex + 1);
+        /* gen("IF v%d == 0 GOTO l%d\n", child_3->IRIndex, parent->labelIndex + 1); */
+        gen_IR(GotoRel, new_value(L, parent->labelIndex + 1), new_value(V, child_3->IRIndex), new_value(Const, 0), "==");
     }
     if(childNum == 7)
     {
-        gen("GOTO l%d\n", parent->labelIndex + 2);
-        gen("LABEL l%d :\n", parent->labelIndex + 1);
+        /* gen("GOTO l%d\n", parent->labelIndex + 2); */
+        gen_IR(Goto, new_value(L, parent->labelIndex + 2));
+        /* gen("LABEL l%d :\n", parent->labelIndex + 1); */
+        gen_IR(Label, new_value(L, parent->labelIndex + 1));
     }
 
     if(childNum == 3)
@@ -557,7 +566,8 @@ ID(30)
 }
 SD(30)
 {
-    gen("LABEL l%d :\n", parent->labelIndex + 2);
+    /* gen("LABEL l%d :\n", parent->labelIndex + 2); */
+    gen_IR(Label, new_value(L, parent->labelIndex + 2));
 }
 
 SD(28)
