@@ -61,19 +61,6 @@ typedef struct {
 
 list_t *IR_list;
 
-typedef struct {
-    list_node_t *target;
-    int goto_count;
-    int goto_rel_count;
-} JumpTarget;
-JumpTarget *label_jump;
-
-typedef struct {
-    list_node_t *target;
-    int call_count;
-} CalTarget;
-CalTarget *func_jump;
-
 IR* gen_IR(int kind, Value *target, ...);
 void free_IR(void *val);
 void new_IR_list();
@@ -97,6 +84,21 @@ typedef struct basis_block {
     int next_count, prev_count;
 } BasisBlock;
 list_t *block_list;
+
+typedef struct {
+    list_node_t *target_ir;
+    BasisBlock *target_block;
+    int goto_count;
+    int goto_rel_count;
+} JumpTarget;
+JumpTarget *label_jump;
+
+typedef struct {
+    list_node_t *target_ir;
+    BasisBlock *target_block;
+    int call_count;
+} CalTarget;
+CalTarget *func_jump;
 
 typedef struct control_flow_graph {
     BasisBlock *entry;

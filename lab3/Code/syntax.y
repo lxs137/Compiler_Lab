@@ -62,6 +62,7 @@ Program
         // printSymbolTable(globalSymbolTable);
         // printFuncSymbolTable(globalFuncSymbolTable);
         // findUndefinedFunction();
+        del_block_list();        
         clean_up_syntax_tree($$);
         cleanUpSymbolTable();
         del_IR_list();
