@@ -117,6 +117,13 @@ ID(17)
         type_info->iType = parent_info->iType;
         type_info->iDimension = parent_info->iDimension + 1;
         child->other_info = type_info;
+
+        type_info->dNode = parent_info->dNode;
+        DNode *tmp = type_info->dNode;
+        child->other_info = type_info;
+    }
+    else if (childNum == 3)
+    {
     }
 }
 
