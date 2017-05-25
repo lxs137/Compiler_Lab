@@ -606,7 +606,7 @@ SD(48)
     parent->IRIndex = nextVarIndex++;
     D_child_2;
     /* gen("v%d := -v%d\n", parent->IRIndex, child_2->IRIndex); */
-    gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(V, child_2->IRIndex), "-");
+    gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(Const, 0), new_value(V, child_2->IRIndex), "-");
 
     TypeInfo* exp = (TypeInfo*)(parent->other_info);
     TypeInfo* exp_ = (TypeInfo*)(parent->first_child->next_brother->other_info);
@@ -622,7 +622,14 @@ SD(49)
     parent->IRIndex = nextVarIndex++;
     D_child_2;
     /* gen("v%d := !v%d\n", parent->IRIndex, child_2->IRIndex); */
-    gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(V, child_2->IRIndex), "!");
+    gen_IR(GotoRel, new_value(Label, nextLabelIndex + 1), new_value(V, child_2->IRIndex), new_value(Const, 0), "!=");
+    gen_IR(Assign, new_value(V, parent->IRIndex), new_value(Const, 1));
+    gen_IR(Goto, new_value(Label, nextLabelIndex + 2));
+    gen_IR(Label, new_value(Label, nextLabelIndex + 1));
+    gen_IR(Assign, new_value(V, parent->IRIndex), new_value(Const, 0));
+    gen_IR(Label, new_value(Label, nextLabelIndex + 2));
+    nextLabelIndex += 3;
+    /* gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(V, child_2->IRIndex), "!"); */
 
     D_parent_info;
     parent_info->nextInfo = (void*)0;
