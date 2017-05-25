@@ -682,10 +682,13 @@ SD(52)
     D_child_1_info;
     parent_info->dNode = child_1_info->dNode->next;
     DNode *tmp = parent_info->dNode;
+    int offset = 1;
     while (tmp != NULL)
     {
+        offset *= tmp->value;
+        tmp = tmp->next;
     }
-    gen_IR(Calculate, new_value(V, tmpVarIndex), new_value(V, child_3->IRIndex), new_value(Const, 4), "*");
+    gen_IR(Calculate, new_value(V, tmpVarIndex), new_value(V, child_3->IRIndex), new_value(Const, 4 * offset), "*");
     int tmpVarIndex2 = nextVarIndex++;
     /* gen("v%d := v%d + v%d\n", tmpVarIndex2, child_1->IRIndex, tmpVarIndex); */
     gen_IR(Calculate, new_value(V, tmpVarIndex2), new_value(V, child_1->IRIndex), new_value(V, tmpVarIndex), "+");
