@@ -352,6 +352,7 @@ void free_basis_block(void *val)
 BasisBlock *new_basis_block()
 {
     BasisBlock *block = (BasisBlock*)malloc(sizeof(BasisBlock));
+    block->index = 0;
     block->first_ir = NULL;
     block->last_ir = NULL;
     block->ir_count = 0;
@@ -375,12 +376,86 @@ void del_block_list()
 void print_Block(list_node_t *block_node)
 {
     BasisBlock *block = (BasisBlock*)(block_node->val);
-    printf("Block: \n");
+    printf("Block-%d: \n", block->index);
     printf("    first_ir: ");
     print_IR(block->first_ir);
     printf("    last_ir： ");
     print_IR(block->last_ir);
     printf("    count: %d\n", block->ir_count);
+    CFG_edge *edge = block->next;
+    printf("    next_edge--%d: ", block->next_count);
+    while(edge != NULL) {
+        printf("Block-%d  ", edge->target->index);
+        edge = edge->next;
+    }
+    edge = block->prev;
+    printf("\n    prev_edge--%d: ", block->prev_count);
+    while(edge != NULL) {
+        printf("Block-%d  ", edge->target->index);
+        edge = edge->next;
+    }
+    printf("\n");
+}
+
+void add_prev_edge(BasisBlock *cur_block, BasisBlock *target_block)
+{
+    CFG_edge *e = (CFG_edge*)malloc(sizeof(CFG_edge));
+    e->target = target_block;
+    e->next = NULL;
+    CFG_edge *cur_edge = cur_block->prev;
+    if(cur_edge == NULL)
+        cur_block->prev = e;
+    else {
+        while(cur_edge->next != NULL)
+            cur_edge = cur_edge->next;
+        cur_edge->next = e;
+    }
+    cur_block->prev_count++;    
+}
+
+void add_next_edge(BasisBlock *cur_block, BasisBlock *target_block)
+{
+    CFG_edge *e = (CFG_edge*)malloc(sizeof(CFG_edge));
+    e->target = target_block;
+    e->next = NULL;
+    CFG_edge *cur_edge = cur_block->next;
+    if(cur_edge == NULL)
+        cur_block->next = e;
+    else {
+        while(cur_edge->next != NULL)
+            cur_edge = cur_edge->next;
+        cur_edge->next = e;
+    }
+    cur_block->next_count++;
+}
+
+void generate_CFG_edge(list_node_t *block_node)
+{
+    BasisBlock *cur_block = (BasisBlock*)(block_node->val);
+    IR *last_ir = (IR*)(cur_block->last_ir->val);
+    BasisBlock *target_block;
+    if(last_ir->kind == Goto) 
+    {
+        target_block = label_jump[last_ir->target->u.no - 1].target_block;
+    }
+    else if(last_ir->kind == GotoRel)
+    {
+        target_block = label_jump[last_ir->target->u.no - 1].target_block;
+        if(block_node->next != NULL) {
+            BasisBlock *next_block = (BasisBlock*)(block_node->next->val);
+            add_next_edge(cur_block, next_block);
+            add_prev_edge(next_block, cur_block);
+        }
+    }
+    else if(last_ir->kind == Call)
+    {
+        target_block = func_jump[last_ir->target->u.no - 1].target_block;
+    }
+    if(target_block == NULL)
+        return;
+    add_next_edge(cur_block, target_block);
+    add_prev_edge(target_block, cur_block);
+
 }
 
 void generate_CFG()
@@ -393,6 +468,7 @@ void generate_CFG()
     // generate Block list
     BasisBlock *cur_block;
     int ir_count = 0;
+    int block_count = 1;
 
     list_node_t *node;
     list_iterator_t *it = list_iterator_new(IR_list, LIST_HEAD);
@@ -403,14 +479,21 @@ void generate_CFG()
         ir_count++;
         if(node == IR_list->head) {
             cur_block = new_basis_block();
+            cur_block->index = block_count++;
             cur_block->first_ir = node;
         }
         else if(ir->kind == Fun || ir->kind == Label) {
             cur_block->last_ir = node->prev;
             cur_block->ir_count = ir_count - 1;
-            list_rpush(block_list, list_node_new(cur_block));
+            if(cur_block->ir_count > 0)
+                list_rpush(block_list, list_node_new(cur_block));
+            else {
+                block_count--;
+                free(cur_block);
+            }
             if(node->next != NULL) {
                 cur_block = new_basis_block();
+                cur_block->index = block_count++;
                 cur_block->first_ir = node;
                 if(ir->kind == Label) {
                     label_jump[ir->target->u.no - 1].target_block = cur_block;
@@ -424,9 +507,15 @@ void generate_CFG()
         else if(ir->kind == Call || ir->kind == Goto || ir->kind == GotoRel) {
             cur_block->last_ir = node;
             cur_block->ir_count = ir_count;
-            list_rpush(block_list, list_node_new(cur_block));
+            if(cur_block->ir_count > 0)
+                list_rpush(block_list, list_node_new(cur_block));
+            else {
+                block_count--;
+                free(cur_block);
+            }
             if(node->next != NULL) {
                 cur_block = new_basis_block();
+                cur_block->index = block_count++;
                 cur_block->first_ir = node->next;
             }
             ir_count = 0;
@@ -435,7 +524,13 @@ void generate_CFG()
     list_iterator_destroy(it);
     cur_block->last_ir = IR_list->tail;
     cur_block->ir_count = ir_count;
-    list_rpush(block_list, list_node_new(cur_block));
+    if(cur_block->ir_count > 0)
+        list_rpush(block_list, list_node_new(cur_block));
+    else {
+        block_count--;
+        free(cur_block);
+    }
+    traverse_list(block_list, generate_CFG_edge);
     traverse_list(block_list, print_Block);
 
 }

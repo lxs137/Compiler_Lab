@@ -71,12 +71,14 @@ void print_IR(list_node_t *ir_node);
 void generate_jump_target(int label_count, int func_count);
 void peep_hole();
 
+struct basis_block;
 typedef struct cfg_edge {
-    void *vertice;
+    struct basis_block *target;
     struct cfg_edge *next;
 } CFG_edge;
 
 typedef struct basis_block {
+    int index;
     list_node_t *first_ir, *last_ir;
     int ir_count;
     CFG_edge *next; // 后继节点
