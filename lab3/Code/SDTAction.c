@@ -298,16 +298,20 @@ SD(16)
     D_child_1_info;
     child_1_info->dNode = parent_info->dNode;
     DNode *tmp = ((TypeInfo *)child_1->other_info)->dNode;
+    int size = 1;
     while (tmp != NULL)
     {
-        printf("%d\n", tmp->value);
+        size *= tmp->value;
         tmp = tmp->next;
     }
-    printf("\n");
 
     /* IR tag */
     child_1->IRIndex = nextVarIndex;
     nextVarIndex++;
+    if (size != 1)
+    {
+        gen_IR(Dec, new_value(V, child_1->IRIndex), new_value(Const, size));
+    }
 
     if (!stackIsEmpty())
     {
