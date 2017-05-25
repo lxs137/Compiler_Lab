@@ -59,8 +59,6 @@ Program
         // generate_jump_target(nextLabelIndex - 1, nextFuncIndex - 1);
         peep_hole();
         generate_CFG();
-        // printSymbolTable(globalSymbolTable);
-        // printFuncSymbolTable(globalFuncSymbolTable);
         // findUndefinedFunction();
         del_block_list();        
         clean_up_syntax_tree($$);

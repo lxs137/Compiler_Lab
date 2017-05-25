@@ -1,16 +1,18 @@
-int func(int a[5], int b, int c)
+int fact(int n)
 {
-    return b;
+    if(n == 1)
+        return n;
+    else
+        return (n * fact(n-1));
 }
 int main()
 {
-    int x;
-    int y[10];
-    x = 1;
-    while (x > 0)
-    {
-        x = x - 1;
-    }
-    x = 0;
-    func(y, x, x);
+    int m, result;
+    m = read();
+    if(m > 1)
+        result = fact(m);
+    else
+        result = 1;
+    write(result);
+    return 0;
 }

@@ -183,12 +183,14 @@ ID(51)
 
 // IR Generation
         char *func_id = parent->first_child->str + 4;
-        AST_node *function = (AST_node*)(findFuncSymbol(func_id)->p);
         int place_index = parent->IRIndex;
-        if(strcmp(func_id, "read") == 0)
+        if(strcmp(func_id, "read") == 0) {
             gen_IR(Read, new_value(V, place_index));
-        else
+        }
+        else {
+            AST_node *function = (AST_node*)(findFuncSymbol(func_id)->p);        
             gen_IR(Call, new_value(V, place_index), new_value(F, function->IRIndex));
+        }
 // end
     }
 }
@@ -247,6 +249,28 @@ ID(58)
 SD(50)
 {
     const char* func_name = parent->first_child->str + 4;
+
+// IR Generation
+    if(strcmp(func_name, "write") == 0) 
+    {
+        FuncInfo *func_call = (FuncInfo*)(parent->first_child->other_info);
+        Symbol *arg_list = func_call->param_list;
+        AST_node *first_node = (AST_node*)(arg_list->p);
+        gen_IR(Write, new_value(V, first_node->IRIndex));
+        TypeInfo* exp = (TypeInfo*)(parent->other_info);
+        exp->sType = "int";
+        exp->sDimension = 0;
+        exp->sValid = 1;
+        exp->nextInfo = (void*)0;
+
+        if(func_call->param_list != NULL)
+            freeTempParamList(func_call->param_list);
+        free(func_call);
+        parent->first_child->other_info = NULL;
+        return;
+    }
+// end
+
     FuncInfo *func_in_table = findFuncSymbol(func_name);
     FuncInfo *func_call = (FuncInfo*)(parent->first_child->other_info);
     if(func_in_table == NULL)
@@ -289,29 +313,24 @@ SD(50)
     Symbol *arg_list = func_call->param_list;
     AST_node *first_node = (AST_node*)(arg_list->p);
     char *func_id = parent->first_child->str + 4;
-    if(strcmp(func_id, "write") == 0)
-        gen_IR(Write, new_value(V, first_node->IRIndex));
-    else
+    AST_node **node_array = (AST_node**)malloc(sizeof(AST_node*) * (func_call->param_num));
+    int i = 0;
+    while(arg_list != NULL)
     {
-        AST_node **node_array = (AST_node**)malloc(sizeof(AST_node*) * (func_call->param_num));
-        int i = 0;
-        while(arg_list != NULL)
-        {
-            node_array[i] = (AST_node*)(arg_list->p);
-            arg_list = arg_list->next;
-            i++;
-        }
-        TypeInfo *cur_type;
-        for(i = i - 1; i >= 0; i--) 
-        {
-            cur_type = (TypeInfo*)(node_array[i]->other_info);
-            if(cur_type->sDimension > 0)
-                gen_IR(Arg, new_value(Address, node_array[i]->IRIndex));
-            else
-                gen_IR(Arg, new_value(V, node_array[i]->IRIndex));
-        }
-        free(node_array);
+        node_array[i] = (AST_node*)(arg_list->p);
+        arg_list = arg_list->next;
+        i++;
     }
+    TypeInfo *cur_type;
+    for(i = i - 1; i >= 0; i--) 
+    {
+        cur_type = (TypeInfo*)(node_array[i]->other_info);
+        if(cur_type->sDimension > 0)
+            gen_IR(Arg, new_value(Address, node_array[i]->IRIndex));
+        else
+            gen_IR(Arg, new_value(V, node_array[i]->IRIndex));
+    }
+    free(node_array);
     AST_node *function = (AST_node*)(findFuncSymbol(func_id)->p);
     gen_IR(Call, new_value(V, parent->IRIndex), new_value(F, function->IRIndex));
 // end
@@ -325,6 +344,14 @@ SD(50)
 SD(51)
 {
     const char* func_name = parent->first_child->str + 4;
+    if(strcmp(func_name, "read") == 0) {
+        TypeInfo* exp = (TypeInfo*)(parent->other_info);
+        exp->sType = "int";
+        exp->sDimension = 0;
+        exp->sValid = 1;
+        exp->nextInfo = (void*)0;
+        return;
+    }
     FuncInfo *func_in_table = findFuncSymbol(func_name);
     FuncInfo *func_call = (FuncInfo*)(parent->first_child->other_info);
     if(func_in_table == NULL)
@@ -610,11 +637,11 @@ ID(11)
         AST_node *optTag = parent->first_child->next_brother;
         if(optTag->first_child == NULL)
         {
-            stackPush(NULL, 1);
+            stackPush(NULL, 1, optTag);
         }
         else
         {
-            stackPush(optTag->first_child->str + 4, 0);
+            stackPush(optTag->first_child->str + 4, 0, optTag);
         }
     }
 }

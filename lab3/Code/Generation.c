@@ -318,8 +318,8 @@ void peep_hole()
     traverse_list(IR_list, peep_hole_inaccess);
     traverse_list(IR_list, print_IR);
     printf("<<<<<<<<<<<<<<<<<<<\n");
-    // free(label_jump);
-    // free(func_jump);
+    free(label_jump);
+    free(func_jump);
 }
 
 void free_basis_block(void *val)
