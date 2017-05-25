@@ -78,28 +78,37 @@ IR* gen_IR(int kind, Value *target, ...);
 void free_IR(void *val);
 void new_IR_list();
 void del_IR_list();
-void traverse_IR_list(void (*action)(list_node_t*));
+void traverse_list(list_t *list, void (*action)(list_node_t*));
 void print_IR(list_node_t *ir_node);
 
 void generate_jump_target(int label_count, int func_count);
 void peep_hole();
 
-struct block;
 typedef struct cfg_edge {
-    struct block *vertice;
+    void *vertice;
     struct cfg_edge *next;
 } CFG_edge;
 
-typedef struct block {
-    IR *first, *last;
+typedef struct basis_block {
+    list_node_t *first_ir, *last_ir;
     int ir_count;
     CFG_edge *next; // 后继节点
     CFG_edge *prev; // 前驱节点
     int next_count, prev_count;
-} BasisBlcok;
-
+} BasisBlock;
 list_t *block_list;
+
+typedef struct control_flow_graph {
+    BasisBlock *entry;
+    BasisBlock *exit;
+} CFG;
+CFG *cfg;
+
+void free_basis_block(void *val);
+BasisBlock *new_basis_block();
 void new_block_list();
+void del_block_list();
+void generate_CFG();
 
 void generate_example_ir();
 

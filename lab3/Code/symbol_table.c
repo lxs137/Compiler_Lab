@@ -57,7 +57,7 @@ int insertSymbol(SymbolTable *st, const char *name, int kind,
 {
     int ret;
     
-    Symbol *symbol = calloc(1, sizeof(Symbol));
+    Symbol *symbol = (Symbol*)calloc(1, sizeof(Symbol));
     symbol->name = name;
     symbol->kind = kind;
     symbol->type = type;
@@ -401,8 +401,6 @@ void freeTempParamList(Symbol *param_list)
     {
         cur_param = param_list;
         param_list = param_list->next;
-        cur_node = (AST_node*)(cur_param->p);
-        free(cur_node);
         free(cur_param);
     } 
 }

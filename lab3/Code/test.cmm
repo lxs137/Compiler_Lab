@@ -12,6 +12,5 @@ int main()
         x = x - 1;
     }
     x = 0;
-
     func(y, x, x);
 }

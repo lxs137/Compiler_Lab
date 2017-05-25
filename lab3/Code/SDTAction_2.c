@@ -163,8 +163,6 @@ ID(50)
         child->other_info = args;
         parent->first_child->other_info = args;
 
-// IR Generation
-
     }
 }
 
@@ -295,7 +293,7 @@ SD(50)
         gen_IR(Write, new_value(V, first_node->IRIndex));
     else
     {
-        AST_node **node_array = (AST_node**)malloc(sizeof(AST_node*) * func_call->param_num);
+        AST_node **node_array = (AST_node**)malloc(sizeof(AST_node*) * (func_call->param_num));
         int i = 0;
         while(arg_list != NULL)
         {
@@ -312,10 +310,10 @@ SD(50)
             else
                 gen_IR(Arg, new_value(V, node_array[i]->IRIndex));
         }
+        free(node_array);
     }
-    int place_index = parent->IRIndex;
     AST_node *function = (AST_node*)(findFuncSymbol(func_id)->p);
-    gen_IR(Call, new_value(V, place_index), new_value(F, function->IRIndex));
+    gen_IR(Call, new_value(V, parent->IRIndex), new_value(F, function->IRIndex));
 // end
 
     if(func_call->param_list != NULL)

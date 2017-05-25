@@ -26,11 +26,13 @@ Value* new_value(int kind, int value)
             sprintf(value_str, "l%d", value);
             break;
         case 3:
+        {
             if(value == 0)
                 sprintf(value_str, "main");
             else
                 sprintf(value_str, "f%d", value);
             break;
+        }
         case 4:
             sprintf(value_str, "#%d", value);
             break;
@@ -109,10 +111,10 @@ void del_IR_list()
     list_destroy(IR_list);
 }
 
-void traverse_IR_list(void (*action)(list_node_t*))
+void traverse_list(list_t *list, void (*action)(list_node_t*))
 {
     list_node_t *node;
-    list_iterator_t *it = list_iterator_new(IR_list, LIST_HEAD);
+    list_iterator_t *it = list_iterator_new(list, LIST_HEAD);
     while ((node = list_iterator_next(it))) 
     {
         action(node);
@@ -285,38 +287,141 @@ void peep_hole_inaccess(list_node_t *cur_node)
             || label_jump[l1 - 1].goto_rel_count > 1
             || label_jump[l1 - 1].goto_count > 0)
             return;
+        int i;
+        for(i = 0; i < 6; i++) {
+            if(strcmp(opposite_relop[i], ir->u.relop) == 0) 
+                break;
+        }
+        if(i == 6)
+            return;
+        else
+            ir->u.relop = opposite_relop[5 - i];
         ir->target->u.no = l2;
         free(ir->target->str);
         char *target_str = (char*)malloc(sizeof(char)*10);
         sprintf(target_str, "l%d", l2);
         ir->target->str = target_str;
-        for(int i = 0; i < 6; i++) {
-            if(strcmp(opposite_relop[i], ir->u.relop) == 0) {
-                ir->u.relop = opposite_relop[5 - i];
-                break;
-            }
-        }
-        list_remove(IR_list, n_node);
         list_remove(IR_list, n_node->next);
+        list_remove(IR_list, n_node);
     }
 }
 
 void peep_hole()
 {
     generate_example_ir();
-    traverse_IR_list(print_IR);
+    traverse_list(IR_list, print_IR);
     printf(">>>>>>>>>>>>>>>>>>>>\n");
     generate_jump_target(2, 1);
-    traverse_IR_list(peep_hole_control);
-    traverse_IR_list(peep_hole_inaccess);
-    traverse_IR_list(print_IR);
-    free(label_jump);
-    free(func_jump);
+    traverse_list(IR_list, peep_hole_control);
+    traverse_list(IR_list, peep_hole_inaccess);
+    traverse_list(IR_list, print_IR);
+    printf("<<<<<<<<<<<<<<<<<<<\n");
+    // free(label_jump);
+    // free(func_jump);
+}
+
+void free_basis_block(void *val)
+{
+    BasisBlock *block = (BasisBlock*)val;
+    CFG_edge *cur_edge, *rm_edge;
+    cur_edge = rm_edge = block->next;
+    while(cur_edge != NULL) {
+        rm_edge = cur_edge;
+        cur_edge = cur_edge->next;
+        free(rm_edge);
+    }
+    cur_edge = rm_edge = block->prev;
+    while(cur_edge != NULL) {
+        rm_edge = cur_edge;
+        cur_edge = cur_edge->next;
+        free(rm_edge);
+    }
+    free(block);
+}
+
+BasisBlock *new_basis_block()
+{
+    BasisBlock *block = (BasisBlock*)malloc(sizeof(BasisBlock));
+    block->first_ir = NULL;
+    block->last_ir = NULL;
+    block->ir_count = 0;
+    block->next = NULL;
+    block->prev = NULL;
+    block->next_count = 0;
+    block->prev_count = 0;
+    return block;
 }
 
 void new_block_list()
 {
+    block_list = list_new(free_basis_block);
+}
 
+void del_block_list()
+{
+    list_destroy(block_list);
+}
+
+void print_Block(list_node_t *block_node)
+{
+    BasisBlock *block = (BasisBlock*)(block_node->val);
+    printf("Block: \n");
+    printf("    first_ir: ");
+    print_IR(block->first_ir);
+    printf("    last_ir： ");
+    print_IR(block->last_ir);
+    printf("    count: %d\n", block->ir_count);
+}
+
+void generate_CFG()
+{
+    // cfg = (CFG*)malloc(sizeof(CFG));
+    // cfg->entry = new_basis_block();
+    // cfg->exit = new_basis_block();
+    new_block_list();
+
+    // generate Block list
+    BasisBlock *cur_block;
+    int ir_count = 0;
+
+    list_node_t *node;
+    list_iterator_t *it = list_iterator_new(IR_list, LIST_HEAD);
+    IR *ir;
+    while ((node = list_iterator_next(it))) 
+    {
+        ir = (IR*)(node->val);
+        ir_count++;
+        if(node == IR_list->head) {
+            cur_block = new_basis_block();
+            cur_block->first_ir = node;
+        }
+        else if(ir->kind == Fun || ir->kind == Label) {
+            cur_block->last_ir = node->prev;
+            cur_block->ir_count = ir_count - 1;
+            list_rpush(block_list, list_node_new(cur_block));
+            if(node->next != NULL) {
+                cur_block = new_basis_block();
+                cur_block->first_ir = node;
+            }
+            ir_count = 1;
+        }
+        else if(ir->kind == Call || ir->kind == Goto || ir->kind == GotoRel) {
+            cur_block->last_ir = node;
+            cur_block->ir_count = ir_count;
+            list_rpush(block_list, list_node_new(cur_block));
+            if(node->next != NULL) {
+                cur_block = new_basis_block();
+                cur_block->first_ir = node->next;
+            }
+            ir_count = 0;
+        }
+    }
+    list_iterator_destroy(it);
+    cur_block->last_ir = IR_list->tail;
+    cur_block->ir_count = ir_count;
+    list_rpush(block_list, list_node_new(cur_block));
+    traverse_list(block_list, print_Block);
+    del_block_list();
 }
 
 
