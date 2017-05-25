@@ -173,19 +173,27 @@ void print_IR(list_node_t *ir_node)
 
 void generate_jump_target(int label_count, int func_count)
 {
-    label_jump = (JumpTarget*)malloc(sizeof(JumpTarget) * label_count);
-    for(int i = 0; i < label_count; i++) {
-        label_jump[i].target_ir = NULL;
-        label_jump[i].target_block = NULL;
-        label_jump[i].goto_count = 0;
-        label_jump[i].goto_rel_count = 0;
+    if(label_count > 0) {
+        label_jump = (JumpTarget*)malloc(sizeof(JumpTarget) * label_count);
+        for(int i = 0; i < label_count; i++) {
+            label_jump[i].target_ir = NULL;
+            label_jump[i].target_block = NULL;
+            label_jump[i].goto_count = 0;
+            label_jump[i].goto_rel_count = 0;
+        }
     }
-    func_jump = (CalTarget*)malloc(sizeof(CalTarget) * func_count);
-    for(int i = 0; i < func_count; i++) {
-        func_jump[i].target_ir = NULL;
-        func_jump[i].target_block = NULL;
-        func_jump[i].call_count = 0;
+    else
+        label_jump = NULL;
+    if(func_count > 0) {
+        func_jump = (CalTarget*)malloc(sizeof(CalTarget) * func_count);
+        for(int i = 0; i < func_count; i++) {
+            func_jump[i].target_ir = NULL;
+            func_jump[i].target_block = NULL;
+            func_jump[i].call_count = 0;
+        }
     }
+    else
+        func_jump = NULL;
     int label_index = 0, func_index = 0;
     list_node_t *node;
     IR *ir;
@@ -193,7 +201,7 @@ void generate_jump_target(int label_count, int func_count)
     while ((node = list_iterator_next(it))) 
     {
         ir = (IR*)(node->val);
-        if(ir->kind == Fun) {
+        if(ir->kind == Fun && func_jump != NULL) {
             // 排除main函数
             if(ir->target->u.no == 0)
                 continue;
@@ -201,18 +209,18 @@ void generate_jump_target(int label_count, int func_count)
             assert(func_index < func_count);
             func_index++;
         }
-        else if(ir->kind == Label) {
+        else if(ir->kind == Label && label_jump != NULL) {
             label_jump[ir->target->u.no - 1].target_ir = node;
             assert(label_index < label_count);
             label_index++;
         }
-        else if(ir->kind == Call) {
+        else if(ir->kind == Call && func_jump != NULL) {
             func_jump[ir->target->u.no - 1].call_count++;
         }
-        else if(ir->kind == Goto) {
+        else if(ir->kind == Goto && label_jump != NULL) {
             label_jump[ir->target->u.no - 1].goto_count++;
         }
-        else if(ir->kind == GotoRel) {
+        else if(ir->kind == GotoRel && label_jump != NULL) {
             label_jump[ir->target->u.no - 1].goto_rel_count++;
         }
     }
@@ -271,7 +279,7 @@ void peep_hole_control(list_node_t *cur_node)
     }
 }
 
-char *opposite_relop[6] = {"==", ">=", ">", "<", "<=", "!="};
+char *opposite_relop[6] = {"==", ">=", ">", "<=", "<", "!="};
 // 消除不可达代码
 void peep_hole_inaccess(list_node_t *cur_node)
 {
@@ -317,9 +325,9 @@ void peep_hole()
     traverse_list(IR_list, peep_hole_control);
     traverse_list(IR_list, peep_hole_inaccess);
     // traverse_list(IR_list, print_IR);
-    printf("<<<<<<<<<<<<<<<<<<<\n");
-    free(label_jump);
-    free(func_jump);
+    // printf("<<<<<<<<<<<<<<<<<<<\n");
+    // free(label_jump);
+    // free(func_jump);
 }
 
 void free_basis_block(void *val)
@@ -404,7 +412,7 @@ void generate_CFG()
             if(node->next != NULL) {
                 cur_block = new_basis_block();
                 cur_block->first_ir = node;
-                if(ir->kind == Fun) {
+                if(ir->kind == Label) {
                     label_jump[ir->target->u.no - 1].target_block = cur_block;
                 }
                 else {
