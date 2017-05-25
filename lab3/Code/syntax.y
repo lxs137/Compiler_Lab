@@ -49,18 +49,18 @@ Program
         print_child_node($$, 0);
         initTable();
         initTable_lxs();
-        IR_list = new_IR_list();
+        new_IR_list();
         
         globalSymbolTable = newSymbolTable();
         globalFuncSymbolTable = newFuncSymbolTable();
         globalStructStack = newStructStack();
         traversalTreePerformAction($$);
-        traverse_IR_list(print_IR);
+        traverse_list(IR_list, print_IR);
         // generate_jump_target(nextLabelIndex - 1, nextFuncIndex - 1);
-        // peep_hole();
-        // printSymbolTable(globalSymbolTable);
-        // printFuncSymbolTable(globalFuncSymbolTable);
+        peep_hole();
+        generate_CFG();
         // findUndefinedFunction();
+        del_block_list();        
         clean_up_syntax_tree($$);
         cleanUpSymbolTable();
         del_IR_list();
