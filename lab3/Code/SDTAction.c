@@ -117,13 +117,6 @@ ID(17)
         type_info->iType = parent_info->iType;
         type_info->iDimension = parent_info->iDimension + 1;
         child->other_info = type_info;
-
-        type_info->dNode = parent_info->dNode;
-        DNode *tmp = type_info->dNode;
-        child->other_info = type_info;
-    }
-    else if (childNum == 3)
-    {
     }
 }
 
@@ -333,6 +326,23 @@ SD(17)
     D_child_1_info;
     parent_info->sType = child_1_info->iType;
     parent_info->sDimension = child_1_info->sDimension;
+
+    parent_info->dNode = child_1_info->dNode;
+    D_child_3;
+    if (parent_info->dNode == NULL)
+    {
+        parent_info->dNode = malloc(sizeof(DNode));
+        parent_info->dNode->value = atoi(child_3->str + 4);
+    }
+    else
+    {
+        DNode *tmp = parent_info->dNode;
+        while (tmp->next != NULL) {
+            tmp = tmp->next;
+        }
+        tmp->next = malloc(sizeof(DNode));
+        tmp->next->value = atoi(child_3->str + 4);
+    }
 }
 
 SD(26)
