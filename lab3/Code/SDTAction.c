@@ -117,6 +117,22 @@ ID(17)
         type_info->iType = parent_info->iType;
         type_info->iDimension = parent_info->iDimension + 1;
         child->other_info = type_info;
+
+        D_child_1_info;
+        DNode *tmp = parent_info->dNode;
+        child_1_info->dNode = malloc(sizeof(DNode));
+        D_child_3;
+        child_1_info->dNode->value = atoi(child_3->str + 4);
+        child_1_info->dNode->next = tmp;
+
+        D_child_1;
+        DNode *tp = ((TypeInfo *)child_1->other_info)->dNode;
+        while (tp != NULL)
+        {
+            printf("%d\n", tp->value);
+            tp = tp->next;
+        }
+        printf("\n");
     }
 }
 
@@ -279,9 +295,23 @@ SD(16)
     /* child_1_info = type_info; */
     parent->first_child->other_info = type_info;
 
+    D_child_1_info;
+    child_1_info->dNode = parent_info->dNode;
+    DNode *tmp = ((TypeInfo *)child_1->other_info)->dNode;
+    int size = 1;
+    while (tmp != NULL)
+    {
+        size *= tmp->value;
+        tmp = tmp->next;
+    }
+
     /* IR tag */
     child_1->IRIndex = nextVarIndex;
     nextVarIndex++;
+    if (size != 1)
+    {
+        gen_IR(Dec, new_value(V, child_1->IRIndex), new_value(Const, size));
+    }
 
     if (!stackIsEmpty())
     {
@@ -652,7 +682,17 @@ SD(52)
     D_child_3;
     D_child_1;
     /* gen("v%d := v%d * %d\n", tmpVarIndex, child_3->IRIndex, 4); */
-    gen_IR(Calculate, new_value(V, tmpVarIndex), new_value(V, child_3->IRIndex), new_value(Const, 4), "*");
+    D_parent_info;
+    D_child_1_info;
+    parent_info->dNode = child_1_info->dNode->next;
+    DNode *tmp = parent_info->dNode;
+    int offset = 1;
+    while (tmp != NULL)
+    {
+        offset *= tmp->value;
+        tmp = tmp->next;
+    }
+    gen_IR(Calculate, new_value(V, tmpVarIndex), new_value(V, child_3->IRIndex), new_value(Const, 4 * offset), "*");
     int tmpVarIndex2 = nextVarIndex++;
     /* gen("v%d := v%d + v%d\n", tmpVarIndex2, child_1->IRIndex, tmpVarIndex); */
     gen_IR(Calculate, new_value(V, tmpVarIndex2), new_value(V, child_1->IRIndex), new_value(V, tmpVarIndex), "+");
@@ -660,10 +700,8 @@ SD(52)
     /* gen("v%d := *v%d\n", parent->IRIndex, tmpVarIndex2); */
     gen_IR(Assign, new_value(V, parent->IRIndex), new_value(V, tmpVarIndex2));
 
-    D_parent_info;
     parent_info->nextInfo = (void*)1;
 
-    D_child_1_info;
     D_child_3_info;
     if (!(child_3_info->sDimension == 0 && !strcmp(child_3_info->sType, "int")))
     {
@@ -697,6 +735,15 @@ SD(54)
     /* IR tag */
     AST_node *child_ = getSymbol(child_1->str + 4);
     parent->IRIndex = child_->IRIndex;
+
+    parent_info->dNode = ((TypeInfo *)(child_->other_info))->dNode;
+    DNode *tmp = parent_info->dNode;
+    while (tmp != NULL)
+    {
+        printf("%d\n", tmp->value);
+        tmp = tmp->next;
+    }
+    printf("\n");
 
     parent_info->sType = child->type;
     parent_info->sDimension = child->dimension - parent_info->iDimension;

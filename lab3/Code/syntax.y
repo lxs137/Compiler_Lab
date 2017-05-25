@@ -46,7 +46,7 @@
 Program
     : ExtDefList {
         $$ = new_parent_node("Program", 1, 1, $1);
-        // print_child_node($$, 0);
+        print_child_node($$, 0);
         initTable();
         initTable_lxs();
         new_IR_list();
