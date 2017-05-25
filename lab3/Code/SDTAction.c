@@ -117,6 +117,22 @@ ID(17)
         type_info->iType = parent_info->iType;
         type_info->iDimension = parent_info->iDimension + 1;
         child->other_info = type_info;
+
+        D_child_1_info;
+        DNode *tmp = parent_info->dNode;
+        child_1_info->dNode = malloc(sizeof(DNode));
+        D_child_3;
+        child_1_info->dNode->value = atoi(child_3->str + 4);
+        child_1_info->dNode->next = tmp;
+
+        D_child_1;
+        DNode *tp = ((TypeInfo *)child_1->other_info)->dNode;
+        while (tp != NULL)
+        {
+            printf("%d\n", tp->value);
+            tp = tp->next;
+        }
+        printf("\n");
     }
 }
 
@@ -279,6 +295,16 @@ SD(16)
     /* child_1_info = type_info; */
     parent->first_child->other_info = type_info;
 
+    D_child_1_info;
+    child_1_info->dNode = parent_info->dNode;
+    DNode *tmp = ((TypeInfo *)child_1->other_info)->dNode;
+    while (tmp != NULL)
+    {
+        printf("%d\n", tmp->value);
+        tmp = tmp->next;
+    }
+    printf("\n");
+
     /* IR tag */
     child_1->IRIndex = nextVarIndex;
     nextVarIndex++;
@@ -326,23 +352,6 @@ SD(17)
     D_child_1_info;
     parent_info->sType = child_1_info->iType;
     parent_info->sDimension = child_1_info->sDimension;
-
-    parent_info->dNode = child_1_info->dNode;
-    D_child_3;
-    if (parent_info->dNode == NULL)
-    {
-        parent_info->dNode = malloc(sizeof(DNode));
-        parent_info->dNode->value = atoi(child_3->str + 4);
-    }
-    else
-    {
-        DNode *tmp = parent_info->dNode;
-        while (tmp->next != NULL) {
-            tmp = tmp->next;
-        }
-        tmp->next = malloc(sizeof(DNode));
-        tmp->next->value = atoi(child_3->str + 4);
-    }
 }
 
 SD(26)
