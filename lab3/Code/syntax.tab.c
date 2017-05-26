@@ -1466,7 +1466,7 @@ yyreduce:
         traversalTreePerformAction((yyval.type_node));
         traverse_list(IR_list, print_IR);
         generate_jump_target(nextLabelIndex - 1, nextFuncIndex - 1);
-        peep_hole();
+        // peep_hole();
         /* generate_CFG(); */
         traverse_list(IR_list, write_IR);
         // findUndefinedFunction();
