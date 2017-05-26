@@ -685,6 +685,8 @@ SD(47)
         parent_info->sDimension = child_2_info->sDimension;
     }
 
+    D_child_2;
+    parent->IRIndex = child_2->IRIndex;
 
     parent_info->dNode = child_2_info->dNode;
     parent_info->isArray = child_2_info->isArray;
