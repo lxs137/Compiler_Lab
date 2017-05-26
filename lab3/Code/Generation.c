@@ -171,6 +171,55 @@ void print_IR(list_node_t *ir_node)
     }
 }
 
+void write_IR(list_node_t *ir_node)
+{
+    IR *ir = (IR*)(ir_node->val);
+    switch(ir->kind)
+    {
+        case 0:
+            gen("LABEL %s :\n", ir->target->str);
+            break;
+        case 1:
+            gen("FUNCTION %s :\n", ir->target->str);
+            break;
+        case 2:
+            gen("%s := %s %s %s\n", ir->target->str, 
+                ir->arg1->str, ir->u.op, ir->arg2->str);
+            break;
+        case 3:
+            gen("%s := %s\n", ir->target->str, ir->arg1->str);
+            break;
+        case 4:
+            gen("GOTO %s\n", ir->target->str);
+            break;
+        case 5:
+            gen("IF %s %s %s GOTO %s\n", ir->arg1->str,
+                ir->u.relop, ir->arg2->str, ir->target->str);
+            break;
+        case 6:
+            gen("RETURN %s\n", ir->target->str);
+            break;
+        case 7:
+            gen("DEC %s %d\n", ir->target->str, ir->arg1->u.value);
+            break;
+        case 8:
+            gen("ARG %s\n", ir->target->str);
+            break;
+        case 9:
+            gen("%s := CALL %s\n", ir->target->str, ir->arg1->str);
+            break;
+        case 10:
+            gen("PARAM %s\n", ir->target->str);
+            break;
+        case 11:
+            gen("READ %s\n", ir->target->str);
+            break;
+        case 12:
+            gen("WRITE %s\n", ir->target->str);
+            break;
+    }
+}
+
 void generate_jump_target(int label_count, int func_count)
 {
     if(label_count > 0) {
@@ -314,6 +363,11 @@ void peep_hole_inaccess(list_node_t *cur_node)
         list_remove(IR_list, n_node->next);
         list_remove(IR_list, n_node);
     }
+}
+
+void peep_hole_constant(list_node_t *cur_node)
+{
+    IR *ir = (IR*)(cur_node->val);
 }
 
 void peep_hole()
@@ -513,7 +567,6 @@ void generate_CFG()
         else if(ir->kind == Call || ir->kind == Goto || ir->kind == GotoRel) {
             cur_block->last_ir = node;
             cur_block->ir_count = ir_count;
-            // list_rpush(block_list, list_node_new(cur_block));
             if(cur_block->ir_count > 0)
                 list_rpush(block_list, list_node_new(cur_block));
             else {
