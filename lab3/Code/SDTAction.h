@@ -82,7 +82,7 @@ typedef struct
     void *nextInfo;
 
     DNode *dNode;
-    int offset;
+    int isArray;
 } TypeInfo;
 
 void initTable();

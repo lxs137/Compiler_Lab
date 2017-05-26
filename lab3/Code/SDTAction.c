@@ -401,7 +401,14 @@ SD(39)
     /* gen("%c%d", 'v', child_1->IRIndex); */
     /* gen("%s", " := "); */
     /* gen("%c%d\n", 'v', child_3->IRIndex); */
-    gen_IR(Assign, new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex));
+    if (child_1_info->isArray == 1)
+    {
+        gen_IR(Assign, new_value(Address, child_1->IRIndex), new_value(V, child_3->IRIndex));
+    }
+    else
+    {
+        gen_IR(Assign, new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex));
+    }
     parent->IRIndex = nextVarIndex++;
 
     /* 检查赋值号左边不是左值 */
@@ -728,6 +735,8 @@ SD(52)
     parent->IRIndex = nextVarIndex++;
     /* gen("v%d := *v%d\n", parent->IRIndex, tmpVarIndex2); */
     gen_IR(Assign, new_value(V, parent->IRIndex), new_value(V, tmpVarIndex2));
+
+    parent_info->isArray = 1;
 
     parent_info->nextInfo = (void*)1;
 
