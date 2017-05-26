@@ -654,6 +654,9 @@ SD(47)
         parent_info->sType = child_2_info->sType;
         parent_info->sDimension = child_2_info->sDimension;
     }
+
+
+    parent_info->dNode = child_2_info->dNode;
 }
 
 SD(48)
