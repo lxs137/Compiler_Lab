@@ -306,6 +306,7 @@ SD(16)
     }
 
     /* IR tag */
+    parent->IRIndex = nextVarIndex;
     child_1->IRIndex = nextVarIndex;
     nextVarIndex++;
     if (size != 1 && !isDefineFunction())
@@ -385,6 +386,10 @@ SD(38)
     {
         printf("Error type 15 at line %d: initialize in struct.\n", parent->first_child->loc_line);
     }
+
+    D_child_1;
+    D_child_3;
+    gen_IR(Assign, new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex));
 }
 
 Value *createNewValue(int isArray, int index) {
@@ -685,6 +690,8 @@ SD(47)
         parent_info->sDimension = child_2_info->sDimension;
     }
 
+    D_child_2;
+    parent->IRIndex = child_2->IRIndex;
 
     parent_info->dNode = child_2_info->dNode;
     parent_info->isArray = child_2_info->isArray;
