@@ -7,19 +7,20 @@ int findmax(int array[5], int begin)
         {
             tmp = array[n];
         }
+        n = n + 1;
     }
     return tmp;
 }
 
 int main()
 {
-    int x[5];
+    int x[2][5];
     int y;
-    x[0] = 5;
-    x[1] = 3;
-    x[2] = 4;
-    x[3] = 6;
-    x[4] = 1;
-    y = findmax(x, 0);
+    x[0][0] = 5;
+    x[0][1] = 3;
+    x[0][2] = 4;
+    x[0][3] = 6;
+    x[0][4] = 1;
+    y = findmax(x[0], 0);
     write(y);
 }
