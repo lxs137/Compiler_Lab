@@ -215,7 +215,7 @@ void generate_jump_target(int label_count, int func_count)
             label_index++;
         }
         else if(ir->kind == Call && func_jump != NULL) {
-            func_jump[ir->target->u.no - 1].call_count++;
+            func_jump[ir->arg1->u.no - 1].call_count++;
         }
         else if(ir->kind == Goto && label_jump != NULL) {
             label_jump[ir->target->u.no - 1].goto_count++;
@@ -321,7 +321,6 @@ void peep_hole()
     // generate_example_ir();
     // traverse_list(IR_list, print_IR);
     printf(">>>>>>>>>>>>>>>>>>>>\n");
-    // generate_jump_target(2, 1);
     traverse_list(IR_list, peep_hole_control);
     traverse_list(IR_list, peep_hole_inaccess);
     // traverse_list(IR_list, print_IR);
@@ -399,6 +398,8 @@ void print_Block(list_node_t *block_node)
 
 void add_prev_edge(BasisBlock *cur_block, BasisBlock *target_block)
 {
+    if(cur_block == NULL || target_block == NULL)
+        return;
     CFG_edge *e = (CFG_edge*)malloc(sizeof(CFG_edge));
     e->target = target_block;
     e->next = NULL;
@@ -415,6 +416,8 @@ void add_prev_edge(BasisBlock *cur_block, BasisBlock *target_block)
 
 void add_next_edge(BasisBlock *cur_block, BasisBlock *target_block)
 {
+    if(cur_block == NULL || target_block == NULL)
+        return;
     CFG_edge *e = (CFG_edge*)malloc(sizeof(CFG_edge));
     e->target = target_block;
     e->next = NULL;
@@ -433,7 +436,7 @@ void generate_CFG_edge(list_node_t *block_node)
 {
     BasisBlock *cur_block = (BasisBlock*)(block_node->val);
     IR *last_ir = (IR*)(cur_block->last_ir->val);
-    BasisBlock *target_block;
+    BasisBlock *target_block = NULL;
     if(last_ir->kind == Goto) 
     {
         target_block = label_jump[last_ir->target->u.no - 1].target_block;
@@ -449,13 +452,12 @@ void generate_CFG_edge(list_node_t *block_node)
     }
     else if(last_ir->kind == Call)
     {
-        target_block = func_jump[last_ir->target->u.no - 1].target_block;
+        target_block = func_jump[last_ir->arg1->u.no - 1].target_block;
     }
-    if(target_block == NULL)
+    else
         return;
     add_next_edge(cur_block, target_block);
     add_prev_edge(target_block, cur_block);
-
 }
 
 void generate_CFG()
@@ -485,20 +487,24 @@ void generate_CFG()
         else if(ir->kind == Fun || ir->kind == Label) {
             cur_block->last_ir = node->prev;
             cur_block->ir_count = ir_count - 1;
-            if(cur_block->ir_count > 0)
+            if(cur_block->ir_count > 0) {
                 list_rpush(block_list, list_node_new(cur_block));
+            }
             else {
                 block_count--;
                 free(cur_block);
+                cur_block = NULL;
             }
             if(node->next != NULL) {
                 cur_block = new_basis_block();
                 cur_block->index = block_count++;
                 cur_block->first_ir = node;
                 if(ir->kind == Label) {
+                    assert(label_jump[ir->target->u.no - 1].target_block == NULL);
                     label_jump[ir->target->u.no - 1].target_block = cur_block;
                 }
                 else {
+                    assert(func_jump[ir->target->u.no - 1].target_block == NULL);
                     func_jump[ir->target->u.no - 1].target_block = cur_block;
                 }
             }
@@ -507,11 +513,13 @@ void generate_CFG()
         else if(ir->kind == Call || ir->kind == Goto || ir->kind == GotoRel) {
             cur_block->last_ir = node;
             cur_block->ir_count = ir_count;
+            // list_rpush(block_list, list_node_new(cur_block));
             if(cur_block->ir_count > 0)
                 list_rpush(block_list, list_node_new(cur_block));
             else {
                 block_count--;
                 free(cur_block);
+                cur_block = NULL;
             }
             if(node->next != NULL) {
                 cur_block = new_basis_block();
