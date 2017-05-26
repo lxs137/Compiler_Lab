@@ -461,7 +461,16 @@ SDS(40)
     D_child_1;
     D_child_3;
     /* gen("v%d := v%d && v%d\n", parent->IRIndex, child_1->IRIndex, child_3->IRIndex); */
-    gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex), "&&");
+    /* gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex), "&&"); */
+    int tmpLabelIndex = nextLabelIndex;
+    nextLabelIndex += 3;
+    gen_IR(GotoRel, new_value(L, tmpLabelIndex), new_value(V, child_1->IRIndex), new_value(Const, 0), "==");
+    gen_IR(GotoRel, new_value(L, tmpLabelIndex), new_value(V, child_3->IRIndex), new_value(Const, 0), "==");
+    gen_IR(Assign, new_value(V, parent->IRIndex), new_value(Const, 1));
+    gen_IR(Goto, new_value(L, tmpLabelIndex + 1));
+    gen_IR(Label, new_value(L, tmpLabelIndex));
+    gen_IR(Assign, new_value(V, parent->IRIndex), new_value(Const, 0));
+    gen_IR(Label, new_value(L, tmpLabelIndex + 1));
 
     D_parent_info;
     parent_info->nextInfo = (void*)0;
@@ -494,7 +503,16 @@ SD(41)
     D_child_1;
     D_child_3;
     /* gen("v%d := v%d || v%d\n", parent->IRIndex, child_1->IRIndex, child_3->IRIndex); */
-    gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex), "||");
+    /* gen_IR(Calculate, new_value(V, parent->IRIndex), new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex), "||"); */
+    int tmpLabelIndex = nextLabelIndex;
+    nextLabelIndex += 3;
+    gen_IR(GotoRel, new_value(L, tmpLabelIndex), new_value(V, child_1->IRIndex), new_value(Const, 0), "!=");
+    gen_IR(GotoRel, new_value(L, tmpLabelIndex), new_value(V, child_3->IRIndex), new_value(Const, 0), "!=");
+    gen_IR(Assign, new_value(V, parent->IRIndex), new_value(Const, 0));
+    gen_IR(Goto, new_value(L, tmpLabelIndex + 1));
+    gen_IR(Label, new_value(L, tmpLabelIndex));
+    gen_IR(Assign, new_value(V, parent->IRIndex), new_value(Const, 1));
+    gen_IR(Label, new_value(L, tmpLabelIndex + 1));
 
     D_parent_info;
     parent_info->nextInfo = (void*)0;
