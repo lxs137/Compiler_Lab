@@ -177,45 +177,45 @@ void write_IR(list_node_t *ir_node)
     switch(ir->kind)
     {
         case 0:
-            gen("LABEL %s :\n", ir->target->str);
+            fprintf(f_output, "LABEL %s :\n", ir->target->str);
             break;
         case 1:
-            gen("FUNCTION %s :\n", ir->target->str);
+            fprintf(f_output, "FUNCTION %s :\n", ir->target->str);
             break;
         case 2:
-            gen("%s := %s %s %s\n", ir->target->str, 
+            fprintf(f_output, "%s := %s %s %s\n", ir->target->str, 
                 ir->arg1->str, ir->u.op, ir->arg2->str);
             break;
         case 3:
-            gen("%s := %s\n", ir->target->str, ir->arg1->str);
+            fprintf(f_output, "%s := %s\n", ir->target->str, ir->arg1->str);
             break;
         case 4:
-            gen("GOTO %s\n", ir->target->str);
+            fprintf(f_output, "GOTO %s\n", ir->target->str);
             break;
         case 5:
-            gen("IF %s %s %s GOTO %s\n", ir->arg1->str,
+            fprintf(f_output, "IF %s %s %s GOTO %s\n", ir->arg1->str,
                 ir->u.relop, ir->arg2->str, ir->target->str);
             break;
         case 6:
-            gen("RETURN %s\n", ir->target->str);
+            fprintf(f_output, "RETURN %s\n", ir->target->str);
             break;
         case 7:
-            gen("DEC %s %d\n", ir->target->str, ir->arg1->u.value);
+            fprintf(f_output, "DEC %s %d\n", ir->target->str, ir->arg1->u.value);
             break;
         case 8:
-            gen("ARG %s\n", ir->target->str);
+            fprintf(f_output, "ARG %s\n", ir->target->str);
             break;
         case 9:
-            gen("%s := CALL %s\n", ir->target->str, ir->arg1->str);
+            fprintf(f_output, "%s := CALL %s\n", ir->target->str, ir->arg1->str);
             break;
         case 10:
-            gen("PARAM %s\n", ir->target->str);
+            fprintf(f_output, "PARAM %s\n", ir->target->str);
             break;
         case 11:
-            gen("READ %s\n", ir->target->str);
+            fprintf(f_output, "READ %s\n", ir->target->str);
             break;
         case 12:
-            gen("WRITE %s\n", ir->target->str);
+            fprintf(f_output, "WRITE %s\n", ir->target->str);
             break;
     }
 }

@@ -256,7 +256,10 @@ SD(50)
         FuncInfo *func_call = (FuncInfo*)(parent->first_child->other_info);
         Symbol *arg_list = func_call->param_list;
         AST_node *first_node = (AST_node*)(arg_list->p);
-        gen_IR(Write, new_value(V, first_node->IRIndex));
+        if(((TypeInfo*)first_node->other_info)->isArray)
+            gen_IR(Write, new_value(Content, first_node->IRIndex));
+        else
+            gen_IR(Write, new_value(V, first_node->IRIndex));
         TypeInfo* exp = (TypeInfo*)(parent->other_info);
         exp->sType = "int";
         exp->sDimension = 0;
@@ -325,10 +328,7 @@ SD(50)
     for(i = i - 1; i >= 0; i--) 
     {
         cur_type = (TypeInfo*)(node_array[i]->other_info);
-        if(cur_type->sDimension > 0)
-            gen_IR(Arg, new_value(Address, node_array[i]->IRIndex));
-        else
-            gen_IR(Arg, new_value(V, node_array[i]->IRIndex));
+        gen_IR(Arg, new_value(V, node_array[i]->IRIndex));
     }
     free(node_array);
     AST_node *function = (AST_node*)(findFuncSymbol(func_id)->p);

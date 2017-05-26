@@ -1,0 +1,19 @@
+FUNCTION f1 :
+v2 := #10
+RETURN v2
+FUNCTION main :
+DEC v4 8
+v3 := &v4
+v5 := #1
+v6 := v5 * #4
+v7 := v3 + v6
+v8 := v7
+v9 := CALL f1
+*v8 := v9
+v13 := #1
+v14 := v13 * #4
+v15 := v3 + v14
+v16 := v15
+WRITE *v16
+v18 := #0
+RETURN v18
