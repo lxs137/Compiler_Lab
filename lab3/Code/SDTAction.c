@@ -127,12 +127,12 @@ ID(17)
 
         D_child_1;
         DNode *tp = ((TypeInfo *)child_1->other_info)->dNode;
-        while (tp != NULL)
-        {
-            printf("%d\n", tp->value);
-            tp = tp->next;
-        }
-        printf("\n");
+        /* while (tp != NULL) */
+        /* { */
+        /*     printf("%d\n", tp->value); */
+        /*     tp = tp->next; */
+        /* } */
+        /* printf("\n"); */
     }
 }
 
@@ -801,12 +801,12 @@ SD(54)
 
     parent_info->dNode = ((TypeInfo *)(child_->other_info))->dNode;
     DNode *tmp = parent_info->dNode;
-    while (tmp != NULL)
-    {
-        printf("%d\n", tmp->value);
-        tmp = tmp->next;
-    }
-    printf("\n");
+    /* while (tmp != NULL) */
+    /* { */
+    /*     printf("%d\n", tmp->value); */
+    /*     tmp = tmp->next; */
+    /* } */
+    /* printf("\n"); */
 
     parent_info->sType = child->type;
     parent_info->sDimension = child->dimension - parent_info->iDimension;
