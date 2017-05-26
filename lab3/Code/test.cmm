@@ -1,13 +1,15 @@
-int func()
+int func(int a[2])
 {
-    return 10;
+    a[0] = 2;
+    return 0;
 }
 
 int main()
 {
     int op[2];
-
-    op[1] = func();
-    write(op[1]);
+    op[1] = 1;
+    op[0] = 1;
+    func(op);
+    write(op[0]);
     return 0;
 }

@@ -1,0 +1,34 @@
+FUNCTION f1 :
+PARAM v2
+v3 := #0
+v4 := v3 * #4
+v5 := v2 + v4
+v6 := v5
+v7 := #2
+*v6 := v7
+v10 := #0
+RETURN v10
+FUNCTION main :
+DEC v12 8
+v11 := &v12
+v13 := #1
+v14 := v13 * #4
+v15 := v11 + v14
+v16 := v15
+v17 := #1
+*v16 := v17
+v19 := #0
+v20 := v19 * #4
+v21 := v11 + v20
+v22 := v21
+v23 := #1
+*v22 := v23
+ARG v11
+v25 := CALL f1
+v29 := #0
+v30 := v29 * #4
+v31 := v11 + v30
+v32 := v31
+WRITE *v32
+v34 := #0
+RETURN v34
