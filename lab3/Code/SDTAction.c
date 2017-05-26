@@ -310,7 +310,7 @@ SD(16)
     nextVarIndex++;
     if (size != 1)
     {
-        gen_IR(Dec, new_value(V, child_1->IRIndex), new_value(Const, size));
+        gen_IR(Dec, new_value(V, child_1->IRIndex), new_value(Const, size * 4));
     }
 
     if (!stackIsEmpty())
