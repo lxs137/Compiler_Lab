@@ -1,4 +1,9 @@
 int main()
 {
-    int x = 2 > 1;
+    int x[2][3][4];
+    int y[3][4];
+    int z;
+
+    y = x[1];
+    z = y[1][1] + 1;
 }

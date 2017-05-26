@@ -758,7 +758,7 @@ SD(52)
     /* gen("v%d := *v%d\n", parent->IRIndex, tmpVarIndex2); */
     gen_IR(Assign, new_value(V, parent->IRIndex), new_value(V, tmpVarIndex2));
 
-    parent_info->isArray = 1;
+    parent_info->isArray = parent_info->dNode == NULL;
 
     parent_info->nextInfo = (void*)1;
 
