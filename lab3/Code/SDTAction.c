@@ -127,12 +127,12 @@ ID(17)
 
         D_child_1;
         DNode *tp = ((TypeInfo *)child_1->other_info)->dNode;
-        while (tp != NULL)
-        {
-            printf("%d\n", tp->value);
-            tp = tp->next;
-        }
-        printf("\n");
+        /* while (tp != NULL) */
+        /* { */
+        /*     printf("%d\n", tp->value); */
+        /*     tp = tp->next; */
+        /* } */
+        /* printf("\n"); */
     }
 }
 
@@ -310,7 +310,10 @@ SD(16)
     nextVarIndex++;
     if (size != 1 && !isDefineFunction())
     {
-        gen_IR(Dec, new_value(V, child_1->IRIndex), new_value(Const, size * 4));
+        int tmpIndex = nextVarIndex;
+        nextVarIndex++;
+        gen_IR(Dec, new_value(V, tmpIndex), new_value(Const, size * 4));
+        gen_IR(Assign, new_value(V, child_1->IRIndex), new_value(Address, tmpIndex));
     }
 
     if (!stackIsEmpty())
@@ -684,6 +687,7 @@ SD(47)
 
 
     parent_info->dNode = child_2_info->dNode;
+    parent_info->isArray = child_2_info->isArray;
 }
 
 SD(48)
@@ -797,12 +801,12 @@ SD(54)
 
     parent_info->dNode = ((TypeInfo *)(child_->other_info))->dNode;
     DNode *tmp = parent_info->dNode;
-    while (tmp != NULL)
-    {
-        printf("%d\n", tmp->value);
-        tmp = tmp->next;
-    }
-    printf("\n");
+    /* while (tmp != NULL) */
+    /* { */
+    /*     printf("%d\n", tmp->value); */
+    /*     tmp = tmp->next; */
+    /* } */
+    /* printf("\n"); */
 
     parent_info->sType = child->type;
     parent_info->sDimension = child->dimension - parent_info->iDimension;

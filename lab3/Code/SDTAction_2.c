@@ -627,6 +627,8 @@ ID(10)
         structSpecifier->sValid = 1;
         child->other_info = structSpecifier;
     }
+    printf("Cannot translate: Code contains variables of multi-dimensional array type or parameters of array type.\n");
+    exit(0);
 }
 
 
