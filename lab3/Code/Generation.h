@@ -10,7 +10,6 @@ FILE *f_output;
 
 enum ValueKind {
     V = 0,     // 普通变量, v1
-    T = 1,         // 临时变量, t1
     L = 2,        // label, l1
     F = 3,          // Function, f1
     Const = 4,     // 立即数, #1

@@ -19,9 +19,9 @@ Value* new_value(int kind, int value)
         case 0:
             sprintf(value_str, "v%d", value);
             break;
-        case 1:
-            sprintf(value_str, "t%d", value);
-            break;
+        // case 1:
+        //     sprintf(value_str, "t%d", value);
+        //     break;
         case 2:
             sprintf(value_str, "l%d", value);
             break;

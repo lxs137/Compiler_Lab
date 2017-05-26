@@ -55,7 +55,7 @@ Program
         globalFuncSymbolTable = newFuncSymbolTable();
         globalStructStack = newStructStack();
         traversalTreePerformAction($$);
-        traverse_list(IR_list, print_IR);
+        // traverse_list(IR_list, print_IR);
         generate_jump_target(nextLabelIndex - 1, nextFuncIndex - 1);
         // peep_hole();
         /* generate_CFG(); */

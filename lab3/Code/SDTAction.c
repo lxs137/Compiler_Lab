@@ -585,7 +585,7 @@ SD(42)
     D_child_1_info;
     D_child_3_info;
     gen_IR(GotoRel, new_value(L, tmpIndex), createNewValue(child_1_info->isArray, child_1->IRIndex), 
-            new_value(child_3_info->isArray, child_3->IRIndex), child_2->str);
+            createNewValue(child_3_info->isArray, child_3->IRIndex), child_2->str);
     gen_IR(Assign, new_value(V, parent->IRIndex), new_value(Const, 0));
     gen_IR(Goto, new_value(L, tmpIndex + 1));
     gen_IR(Label, new_value(L, tmpIndex));
