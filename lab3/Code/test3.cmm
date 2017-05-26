@@ -23,4 +23,5 @@ int main()
     x[0][4] = 1;
     y = findmax(x[0], 0);
     write(y);
+    return 0;
 }
