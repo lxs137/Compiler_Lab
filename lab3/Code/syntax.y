@@ -58,13 +58,13 @@ Program
         traverse_list(IR_list, print_IR);
         generate_jump_target(nextLabelIndex - 1, nextFuncIndex - 1);
         peep_hole();
-        generate_CFG();
+        /* generate_CFG(); */
         traverse_list(IR_list, write_IR);
         // findUndefinedFunction();
-        del_block_list();        
-        clean_up_syntax_tree($$);
-        cleanUpSymbolTable();
-        del_IR_list();
+        /* del_block_list(); */        
+        /* clean_up_syntax_tree($$); */
+        /* cleanUpSymbolTable(); */
+        /* del_IR_list(); */
     }
     ;
 ExtDefList

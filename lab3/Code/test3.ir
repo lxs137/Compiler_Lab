@@ -1,0 +1,72 @@
+FUNCTION f1 :
+PARAM v3
+PARAM v4
+v5 := v4
+v7 := #0
+v6 := v7
+LABEL l1 :
+v8 := #5
+IF v5 < v8 GOTO l4
+v9 := #0
+GOTO l5
+LABEL l4 :
+v9 := #1
+LABEL l5 :
+IF v9 == #0 GOTO l3
+v10 := v5 * #4
+v11 := v3 + v10
+v12 := v11
+IF *v12 > v6 GOTO l10
+v13 := #0
+GOTO l11
+LABEL l10 :
+v13 := #1
+LABEL l11 :
+IF v13 == #0 GOTO l1
+v14 := v5 * #4
+v15 := v3 + v14
+v16 := v15
+v6 := *v16
+LABEL l9 :
+GOTO l1
+LABEL l3 :
+RETURN v6
+FUNCTION main :
+DEC v20 20
+v19 := &v20
+v22 := #0
+v23 := v22 * #4
+v24 := v19 + v23
+v25 := v24
+v26 := #5
+*v25 := v26
+v28 := #1
+v29 := v28 * #4
+v30 := v19 + v29
+v31 := v30
+v32 := #3
+*v31 := v32
+v34 := #2
+v35 := v34 * #4
+v36 := v19 + v35
+v37 := v36
+v38 := #4
+*v37 := v38
+v40 := #3
+v41 := v40 * #4
+v42 := v19 + v41
+v43 := v42
+v44 := #6
+*v43 := v44
+v46 := #4
+v47 := v46 * #4
+v48 := v19 + v47
+v49 := v48
+v50 := #1
+*v49 := v50
+v55 := #0
+ARG v55
+ARG v19
+v52 := CALL f1
+v21 := v52
+WRITE v21
