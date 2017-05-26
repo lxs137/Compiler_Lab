@@ -401,13 +401,21 @@ SD(39)
     /* gen("%c%d", 'v', child_1->IRIndex); */
     /* gen("%s", " := "); */
     /* gen("%c%d\n", 'v', child_3->IRIndex); */
-    if (child_1_info->isArray == 1)
+    if (child_1_info->isArray == 1 && child_3_info->isArray == 1)
+    {
+        gen_IR(Assign, new_value(Address, child_1->IRIndex), new_value(Address, child_3->IRIndex));
+    }
+    else if (child_1_info->isArray == 1 && child_3_info->isArray == 0)
     {
         gen_IR(Assign, new_value(Address, child_1->IRIndex), new_value(V, child_3->IRIndex));
     }
+    else if (child_1_info->isArray == 0 && child_3_info->isArray == 1)
+    {
+        gen_IR(Assign, new_value(V, child_1->IRIndex), new_value(Address, child_3->IRIndex));
+    }
     else
     {
-        gen_IR(Assign, new_value(V, child_1->IRIndex), new_value(V, child_3->IRIndex));
+        gen_IR(Assign, new_value(V, child_1->IRIndex), new_value(V, child_1->IRIndex));
     }
     parent->IRIndex = nextVarIndex++;
 
