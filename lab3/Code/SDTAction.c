@@ -308,7 +308,7 @@ SD(16)
     /* IR tag */
     child_1->IRIndex = nextVarIndex;
     nextVarIndex++;
-    if (size != 1)
+    if (size != 1 && !isDefineFunction())
     {
         gen_IR(Dec, new_value(V, child_1->IRIndex), new_value(Const, size * 4));
     }
