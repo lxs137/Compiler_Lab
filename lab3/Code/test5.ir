@@ -1,0 +1,24 @@
+FUNCTION main :
+v2 := #0
+v1 := v2
+v4 := #0
+v3 := v4
+LABEL l1 :
+v5 := #5
+IF v1 < v5 GOTO l4
+v6 := #0
+GOTO l5
+LABEL l4 :
+v6 := #1
+LABEL l5 :
+IF v6 == #0 GOTO l3
+v7 := v3 + v1
+v3 := v7
+v9 := #1
+v10 := v1 + v9
+v1 := v10
+GOTO l1
+LABEL l3 :
+WRITE v3
+v15 := #0
+RETURN v15
