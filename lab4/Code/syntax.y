@@ -4,6 +4,7 @@
     #include "syntax_tree.h"
     #include "SDTAction.h"
     #include "symbol_table.h"
+    #include "MIPS_asm.h"
     int has_error = 0;
     void yyerror(const char *msg);
     void yyerror_lineno(const char *msg, int lineno);
@@ -56,15 +57,14 @@ Program
         globalStructStack = newStructStack();
         traversalTreePerformAction($$);
         // traverse_list(IR_list, print_IR);
-        generate_jump_target(nextLabelIndex - 1, nextFuncIndex - 1);
         // peep_hole();
         /* generate_CFG(); */
-        traverse_list(IR_list, write_IR);
         // findUndefinedFunction();
         /* del_block_list(); */        
-        /* clean_up_syntax_tree($$); */
-        /* cleanUpSymbolTable(); */
+        // clean_up_syntax_tree($$);
+        // cleanUpSymbolTable();
         /* del_IR_list(); */
+        test_output();
     }
     ;
 ExtDefList

@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include "list.h"
 
-FILE *f_output;
+// FILE *f_output;
 
 enum ValueKind {
     V = 0,     // 普通变量, v1
@@ -66,7 +66,7 @@ void new_IR_list();
 void del_IR_list();
 void traverse_list(list_t *list, void (*action)(list_node_t*));
 void print_IR(list_node_t *ir_node);
-void write_IR(list_node_t *ir_node);
+// void write_IR(list_node_t *ir_node);
 
 void generate_jump_target(int label_count, int func_count);
 void peep_hole();

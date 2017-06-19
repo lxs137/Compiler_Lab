@@ -171,54 +171,54 @@ void print_IR(list_node_t *ir_node)
     }
 }
 
-void write_IR(list_node_t *ir_node)
-{
-    IR *ir = (IR*)(ir_node->val);
-    switch(ir->kind)
-    {
-        case 0:
-            fprintf(f_output, "LABEL %s :\n", ir->target->str);
-            break;
-        case 1:
-            fprintf(f_output, "FUNCTION %s :\n", ir->target->str);
-            break;
-        case 2:
-            fprintf(f_output, "%s := %s %s %s\n", ir->target->str, 
-                ir->arg1->str, ir->u.op, ir->arg2->str);
-            break;
-        case 3:
-            fprintf(f_output, "%s := %s\n", ir->target->str, ir->arg1->str);
-            break;
-        case 4:
-            fprintf(f_output, "GOTO %s\n", ir->target->str);
-            break;
-        case 5:
-            fprintf(f_output, "IF %s %s %s GOTO %s\n", ir->arg1->str,
-                ir->u.relop, ir->arg2->str, ir->target->str);
-            break;
-        case 6:
-            fprintf(f_output, "RETURN %s\n", ir->target->str);
-            break;
-        case 7:
-            fprintf(f_output, "DEC %s %d\n", ir->target->str, ir->arg1->u.value);
-            break;
-        case 8:
-            fprintf(f_output, "ARG %s\n", ir->target->str);
-            break;
-        case 9:
-            fprintf(f_output, "%s := CALL %s\n", ir->target->str, ir->arg1->str);
-            break;
-        case 10:
-            fprintf(f_output, "PARAM %s\n", ir->target->str);
-            break;
-        case 11:
-            fprintf(f_output, "READ %s\n", ir->target->str);
-            break;
-        case 12:
-            fprintf(f_output, "WRITE %s\n", ir->target->str);
-            break;
-    }
-}
+// void write_IR(list_node_t *ir_node)
+// {
+//     IR *ir = (IR*)(ir_node->val);
+//     switch(ir->kind)
+//     {
+//         case 0:
+//             fprintf(f_output, "LABEL %s :\n", ir->target->str);
+//             break;
+//         case 1:
+//             fprintf(f_output, "FUNCTION %s :\n", ir->target->str);
+//             break;
+//         case 2:
+//             fprintf(f_output, "%s := %s %s %s\n", ir->target->str, 
+//                 ir->arg1->str, ir->u.op, ir->arg2->str);
+//             break;
+//         case 3:
+//             fprintf(f_output, "%s := %s\n", ir->target->str, ir->arg1->str);
+//             break;
+//         case 4:
+//             fprintf(f_output, "GOTO %s\n", ir->target->str);
+//             break;
+//         case 5:
+//             fprintf(f_output, "IF %s %s %s GOTO %s\n", ir->arg1->str,
+//                 ir->u.relop, ir->arg2->str, ir->target->str);
+//             break;
+//         case 6:
+//             fprintf(f_output, "RETURN %s\n", ir->target->str);
+//             break;
+//         case 7:
+//             fprintf(f_output, "DEC %s %d\n", ir->target->str, ir->arg1->u.value);
+//             break;
+//         case 8:
+//             fprintf(f_output, "ARG %s\n", ir->target->str);
+//             break;
+//         case 9:
+//             fprintf(f_output, "%s := CALL %s\n", ir->target->str, ir->arg1->str);
+//             break;
+//         case 10:
+//             fprintf(f_output, "PARAM %s\n", ir->target->str);
+//             break;
+//         case 11:
+//             fprintf(f_output, "READ %s\n", ir->target->str);
+//             break;
+//         case 12:
+//             fprintf(f_output, "WRITE %s\n", ir->target->str);
+//             break;
+//     }
+// }
 
 void generate_jump_target(int label_count, int func_count)
 {
