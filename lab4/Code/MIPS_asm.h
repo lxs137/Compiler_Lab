@@ -76,7 +76,7 @@ typedef struct var_info
     int no;
     int is_local;
 } VarInfo;
-void free_var_info(VarInfo *info);
+void free_var_info(void *info);
 list_t *global_var_list;
 
 typedef struct asm_block
@@ -86,6 +86,21 @@ typedef struct asm_block
     int offset;
     struct asm_block *next;
 } ASM_Block;
+void free_asm_block(void *block);
 
+typedef struct 
+{
+    list_t *block_list;
+    ASM_Block *top;
+} ASM_Block_Stack;
+ASM_Block_Stack *asm_block_stack;
+
+void start_gen_asm();
+void end_gen_asm();
 ASM_Block *new_asm_block(int offset);
 void add_var(ASM_Block *block, int size, int no, int is_local);
+VarInfo *find_var(int no, ASM_Block **block);
+
+void gen_asm_code(list_node_t *node);
+
+#endif

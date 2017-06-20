@@ -1,4 +1,38 @@
 #include "MIPS_asm.h"
+#include "Generation.h"
+
+void start_gen_asm()
+{
+    global_var_list = list_new(free_var_info);
+    asm_block_list = list_new(free_asm_block);
+}
+
+void end_gen_asm()
+{
+    list_destroy(global_var_list);
+    list_destroy(asm_block_list);
+}
+
+void free_asm_block(void *block)
+{
+    if(block == NULL)
+        return;
+    ASM_Block *asm_block = (ASM_Block*)block;
+    if(asm_block->var_list == NULL) {
+        free(asm_block);
+        return;
+    }
+    list_node_t *node;
+    list_iterator_t *it = list_iterator_new(asm_block->var_list, LIST_HEAD);
+    VarInfo *var;
+    while((node = list_iterator_next(it)))
+    {
+        var = (VarInfo*)(node->val);
+        free(var);
+    }
+    list_iterator_destroy(it);
+    free(asm_block);
+}
 
 void free_var_info(void *info)
 {
@@ -32,24 +66,46 @@ void add_var(ASM_Block *block, int size, int no, int is_local)
         list_rpush(global_var_list, list_node_new(var));
 }
 
-VarInfo *find_var(ASM_Block *block, int no)
+VarInfo *find_var(int no, ASM_Block **block)
 {
-    list_node_t *node;
-    list_iterator_t *it = list_iterator_new(global_var_list, LIST_HEAD);
+    list_node_t *node_var;
+    list_iterator_t *it_var = list_iterator_new(global_var_list, LIST_HEAD);
     VarInfo *var;
-    while ((node = list_iterator_next(it))) 
+    while ((node_var = list_iterator_next(it_var))) 
     {
-        var = (VarInfo*)(node->val);
-        if(var->no == no)
+        var = (VarInfo*)(node_var->val);
+        if(var->no == no) {
+            *block = NULL;
             return var;
+        }
     }
-    list_iterator_destroy(it);
-    it = list_iterator_new(block->var_list, LIST_HEAD);
-    while((node = list_iterator_next(it)))
+    list_iterator_destroy(it_var);
+    
+    list_node_t *node_block;
+    list_iterator_t *it_block = list_iterator_new(asm_block_list, LIST_HEAD);
+    ASM_Block *cur_block;
+    while((node_block = list_iterator_next(it_block)))
     {
-        var = (VarInfo*)(node->val);
-        if(var->no == no)
-            return var;
+        cur_block = (ASM_Block*)(node_block->val);
+        it_var = list_iterator_new(cur_block->var_list, LIST_HEAD);
+        while((node_var = list_iterator_next(it_var)))
+        {
+            var = (VarInfo*)(node_var->val);
+            if(var->no == no) {
+                *block = cur_block;
+                return var;
+            }
+        }
+        list_iterator_destroy(it_var);      
     }
-    list_iterator_destroy(it);
+    list_iterator_destroy(it_block);
+}
+
+void gen_asm_code(list_node_t *node)
+{
+    IR *ir = (IR*)(node->val);
+    switch(ir->kind)
+    {
+        case 
+    }
 }

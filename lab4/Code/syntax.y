@@ -64,7 +64,6 @@ Program
         // clean_up_syntax_tree($$);
         // cleanUpSymbolTable();
         /* del_IR_list(); */
-        test_output();
     }
     ;
 ExtDefList
