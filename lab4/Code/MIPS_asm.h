@@ -70,4 +70,22 @@ FILE *f_output;
 
 void test_output();
 
-#endif
+typedef struct var_info
+{
+    int offset;
+    int no;
+    int is_local;
+} VarInfo;
+void free_var_info(VarInfo *info);
+list_t *global_var_list;
+
+typedef struct asm_block
+{
+    list_t *var_list;
+    int basis;
+    int offset;
+    struct asm_block *next;
+} ASM_Block;
+
+ASM_Block *new_asm_block(int offset);
+void add_var(ASM_Block *block, int size, int no, int is_local);
