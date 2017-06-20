@@ -2,12 +2,55 @@
 #include "MIPS_asm.h"
 #include "stack_manage.h"
 #include "Generation.h"
+#include "MIPS_asm.h"
 
 void prepare(Value *value, int num)
-{}
+{
+    if(value == NULL)
+        return;
+    if(value->kind == Const) {
+        asm_li(reg("t", num), value->u.value);
+        return;
+    }
+    ASM_Block *block = NULL;
+    VarInfo *var = find_var(value->u.no, &block);
+    if(var == NULL)
+        return;
+    int offset = block->basis + var->offset;
+    if(value->kind == V) {
+        asm_lw(reg("t", num), addr_im_reg(-offset, reg_sp()));
+    }
+    else if(value->kind == Address) {
+        asm_la(reg("t", num), addr_im_reg(-offset, reg_sp()));
+    }
+    else if(value->kind == Content) {
+        asm_lw(reg("t", num), addr_im_reg(-offset, reg_sp()));
+        asm_lw(reg("t", num), addr_reg(reg("t", num)));
+    }
+}
 
 void save(Value *value, int num)
-{}
+{
+    if(value == NULL)
+        return;
+    ASM_Block *block = NULL;
+    VarInfo *var = find_var(value->u.no, &block);
+    if(var == NULL) {
+        var = add_var(4, value->u.no);
+        block = asm_block_stack->top;
+    }
+    if(block == NULL)
+        return;
+    int offset = block->basis + var->offset;
+    if(value->kind == V) {
+        asm_sw(reg("t", num), addr_im_reg(-offset, reg_sp()));
+    }
+    else if(value->kind == Content) {
+        asm_lw(reg("t", 3), addr_im_reg(-offset, reg_sp()));
+        asm_sw(reg("t", num), addr_reg(reg("t", 3)));
+    }
+
+}
 
 void genAsm(list_node_t *node)
 {

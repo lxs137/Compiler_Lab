@@ -84,16 +84,17 @@ void pop_asm_block()
         asm_block_stack->top = (ASM_Block*)(asm_block_stack->data->tail->val);
 }
 
-void add_var(int size, int no)
+VarInfo* add_var(int size, int no)
 {
     ASM_Block *block = asm_block_stack->top;
     if(block == NULL)
-        return;
+        return NULL;
     VarInfo *var = (VarInfo*)malloc(sizeof(VarInfo));
     var->no = no;
-    var->offset = block->offset;
     block->offset += size;
+    var->offset = block->offset;
     list_rpush(block->var_list, list_node_new(var));
+    return var;
 }
 
 VarInfo *find_var(int no, ASM_Block **block)

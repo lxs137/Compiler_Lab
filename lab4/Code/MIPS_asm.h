@@ -80,7 +80,6 @@ typedef struct var_info
 {
     int offset;
     int no;
-    int is_local;
 } VarInfo;
 void free_var_info(void *info);
 
@@ -103,7 +102,7 @@ void start_gen_asm();
 void end_gen_asm();
 ASM_Block *push_asm_block(int offset);
 void pop_asm_block();
-void add_var(int size, int no);
+VarInfo* add_var(int size, int no);
 VarInfo *find_var(int no, ASM_Block **block);
 
 #endif
