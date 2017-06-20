@@ -82,7 +82,7 @@ void genAsm(list_node_t *node)
             break;
         case Read:
             p_asm("li $v0, 5");
-            p_asm("syscall");
+            asm_sys();
             asm_mv(reg("t", 0), reg("a", 0));
             save(ir->target, 0);
             break;
@@ -90,7 +90,7 @@ void genAsm(list_node_t *node)
             prepare(ir->target, 0);
             asm_mv(reg("a", 0), reg("t", 0));
             p_asm("li $v0, 1");
-            p_asm("syscall");
+            asm_sys();
             break;
     }
 }

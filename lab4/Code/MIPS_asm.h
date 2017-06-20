@@ -47,7 +47,7 @@
 #define asm_lw(Rdest, addr) p_asm("lw "),Rdest,p_asm(", "),addr,p_asm("\n")
 // la rd, addr
 // load the address into $rd
-#define asm_la(Rdest, addr) p_asm("la "),Rdest,p_asm(", "),addr.p_asm("\n")
+#define asm_la(Rdest, addr) p_asm("la "),Rdest,p_asm(", "),addr,p_asm("\n")
 // li rd, imm
 #define asm_li(Rdest, imm) p_asm("li "),Rdest,p_asm(", "),imm,p_asm("\n")
 // move rd, rs
@@ -67,6 +67,10 @@
     p_asm("bge "),Rs,p_asm(", "),Rt,p_asm(", "),p_asm("label%d\n", no)
 #define asm_j(no) \
     p_asm("j label%d\n", no)
+#define asm_return(rt) \
+    p_asm("jr "),rt,p_asm("\n")
+#define asm_sys() \
+    p_asm("syscall\n")
 
 FILE *f_output;
 
@@ -79,30 +83,27 @@ typedef struct var_info
     int is_local;
 } VarInfo;
 void free_var_info(void *info);
-list_t *global_var_list;
 
 typedef struct asm_block
 {
     list_t *var_list;
     int basis;
     int offset;
-    struct asm_block *next;
 } ASM_Block;
 void free_asm_block(void *block);
 
 typedef struct 
 {
-    list_t *block_list;
+    list_t *data;
     ASM_Block *top;
 } ASM_Block_Stack;
 ASM_Block_Stack *asm_block_stack;
 
 void start_gen_asm();
 void end_gen_asm();
-ASM_Block *new_asm_block(int offset);
-void add_var(ASM_Block *block, int size, int no, int is_local);
+ASM_Block *push_asm_block(int offset);
+void pop_asm_block();
+void add_var(int size, int no);
 VarInfo *find_var(int no, ASM_Block **block);
-
-void gen_asm_code(list_node_t *node);
 
 #endif
