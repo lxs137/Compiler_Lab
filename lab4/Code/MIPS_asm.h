@@ -65,6 +65,8 @@
     p_asm("bgt "),Rs,p_asm(", "),Rt,p_asm(", "),p_asm("label%d\n", no)
 #define asm_more_equal(Rs, Rt, no) \
     p_asm("bge "),Rs,p_asm(", "),Rt,p_asm(", "),p_asm("label%d\n", no)
+#define asm_j(no) \
+    p_asm("j label%d\n", no)
 
 FILE *f_output;
 
