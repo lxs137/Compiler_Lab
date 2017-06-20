@@ -26,6 +26,13 @@ void start_gen_asm()
     asm_sys();
     asm_mv(reg("v", 0), reg_0());
     asm_return(reg_ra());
+
+    list_node_t *node;
+    list_iterator_t *it = list_iterator_new(IR_list, LIST_HEAD);
+    while((node = list_iterator_next(it)))
+    {
+        genAsm(node);
+    }
 }
 
 void end_gen_asm()

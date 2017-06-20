@@ -1,5 +1,4 @@
 #include <string.h>
-#include "MIPS_asm.h"
 #include "stack_manage.h"
 #include "Generation.h"
 #include "MIPS_asm.h"
@@ -66,7 +65,7 @@ void genAsm(list_node_t *node)
         case Return:
             asm_mv(reg_sp(), reg_fp());
             asm_lw(addr_im_reg(imm(-4), reg_sp()), reg_fp());
-            p_asm("jr $ra");
+            asm_return(reg_ra());
             break;
         case Call:
             asm_sw(reg_fp(), addr_im_reg(imm(-4), reg_sp()));
@@ -124,7 +123,7 @@ void genAsm(list_node_t *node)
             }
             break;
         case Read:
-            p_asm("li $v0, 5");
+            p_asm("li $v0, 5\n");
             asm_sys();
             asm_mv(reg("t", 0), reg("a", 0));
             save(ir->target, 0);
@@ -132,7 +131,7 @@ void genAsm(list_node_t *node)
         case Write:
             prepare(ir->target, 0);
             asm_mv(reg("a", 0), reg("t", 0));
-            p_asm("li $v0, 1");
+            p_asm("li $v0, 1\n");
             asm_sys();
             break;
     }
