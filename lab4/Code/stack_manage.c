@@ -64,7 +64,7 @@ void genAsm(list_node_t *node)
                 p_asm("main:\n");
                 asm_mv(reg_fp(), reg_sp());
                 asm_sw(reg_fp(), addr_im_reg(imm(-4), reg_fp()));
-                asm_sub(reg_sp(), reg_sp(), imm(-8));
+                asm_sub(reg_sp(), reg_sp(), imm(8));
             }
             else {
                 p_asm("f%d:\n", ir->target->u.no);
