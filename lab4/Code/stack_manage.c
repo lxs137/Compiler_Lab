@@ -60,6 +60,7 @@ void genAsm(list_node_t *node)
             p_asm("l%d:\n", ir->target->u.no);
             break;
         case Fun:
+            pop_asm_block();
             if(ir->target->u.no == 0) {
                 p_asm("main:\n");
                 asm_mv(reg_fp(), reg_sp());
@@ -79,7 +80,6 @@ void genAsm(list_node_t *node)
             asm_lw(reg_fp(), addr_im_reg(imm(-4), reg_sp()));
             asm_mv(reg("v", 0), reg("t", 0));
             asm_return(reg_ra());
-            pop_asm_block();
             break;
         case Call:
             asm_sw(reg_fp(), addr_im_reg(imm(-4), reg_sp()));
@@ -168,8 +168,11 @@ void init_var_list(list_node_t *node)
             || ir->kind == Call || ir->kind == Read) 
         {
             ASM_Block *block;
-            if(find_var(ir->target->u.no, &block) != NULL)
+            if(find_var(ir->target->u.no, &block) != NULL) {
+                node = node->next;
+                ir = (IR*)(node->val);
                 continue;
+            }
             int size = 4;
             if(ir->kind == Dec)
                 size = ir->arg1->u.value;

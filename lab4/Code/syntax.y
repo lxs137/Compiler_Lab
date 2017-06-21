@@ -57,7 +57,7 @@ Program
         globalStructStack = newStructStack();
         traversalTreePerformAction($$);
         traverse_list(IR_list, print_IR);
-        printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
         // peep_hole();
         /* generate_CFG(); */
         // findUndefinedFunction();
