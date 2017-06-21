@@ -139,7 +139,7 @@ void genAsm(list_node_t *node)
             }
             else if (!strcmp(ir->u.relop, "<"))
             {
-                asm_less_equal(reg("t", 0), reg("t", 1), ir->target->u.value);
+                asm_less(reg("t", 0), reg("t", 1), ir->target->u.value);
             }
             else if (!strcmp(ir->u.relop, "=="))
             {
@@ -161,6 +161,10 @@ void genAsm(list_node_t *node)
             asm_mv(reg("a", 0), reg("t", 0));
             p_asm("li $v0, 1\n");
             asm_sys();
+            p_asm("li $v0, 4\n");
+            asm_la(reg("a", 0), var_name("_ret"));
+            asm_sys();
+            asm_mv(reg("v", 0), reg_0());
             break;
     }
 }
