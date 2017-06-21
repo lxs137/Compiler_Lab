@@ -29,6 +29,7 @@ jr $ra
 main:
 move $fp, $sp
 sw $fp, -4($fp)
+sub $sp, $sp, -8
 sub $sp, $sp, 12
 li $v0, 5
 syscall
