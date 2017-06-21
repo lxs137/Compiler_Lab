@@ -103,7 +103,14 @@ void genAsm(list_node_t *node)
         case Calculate:
             prepare(ir->arg1, 0);
             prepare(ir->arg2, 1);
-            asm_add(reg("t", 2), reg("t", 0), reg("t", 1));
+            if(!strcmp(ir->u.op, "+"))
+                asm_add(reg("t", 2), reg("t", 0), reg("t", 1));
+            else if(!strcmp(ir->u.op, "-"))
+                asm_sub(reg("t", 2), reg("t", 0), reg("t", 1));
+            else if(!strcmp(ir->u.op, "*"))
+                asm_mul(reg("t", 2), reg("t", 0), reg("t", 1));
+            else if(!strcmp(ir->u.op, "/"))
+                asm_div(reg("t", 2), reg("t", 0), reg("t", 1));
             /* asm_sw(reg("t", 2), ir->target->u.value); */
             save(ir->target, 2);
             break;
