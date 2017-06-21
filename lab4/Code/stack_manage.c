@@ -74,8 +74,9 @@ void genAsm(list_node_t *node)
             break;
         case Return:
             asm_mv(reg_sp(), reg_fp());
-            asm_lw(reg_fp(), addr_im_reg(imm(-4), reg_sp()));
+            // asm_lw(reg_fp(), addr_im_reg(imm(-4), reg_sp()));
             prepare(ir->target, 0);
+            asm_lw(reg_fp(), addr_im_reg(imm(-4), reg_sp()));
             asm_mv(reg("v", 0), reg("t", 0));
             asm_return(reg_ra());
             pop_asm_block();
