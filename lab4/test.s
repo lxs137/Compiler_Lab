@@ -29,8 +29,8 @@ jr $ra
 main:
 move $fp, $sp
 sw $fp, -4($fp)
-sub $sp, $sp, -8
-sub $sp, $sp, 12
+sub $sp, $sp, 8
+sub $sp, $sp, 20
 li $v0, 5
 syscall
 move $t0, $v0
@@ -44,10 +44,26 @@ sw $t0, -12($sp)
 sw $ra, -8($fp)
 move $fp, $sp
 sub $sp, $sp, 12
-jal f2
+jal f1
 sw $t0, -20($fp)
 lw $ra, -8($fp)
 lw $t0, -20($fp)
+move $a0, $t0
+li $v0, 1
+syscall
+li $t1, 5
+move $t0, $t1
+sw $t0, -24($fp)
+sw $fp, -4($sp)
+lw $t0, -24($fp)
+sw $t0, -12($sp)
+sw $ra, -8($fp)
+move $fp, $sp
+sub $sp, $sp, 12
+jal f1
+sw $t0, -28($fp)
+lw $ra, -8($fp)
+lw $t0, -28($fp)
 move $a0, $t0
 li $v0, 1
 syscall
